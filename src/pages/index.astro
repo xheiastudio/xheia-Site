@@ -1,8 +1,12 @@
 ---
-// Full composition (Header, Hero, ProofStrip, PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA, Footer) lands later — see SPEC.md Pages & routes.
+// Full composition (Hero, ProofStrip, PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA) lands later — see SPEC.md Pages & routes.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <BaseLayout title="Home">
+  <Header />
   <p>TODO: assemble home page per SPEC.md Pages & routes — /</p>
+  <Footer />
 </BaseLayout>

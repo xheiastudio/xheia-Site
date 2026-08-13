@@ -16,6 +16,15 @@
   --accent-secondary: var(--color-flare);
   --border: var(--color-mist);
 
+  /* PixelMark-specific (BRANDFINAL §4): outline swaps signal green <-> ink,
+     pupil stays Aperture blue in both modes (already equal to --accent-primary). */
+  --mark-outline: var(--color-signal);
+  --mark-pupil: var(--color-aperture);
+
+  /* Text color for content sitting on a solid --accent-primary fill (e.g. CTAButton).
+     Constant across themes since --accent-primary itself doesn't change. */
+  --on-accent-primary: var(--color-paper);
+
   /* fonts */
   --font-display: "Press Start 2P", monospace;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -42,4 +51,5 @@
   --bg: var(--color-paper);
   --text: var(--color-ink);
   --accent-status: var(--color-aperture);
+  --mark-outline: var(--color-ink);
 }
