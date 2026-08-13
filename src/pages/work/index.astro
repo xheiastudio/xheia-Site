@@ -1,12 +1,46 @@
 ---
-// See SPEC.md Pages & routes — /work
+// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
+// Intro line condenses BRANDFINAL §1 "What we do" — no new claims invented.
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import CaseStudyCard from '../../components/CaseStudyCard.astro';
+
+const caseStudies = await getCollection('caseStudies');
 ---
 
-<BaseLayout title="Work">
+<BaseLayout title="Work" description="Full-lifecycle data work, delivered.">
   <Header />
-  <p>TODO: implement per SPEC.md Pages & routes — /work</p>
+  <main class="work-page">
+    <p class="intro">
+      Full-lifecycle data work — cleansing, migration, warehousing, BI — and the
+      agentic systems built on top of it.
+    </p>
+    <div class="grid">
+      {caseStudies.map(({ data }) => <CaseStudyCard {...data} variant="full" />)}
+    </div>
+  </main>
   <Footer />
 </BaseLayout>
+
+<style>
+  .work-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-16);
+  }
+
+  .intro {
+    max-width: 32rem;
+    margin: 0 0 var(--space-8);
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--space-4);
+  }
+</style>
