@@ -1,0 +1,45 @@
+:root {
+  /* primitives — BRANDFINAL.md §4, exact hexes. Never reference these directly in components; use the semantic tokens below. */
+  --color-ink: #0d0d10;
+  --color-paper: #f2f0ea;
+  --color-aperture: #3e6bf0;
+  --color-signal: #3ef07c;
+  --color-flare: #ff8a5c;
+  --color-mist: #9a9a93;
+
+  /* semantic tokens — dark mode is the default, no [data-theme] needed */
+  --bg: var(--color-ink);
+  --text: var(--color-paper);
+  --text-secondary: var(--color-mist);
+  --accent-primary: var(--color-aperture);
+  --accent-status: var(--color-signal);
+  --accent-secondary: var(--color-flare);
+  --border: var(--color-mist);
+
+  /* fonts */
+  --font-display: "Press Start 2P", monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+
+  /* spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* layout */
+  --radius: 0;
+  --content-max-width: 72rem;
+}
+
+/* Signal green is dark-mode only (BRANDFINAL §4) — this override is the only place
+   --accent-status is ever redefined, so no component needs to branch on theme itself. */
+[data-theme="light"] {
+  --bg: var(--color-paper);
+  --text: var(--color-ink);
+  --accent-status: var(--color-aperture);
+}
