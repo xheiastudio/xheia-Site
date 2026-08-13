@@ -1,9 +1,14 @@
 ---
-// Remaining sections (PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA) land in the home-assembly commit — see SPEC.md Pages & routes.
+// Full composition per SPEC.md — Pages & routes: Header, Hero, ProofStrip,
+// PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA band, Footer.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import ProofStrip from '../components/ProofStrip.astro';
+import PillarBlock from '../components/PillarBlock.astro';
+import EngagementStructure from '../components/EngagementStructure.astro';
+import AboutTeaser from '../components/AboutTeaser.astro';
+import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 ---
 
@@ -11,6 +16,9 @@ import Footer from '../components/Footer.astro';
   <Header />
   <Hero />
   <ProofStrip />
-  <p>TODO: PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA</p>
+  <PillarBlock />
+  <EngagementStructure />
+  <AboutTeaser />
+  <ContactCTA />
   <Footer />
 </BaseLayout>
