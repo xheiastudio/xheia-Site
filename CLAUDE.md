@@ -4,7 +4,26 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## Repository state
 
-This repo is the Xheia consulting website (`xheia-Site`), currently pre-code: it contains only brand documentation. No site code, package manager, build system, or test suite exists yet. Do not assume or fabricate build/lint/test commands until they are actually added to the repo — check for a `package.json` or equivalent before running anything.
+This repo is the Xheia consulting website (`xheia-Site`): an Astro static site (`npm create astro@latest`, TypeScript strict, static output) deployed on Netlify. `SPEC.md` is the implementation-ready spec — pages, nav, components, and design tokens are all resolved there; read it alongside `BRANDFINAL.md` before touching site code.
+
+## Commands
+
+| Command | Action |
+|---|---|
+| `npm run dev` | Local dev server |
+| `npm run build` | Production build to `dist/` (also what Netlify runs) |
+| `npm run preview` | Serve the built `dist/` locally |
+| `npm run check` | Astro + TypeScript type-checking |
+| `npm run lint` | Alias for `npm run check` — no separate ESLint setup; revisit only if the codebase outgrows this |
+
+## Code style
+
+- Design tokens live in `src/styles/tokens.css` as CSS custom properties. Components MUST reference semantic tokens (`--bg`, `--text`, `--accent-primary`, `--accent-status`, `--mark-outline`, etc.), never the color primitives (`--color-ink`, `--color-signal`, ...) directly — this is what makes "no Signal green in light mode" structural rather than a per-component judgment call. `--color-signal` should only ever appear inside `tokens.css` itself.
+- Fonts are self-hosted via `@fontsource` (IBM Plex Mono, IBM Plex Sans, Press Start 2P) — no Google Fonts CDN link, ever.
+- No UI framework (`@astrojs/react`/preact/svelte) is installed and none should be added without discussion — the three interactive needs (theme toggle, boot-sequence, form) are handled with plain `.astro` components and vanilla `<script>` tags, not islands.
+- The CRT bezel, scanline overlay, and blinking-caret terminal prompt are Hero-exclusive (`src/components/Hero.astro`) per SPEC.md — don't reuse `.bezel`/`.scanlines`/`caret-blink` elsewhere.
+- `CTAButton` is the only CTA component, always labeled "Start a conversation", always linking to `/contact` — don't create a second CTA style or destination.
+- Case study data lives in the `caseStudies` content collection (`src/content.config.ts`, Astro's Content Layer API — config path is `src/content.config.ts`, not the older `src/content/config.ts`), not hardcoded arrays.
 
 ## Brand source of truth
 
@@ -42,9 +61,9 @@ See @BRANDFINAL.md for all brand-facing decisions — copy, color, typography, t
 
 ## Planning artifacts
 
-A site structure plan (page map, nav, component breakdown, tech stack recommendation) has been drafted separately and is not yet checked into this repo. When implementation starts, confirm with the user whether that plan should be pulled in before scaffolding the site.
+The site structure plan referenced here has been superseded: it was folded into `SPEC.md`, which is now checked into the repo and is the implementation-ready source of truth for pages, nav, components, and tokens.
 
 ## Not yet configured (revisit once relevant)
 
-- **Permissions:** once a build system exists, run `/permissions` to allowlist frequently-used safe commands (e.g. `npm run lint`, `git commit`) so approvals stop interrupting routine work.
-- **Commands / Code style sections:** to be added once the tech stack and package manager are chosen.
+- **Stop hook:** the Verification loop section above calls for a hook that runs `npm run check`/`npm run build` and blocks the turn from ending until it passes. Now that real tooling exists, this is worth setting up — hasn't been done yet.
+- **Real case study content, `/work/[slug]` detail pages, business contact address:** all explicitly out of scope for the initial build (see `SPEC.md`) and still open. The content collection schema in `src/content.config.ts` is ready for `/work/[slug]` to be added later without a data-model change.
