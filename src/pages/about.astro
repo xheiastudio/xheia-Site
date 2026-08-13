@@ -1,12 +1,52 @@
 ---
-// See SPEC.md Pages & routes — /about
+// Header, full origin narrative, ContactCTA, Footer (SPEC.md — Pages & routes /about).
+// Narrative is BRANDFINAL §1's Origin story, expanded into full prose without adding
+// new facts or claims.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<BaseLayout title="About">
+<BaseLayout title="About" description="A biomedical science background, not the usual data path.">
   <Header />
-  <p>TODO: implement per SPEC.md Pages & routes — /about</p>
+  <main class="about-page">
+    <h1>About</h1>
+    <p>
+      A biomedical science background — not the usual data or computer science path.
+      Moving into data work wasn't a planned trajectory; it was an unexpected,
+      self-directed shift.
+    </p>
+    <p>
+      Four-plus years since, delivering enterprise-scale data consolidation,
+      predictive customer intelligence, financial modelling, and BI — across life
+      sciences, public sector, retail, education, and fitness.
+    </p>
+    <p>
+      That work is now extending into agentic AI systems, most recently an agentic
+      customer profiling build. The AI is downstream of the data-quality work — not a
+      separate offering, and not the headline.
+    </p>
+  </main>
+  <ContactCTA />
   <Footer />
 </BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-16);
+  }
+
+  .about-page h1 {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .about-page p {
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+</style>
