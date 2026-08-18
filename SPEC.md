@@ -13,16 +13,18 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 
 | Route | Contents |
 |---|---|
-| `/` | Header, Hero, ProofStrip, PillarBlock ×3, EngagementStructure, AboutTeaser, ContactCTA band, Footer |
-| `/work` | Header, intro line, grid of CaseStudyCard (full), Footer |
+| `/` | Header, Hero, Capabilities, PillarBlock ×3, EngagementStructure, ContactCTA band, Footer |
+| `/track-record` | Header, intro line, grid of CaseStudyCard (full), Footer |
 | `/about` | Header, full origin narrative, ContactCTA, Footer |
 | `/contact` | Header, ContactForm, mailto fallback, Footer |
 
-`/work/[slug]` detail pages are not built now — leave the route open for later; case study cards render as static summaries with no dead links until real write-ups exist.
+`/track-record/[slug]` detail pages are not built now — leave the route open for later; case study cards render as static summaries with no dead links until real write-ups exist.
+
+**Revision note (round 1 feedback):** the home page originally also carried a `ProofStrip` (condensed case-study cards) and an `AboutTeaser` section. Both were cut after seeing the live site — the case-study placeholders read as literal CV bullet points on a landing page, and a dedicated origin-story section overweighted the personal narrative for what's meant to read as a reputable company. `Capabilities` (what the work is, not specific past wins) replaces `ProofStrip` on home; the origin story now lives only on `/about`. The route was also renamed `/work` → `/track-record` to match the nav label.
 
 ## Nav
 
-`Xheia (mark+wordmark)` — `Work` — `About` — `Contact` — theme toggle — one CTA button. No dropdowns, no secondary items.
+`Xheia (mark+wordmark)` — `Track Record` — `About` — `Contact` — theme toggle — one CTA button. No dropdowns, no secondary items.
 
 **Single contact path:** every CTA button, site-wide, is the same component with the label **"Start a conversation"**, and every one of them points to `/contact`. No calendar link, no chat widget, no second form anywhere.
 
@@ -31,12 +33,11 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 - **Header/Nav** — theme toggle + nav links + CTA button
 - **ThemeToggle** — dark (default) / light; persists to `localStorage`; respects `prefers-color-scheme` on first load
 - **PixelMark** — eye-sprite logo, two color states per theme (see Colors below)
-- **Hero** — mark, tagline headline, one-line outcome-framed subhead, CTA. Hosts the CRT/boot-sequence bezel treatment and terminal-prompt flourish (blinking caret, `$ whoami`-style lines). **This is the only component allowed to use these motion/terminal effects.**
-- **ProofStrip** — 2–3 condensed `CaseStudyCard`s on Home, links to `/work`
-- **CaseStudyCard** — fields: client/sector (or anonymized descriptor), problem, approach, outcome, tags[]. Same component, condensed and full variants, used on both `/` and `/work`
-- **PillarBlock** — renders the three pillars from `BRANDFINAL.md` §5 (Truth over theater / Clarity is engineered, not promised / Built to survive scrutiny), copy condensed from that section directly — do not invent new pillar language
-- **EngagementStructure / EngagementPhase** — three phases, in order: **Discovery → Build → Handoff**
-- **AboutTeaser** — 2–3 sentence excerpt of the origin story + link to `/about`
+- **Hero** — mark, tagline headline, one-line outcome-framed subhead, CTA. Hosts the CRT/boot-sequence bezel treatment (thicker retro chrome, pixel rivet corner marks), a real CSS typewriter reveal for the terminal-prompt flourish (blinking caret, `$ whoami`-style lines), and a pixel-art retro mouse cursor on hover. **This is the only component allowed to use these motion/terminal effects.**
+- **Capabilities** — three capability tiles (Cleansing & migration / Warehousing & BI / Agentic AI systems) on Home, grounded in `BRANDFINAL.md` §1 "What we do" — links to `/track-record`. Replaces the original `ProofStrip` (cut after round-1 feedback — see revision note above).
+- **CaseStudyCard** — fields: client/sector (or anonymized descriptor), problem, approach, outcome, tags[]. Single variant (always full detail) — used only on `/track-record` now that `ProofStrip`'s condensed usage on Home is gone.
+- **PillarBlock** — renders the three pillars from `BRANDFINAL.md` §5 (Truth over theater / Clarity is engineered, not promised / Built to survive scrutiny), copy condensed from that section directly — do not invent new pillar language. Carries a small mono "eyebrow" label and a bordered panel treatment so the section reads as an intentional zone.
+- **EngagementStructure / EngagementPhase** — three phases, in order: **Discovery → Build → Handoff**. Same eyebrow-label + panel treatment as PillarBlock.
 - **ContactForm** — fields: name, email, company, message. Submits via Netlify Forms. Delivers to `hoda.97@live.com` **(temporary — replace with the business address before public launch)**. Plain-text `mailto:hoda.97@live.com` fallback rendered near the form, not styled as a competing CTA
 - **CTAButton** — single shared visual treatment, label always "Start a conversation", always links to `/contact`
 - **Footer** — wordmark, social links, terminal flavor line, status dot (per §4 social banner reference)
@@ -68,7 +69,7 @@ Light mode: Paper bg, Ink text, Aperture blue for links/CTAs, Coral for occasion
 ## Out of scope for this build
 
 - Real case study content (structure/placeholders only — see `CaseStudyCard`)
-- `/work/[slug]` detail pages
+- `/track-record/[slug]` detail pages
 - Blog/insights section
 - Any second contact mechanism (calendar embed, chat widget)
 

@@ -89,10 +89,10 @@ Mark on the left, wordmark and tagline carrying the copy, faint scanline texture
 ## 5. Messaging Pillars
 
 **Truth over theater**
-No vendor hype, no overselling AI readiness. Every claim is backed by delivered work, described plainly. This is the pillar that speaks directly to burned buyers.
+Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater. This is the pillar that speaks directly to burned buyers.
 
 **Clarity is engineered, not promised**
-Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes any AI layer trustworthy. Clean systems are built, not claimed.
+Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy. Clean systems are built, not claimed.
 
 **Built to survive scrutiny**
 For technical leaders and regulated enterprises who will actually check the work: security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.
