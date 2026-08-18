@@ -1,41 +1,59 @@
 ---
 // Three messaging pillars, copy condensed directly from BRANDFINAL.md §5 — no new
-// pillar language invented (SPEC.md — PillarBlock).
+// pillar language invented (SPEC.md — PillarBlock). Copy revised after round-1 feedback:
+// the original body text ("no overselling AI readiness") read like AI-vendor self-talk —
+// see BRANDFINAL.md §5 for the current approved wording.
 const pillars = [
   {
     title: 'Truth over theater',
-    body: 'No vendor hype, no overselling AI readiness — every claim is backed by delivered work, described plainly.',
+    body: 'Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater.',
   },
   {
     title: 'Clarity is engineered, not promised',
-    body: 'Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes any AI layer trustworthy.',
+    body: 'Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy.',
   },
   {
     title: 'Built to survive scrutiny',
-    body: 'Security-conscious, evidence-based, documented — built to hold up, not just a pitch that works in the room it was delivered in.',
+    body: 'Security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.',
   },
 ];
 ---
 
-<section class="pillar-block">
-  {
-    pillars.map((pillar) => (
-      <article class="pillar">
-        <h3>{pillar.title}</h3>
-        <p>{pillar.body}</p>
-      </article>
-    ))
-  }
+<section class="pillar-block" data-reveal>
+  <p class="eyebrow">// principles</p>
+  <div class="pillars">
+    {
+      pillars.map((pillar) => (
+        <article class="pillar">
+          <h3>{pillar.title}</h3>
+          <p>{pillar.body}</p>
+        </article>
+      ))
+    }
+  </div>
 </section>
 
 <style>
   .pillar-block {
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-8) auto;
+    padding: var(--space-8);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
+  }
+
+  .pillars {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     gap: var(--space-6);
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
   }
 
   .pillar h3 {

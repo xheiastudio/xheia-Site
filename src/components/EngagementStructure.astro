@@ -20,7 +20,8 @@ const phases = [
 ];
 ---
 
-<section class="engagement-structure">
+<section class="engagement-structure" data-reveal>
+  <p class="eyebrow">// how we work</p>
   <h2>How an engagement runs</h2>
   <div class="phases">
     {phases.map((phase, i) => <EngagementPhase order={i + 1} title={phase.title} body={phase.body} />)}
@@ -29,9 +30,19 @@ const phases = [
 
 <style>
   .engagement-structure {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-8) auto;
+    padding: var(--space-8);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
   }
 
   h2 {
