@@ -1,19 +1,24 @@
 ---
 // Wordmark, social links, terminal flavor line, status dot (SPEC.md — Footer).
 // Static text only — the blinking-caret/CRT terminal treatment is Hero-exclusive.
+// Personal credit line + LinkedIn slots added per the identity/discoverability pass —
+// see SPEC.md's revision note. Name and LinkedIn URLs are placeholders until supplied.
 import PixelMark from './PixelMark.astro';
 
-// TODO: replace with real profile URLs before launch.
 const socialLinks = [
-  { label: 'GitHub', href: '#' },
-  { label: 'LinkedIn', href: '#' },
+  { label: 'GitHub', href: '#' }, // TODO: replace with real GitHub URL
+  { label: 'LinkedIn', href: '#' }, // TODO: replace with real personal LinkedIn URL
+  { label: 'Xheia · LinkedIn', href: '#' }, // TODO: link once the Xheia company page has real content — don't link an empty page
 ];
 ---
 
 <footer class="site-footer">
   <div class="brand">
-    <PixelMark size={18} />
-    <span class="wordmark">xheia</span>
+    <div class="brand-mark">
+      <PixelMark size={18} />
+      <span class="wordmark">xheia</span>
+    </div>
+    <p class="credit">Built and run by [Your Name].</p>
   </div>
 
   <nav aria-label="Social">
@@ -43,6 +48,12 @@ const socialLinks = [
   }
 
   .brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .brand-mark {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
@@ -51,6 +62,12 @@ const socialLinks = [
 
   .wordmark {
     font-weight: 500;
+  }
+
+  .credit {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
   }
 
   nav {

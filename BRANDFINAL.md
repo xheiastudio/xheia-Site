@@ -18,6 +18,8 @@
 
 **Origin story (public narrative):** A biomedical science background, not a conventional data/CS path — an unexpected, self-directed move into data work rather than a planned trajectory. Four-plus years delivering enterprise-scale data consolidation, predictive customer intelligence, financial modelling, and BI across life sciences, public sector, retail, education, and fitness. Now extending into agentic AI systems, most recently an agentic customer profiling build.
 
+**Personal identity vs. company brand:** Xheia stays the standalone brand for Home, Header, and Hero — no change there. But the operator's name now surfaces where a prospect doing due diligence would actually look: the `/about` page (voiced in first person, with a headshot), the site footer (a one-line credit), and page meta descriptions (for search/discoverability, not visible on-page copy). This resolves a real trust/discoverability gap for a solo consultant growing an international client base, without turning the home page into a personal-brand pitch — the origin story stays a "small space," per the standing rule that it shouldn't be the whole brand.
+
 ## 2. Audience & Tone
 
 **Tone (non-negotiable):** Direct, Sharp, Credible.

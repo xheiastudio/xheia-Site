@@ -1,31 +1,45 @@
 ---
 // Header, full origin narrative, ContactCTA, Footer (SPEC.md — Pages & routes /about).
-// Narrative is BRANDFINAL §1's Origin story, expanded into full prose without adding
-// new facts or claims.
+// Narrative is BRANDFINAL §1's Origin story, voiced in first person — this is the "small
+// space" for the personal story the user approved in round-1 feedback, not a rewrite of
+// the facts. Name and headshot are placeholders — see [Your Name] / .headshot-placeholder
+// below — swap in real values once supplied; don't invent them.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<BaseLayout title="About" description="A biomedical science background, not the usual data path.">
+<BaseLayout
+  title="About — [Your Name]"
+  description="I'm [Your Name] — I have a biomedical science background, not the usual data path."
+>
   <Header />
   <main class="about-page">
-    <h1>About</h1>
+    <div class="intro-row">
+      <div class="headshot-placeholder" aria-hidden="true">
+        <span>[photo pending]</span>
+      </div>
+      <div class="intro-text">
+        <h1>[Your Name]</h1>
+        <p class="role">I do full-stack data consulting under the name Xheia.</p>
+      </div>
+    </div>
+
     <p>
-      A biomedical science background — not the usual data or computer science path.
-      Moving into data work wasn't a planned trajectory; it was an unexpected,
-      self-directed shift.
+      I have a biomedical science background — not the usual data or computer science
+      path. Moving into data work wasn't a planned trajectory for me; it was an
+      unexpected, self-directed shift.
     </p>
     <p>
-      Four-plus years since, delivering enterprise-scale data consolidation,
+      Four-plus years since, I've delivered enterprise-scale data consolidation,
       predictive customer intelligence, financial modelling, and BI — across life
       sciences, public sector, retail, education, and fitness.
     </p>
     <p>
       That work is now extending into agentic AI systems, most recently an agentic
-      customer profiling build. The AI is downstream of the data-quality work — not a
-      separate offering, and not the headline.
+      customer profiling build I delivered. The AI is downstream of the data-quality
+      work — not a separate offering, and not the headline.
     </p>
   </main>
   <ContactCTA />
@@ -39,14 +53,52 @@ import Footer from '../components/Footer.astro';
     padding: var(--space-8) var(--space-4) var(--space-16);
   }
 
-  .about-page h1 {
+  .intro-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .headshot-placeholder {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 7rem;
+    height: 7rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    text-align: center;
+  }
+
+  .headshot-placeholder span {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+  }
+
+  .intro-text h1 {
     font-family: var(--font-mono);
     font-size: 1.5rem;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  .role {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
   }
 
   .about-page p {
     color: var(--text-secondary);
     font-size: 1.0625rem;
+  }
+
+  @media (max-width: 30rem) {
+    .intro-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 </style>

@@ -15,12 +15,14 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 |---|---|
 | `/` | Header, Hero, Capabilities, PillarBlock ×3, EngagementStructure, ContactCTA band, Footer |
 | `/track-record` | Header, intro line, grid of CaseStudyCard (full), Footer |
-| `/about` | Header, full origin narrative, ContactCTA, Footer |
+| `/about` | Header, first-person origin narrative + headshot placeholder, ContactCTA, Footer |
 | `/contact` | Header, ContactForm, mailto fallback, Footer |
 
 `/track-record/[slug]` detail pages are not built now — leave the route open for later; case study cards render as static summaries with no dead links until real write-ups exist.
 
 **Revision note (round 1 feedback):** the home page originally also carried a `ProofStrip` (condensed case-study cards) and an `AboutTeaser` section. Both were cut after seeing the live site — the case-study placeholders read as literal CV bullet points on a landing page, and a dedicated origin-story section overweighted the personal narrative for what's meant to read as a reputable company. `Capabilities` (what the work is, not specific past wins) replaces `ProofStrip` on home; the origin story now lives only on `/about`. The route was also renamed `/work` → `/track-record` to match the nav label.
+
+**Revision note (identity & discoverability pass):** the site had zero personal name anywhere, which is a real trust/discoverability gap for a solo consultant growing an international client base (see `BRANDFINAL.md`'s "Personal identity vs. company brand" addendum). Fix stays scoped to where a prospect doing due diligence would actually look — Home/Header/Hero are unchanged. `/about` now reads in first person with a headshot slot; the Footer carries a one-line personal credit plus a personal-LinkedIn link; page meta descriptions name the operator for search (meta-only, not visible page copy). Name and LinkedIn URLs are placeholders (`[Your Name]`, `href="#"`) until supplied — same convention as `ContactForm`'s temporary delivery address.
 
 ## Nav
 
@@ -40,7 +42,7 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 - **EngagementStructure / EngagementPhase** — three phases, in order: **Discovery → Build → Handoff**. Same eyebrow-label + panel treatment as PillarBlock.
 - **ContactForm** — fields: name, email, company, message. Submits via Netlify Forms. Delivers to `hoda.97@live.com` **(temporary — replace with the business address before public launch)**. Plain-text `mailto:hoda.97@live.com` fallback rendered near the form, not styled as a competing CTA
 - **CTAButton** — single shared visual treatment, label always "Start a conversation", always links to `/contact`
-- **Footer** — wordmark, social links, terminal flavor line, status dot (per §4 social banner reference)
+- **Footer** — wordmark, personal credit line ("Built and run by `[Your Name]`"), social links (GitHub, personal LinkedIn, and a placeholder Xheia-company-LinkedIn slot not linked live yet), terminal flavor line, status dot (per §4 social banner reference)
 
 ## Design tokens
 
