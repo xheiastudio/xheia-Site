@@ -1,5 +1,5 @@
 ---
-// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
+// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /track-record).
 // Intro line condenses BRANDFINAL §1 "What we do" — no new claims invented.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -10,22 +10,22 @@ import CaseStudyCard from '../../components/CaseStudyCard.astro';
 const caseStudies = await getCollection('caseStudies');
 ---
 
-<BaseLayout title="Work" description="Full-lifecycle data work, delivered.">
+<BaseLayout title="Track Record" description="Full-lifecycle data work, delivered.">
   <Header />
-  <main class="work-page">
+  <main class="track-record-page">
     <p class="intro">
       Full-lifecycle data work — cleansing, migration, warehousing, BI — and the
       agentic systems built on top of it.
     </p>
     <div class="grid">
-      {caseStudies.map(({ data }) => <CaseStudyCard {...data} variant="full" />)}
+      {caseStudies.map(({ data }) => <CaseStudyCard {...data} />)}
     </div>
   </main>
   <Footer />
 </BaseLayout>
 
 <style>
-  .work-page {
+  .track-record-page {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
