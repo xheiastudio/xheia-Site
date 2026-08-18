@@ -1,0 +1,87 @@
+---
+// Three capability tiles on Home — what the work is, not specific past wins. Grounded
+// in BRANDFINAL §1 "What we do" — no invented claims, no past-client language. Replaces
+// the original ProofStrip (cut after round-1 feedback: CV-shaped case-study cards read
+// wrong on a landing page). Links to /track-record for the actual proof.
+const capabilities = [
+  {
+    title: 'Cleansing & migration',
+    body: 'Fixing and moving data so it can actually be trusted downstream.',
+  },
+  {
+    title: 'Warehousing & BI',
+    body: 'A single source of truth, and the reporting layer built on it.',
+  },
+  {
+    title: 'Agentic AI systems',
+    body: 'The newest expression of the same full-lifecycle work — never a bolt-on.',
+  },
+];
+---
+
+<section class="capabilities" data-reveal>
+  <p class="eyebrow">// what we do</p>
+  <div class="tiles">
+    {
+      capabilities.map((c) => (
+        <article class="tile">
+          <h3>{c.title}</h3>
+          <p>{c.body}</p>
+        </article>
+      ))
+    }
+  </div>
+  <a href="/track-record" class="see-more">See the track record →</a>
+</section>
+
+<style>
+  .capabilities {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
+  }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-6);
+  }
+
+  .tile {
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    transition: border-color 0.15s ease;
+  }
+
+  .tile:hover {
+    border-color: var(--accent-primary);
+  }
+
+  .tile h3 {
+    font-size: 1rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .tile p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  .see-more {
+    display: inline-block;
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent-primary);
+  }
+</style>

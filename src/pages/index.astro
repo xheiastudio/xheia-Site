@@ -1,13 +1,13 @@
 ---
-// Full composition per SPEC.md — Pages & routes: Header, Hero, ProofStrip,
-// PillarBlock×3, EngagementStructure, AboutTeaser, ContactCTA band, Footer.
+// Full composition per SPEC.md — Pages & routes: Header, Hero, Capabilities,
+// PillarBlock×3, EngagementStructure, ContactCTA band, Footer. (ProofStrip and
+// AboutTeaser were cut after round-1 feedback — see SPEC.md's revision note.)
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import ProofStrip from '../components/ProofStrip.astro';
+import Capabilities from '../components/Capabilities.astro';
 import PillarBlock from '../components/PillarBlock.astro';
 import EngagementStructure from '../components/EngagementStructure.astro';
-import AboutTeaser from '../components/AboutTeaser.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 ---
@@ -15,10 +15,9 @@ import Footer from '../components/Footer.astro';
 <BaseLayout title="Home">
   <Header />
   <Hero />
-  <ProofStrip />
+  <Capabilities />
   <PillarBlock />
   <EngagementStructure />
-  <AboutTeaser />
   <ContactCTA />
   <Footer />
 </BaseLayout>

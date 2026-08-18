@@ -11,8 +11,6 @@ const caseStudies = defineCollection({
     approach: z.string(),
     outcome: z.string(),
     tags: z.array(z.string()),
-    // true = eligible for ProofStrip's 2-3 picks on the home page
-    featured: z.boolean().default(false),
   }),
 });
 

@@ -1,33 +1,29 @@
 ---
-// Condensed variant (ProofStrip on Home) and full variant (/work) — same fields,
-// same component (SPEC.md — CaseStudyCard). No dead links: /work/[slug] doesn't
-// exist yet, so this renders as a static summary, not a link.
+// Always full detail — client/sector, problem, approach, outcome, tags[] (SPEC.md —
+// CaseStudyCard). Used only on /track-record now that Capabilities replaced ProofStrip's
+// condensed usage on Home. No dead links: /track-record/[slug] doesn't exist yet, so
+// this renders as a static summary, not a link.
 interface Props {
   client: string;
   problem: string;
   approach: string;
   outcome: string;
   tags: string[];
-  variant?: 'condensed' | 'full';
 }
 
-const { client, problem, approach, outcome, tags, variant = 'condensed' } = Astro.props;
+const { client, problem, approach, outcome, tags } = Astro.props;
 ---
 
-<article class:list={['case-study-card', variant]}>
+<article class="case-study-card">
   <p class="client">{client}</p>
   <p class="field">
     <span class="label">Problem</span>
     {problem}
   </p>
-  {
-    variant === 'full' && (
-      <p class="field">
-        <span class="label">Approach</span>
-        {approach}
-      </p>
-    )
-  }
+  <p class="field">
+    <span class="label">Approach</span>
+    {approach}
+  </p>
   <p class="field">
     <span class="label">Outcome</span>
     {outcome}
@@ -44,6 +40,14 @@ const { client, problem, approach, outcome, tags, variant = 'condensed' } = Astr
     gap: var(--space-3);
     padding: var(--space-6);
     border: 1px solid var(--border);
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .case-study-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
   }
 
   .client {

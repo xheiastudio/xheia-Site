@@ -18,7 +18,6 @@ const caseStudies = [
     approach: 'Consolidated ingestion pipelines, cleansing rules, and a unified warehouse.',
     outcome: 'Leadership dashboards teams could trust without cross-checking source systems.',
     tags: ['data consolidation', 'warehousing', 'life sciences'],
-    featured: true,
   },
   {
     slug: 'public-sector-bi-modernization',
@@ -27,7 +26,6 @@ const caseStudies = [
     approach: 'Rebuilt the BI layer on a modern warehouse with documented, auditable transforms.',
     outcome: 'Faster reporting that held up under audit.',
     tags: ['BI', 'public sector', 'warehousing'],
-    featured: true,
   },
   {
     slug: 'retail-customer-intelligence',
@@ -36,7 +34,6 @@ const caseStudies = [
     approach: 'Built a unified customer data model and a predictive scoring pipeline.',
     outcome: 'A single customer view that internal teams could act on directly.',
     tags: ['predictive analytics', 'customer intelligence', 'retail'],
-    featured: true,
   },
   {
     slug: 'fitness-agentic-profiling',
@@ -45,7 +42,6 @@ const caseStudies = [
     approach: 'Delivered an agentic profiling system built on top of the cleaned customer data layer.',
     outcome: 'Automated profiling that stayed accurate as the underlying data changed.',
     tags: ['agentic AI', 'customer profiling', 'fitness'],
-    featured: false,
   },
 ];
 
@@ -59,7 +55,6 @@ for (const { slug, ...data } of caseStudies) {
     `approach: "${data.approach}"`,
     `outcome: "${data.outcome}"`,
     `tags: [${data.tags.map((t) => `"${t}"`).join(', ')}]`,
-    `featured: ${data.featured}`,
     '---',
     '',
   ].join('\n');
