@@ -52,3 +52,26 @@ svg {
   max-width: 100%;
   display: block;
 }
+
+/* Reveal-on-scroll utility — see BaseLayout.astro's IntersectionObserver script.
+   Sections opt in with data-reveal; JS adds .is-visible once they enter the viewport. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
