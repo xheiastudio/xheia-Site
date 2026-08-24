@@ -2,9 +2,9 @@
 
 ## 1. Positioning
 
-**One-line value prop:** We turn fragmented data into systems you can actually trust.
+**One-line value prop:** I turn fragmented data into systems you can actually trust.
 
-**What we do:** Full-stack data consultancy — cleansing, migration, warehousing, BI — with agentic AI systems as the newest expression of that work, not a separate offering. Data quality is the foundation; AI capability is downstream of it, never the headline.
+**What I do:** Full-stack data consultancy — cleansing, migration, warehousing, BI — with agentic AI systems as the newest expression of that work, not a separate offering. Data quality is the foundation; AI capability is downstream of it, never the headline.
 
 **Positioning tier:** Premium / boutique. Solo-expert-led, not agency-styled. Direct, defensible claims over ones that imply team scale that doesn't exist.
 
@@ -18,7 +18,7 @@
 
 **Origin story (public narrative):** A biomedical science background, not a conventional data/CS path — an unexpected, self-directed move into data work rather than a planned trajectory. Four-plus years delivering enterprise-scale data consolidation, predictive customer intelligence, financial modelling, and BI across life sciences, public sector, retail, education, and fitness. Now extending into agentic AI systems, most recently an agentic customer profiling build.
 
-**Personal identity vs. company brand:** Xheia stays the standalone brand for Home, Header, and Hero — no change there. But the operator's name now surfaces where a prospect doing due diligence would actually look: the `/about` page (voiced in first person, with a headshot), the site footer (a one-line credit), and page meta descriptions (for search/discoverability, not visible on-page copy). This resolves a real trust/discoverability gap for a solo consultant growing an international client base, without turning the home page into a personal-brand pitch — the origin story stays a "small space," per the standing rule that it shouldn't be the whole brand.
+**Personal identity vs. company brand:** Xheia stays the standalone brand for Home, Header, and Hero. The operator's name and story surface where a prospect doing due diligence would actually look: the `/about` page (voiced in first person, with a headshot), the site footer (a one-line credit), page meta descriptions (search/discoverability, not visible copy), and — as of the truth-over-theater pass — a single identity-hook line on Home itself ("[name] — biomedical science background, not the usual data path," linking to `/about`) so the homepage doesn't read anonymous. All copy is voiced in first person ("I," not "we") since this is a solo consultancy, not a team — see the tagline and "What I do" above. This resolves a real trust/discoverability gap for a solo consultant growing an international client base, without turning the home page into a full personal-brand pitch — the origin story stays a "small space" on `/about`, per the standing rule that it shouldn't be the whole brand.
 
 ## 2. Audience & Tone
 
@@ -100,4 +100,4 @@ Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what 
 For technical leaders and regulated enterprises who will actually check the work: security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.
 
 ## Tagline
-"We turn fragmented data into systems you can actually trust."
+"I turn fragmented data into systems you can actually trust."
