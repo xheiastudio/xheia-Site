@@ -14,7 +14,7 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/layouts/BaseLayout.astro`
 
 - Page `<title>` format: `{page title} · Xheia`
-- Default meta description (used by Home, Track Record, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **[Your Name]**. We turn fragmented data into systems you can actually trust."
+- Default meta description (used by Home, Track Record, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **[Your Name]**. I turn fragmented data into systems you can actually trust."
 
 ---
 
@@ -38,13 +38,19 @@ Page title: "Full-stack data consulting"
 
 - Terminal line 1: `$ whoami`
 - Terminal line 2: `> full-stack data consultant`
-- Headline: **"We turn fragmented data into systems you can actually trust."**
+- Headline: **"I turn fragmented data into systems you can actually trust."**
 - Subhead: "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
 - CTA: "Start a conversation"
 
+### Identity hook
+**File:** `src/components/IdentityHook.astro`
+One line directly under Hero, so Home doesn't read anonymous — not a profile, just a hook + link to `/about`.
+
+- "**[Your Name]** — biomedical science background, not the usual data path. [More about me →](/about)"
+
 ### Capabilities
 **File:** `src/components/Capabilities.astro`
-Eyebrow: `// what we do`
+Eyebrow: `// what I do`
 
 | Tile | Body |
 |---|---|
@@ -66,7 +72,7 @@ Eyebrow: `// principles`
 
 ### How an engagement runs
 **File:** `src/components/EngagementStructure.astro`
-Eyebrow: `// how we work`
+Eyebrow: `// how I work`
 Heading: "How an engagement runs"
 
 | Phase | Body |
@@ -77,7 +83,7 @@ Heading: "How an engagement runs"
 
 ### Contact CTA band
 **File:** `src/components/ContactCTA.astro`
-- "We turn fragmented data into systems you can actually trust." + "Start a conversation" button
+- "I turn fragmented data into systems you can actually trust." + "Start a conversation" button
 
 ---
 
@@ -88,34 +94,15 @@ Page title: "Track Record"
 
 - Intro line: "Full-lifecycle data work — cleansing, migration, warehousing, BI — and the agentic systems built on top of it."
 
-### Case studies
-**Files:** `src/content/case-studies/*.md`
+### Case studies — currently empty [PLACEHOLDER]
+**Files:** `src/content/case-studies/*.md` (none exist yet)
 
-**Life sciences — data consolidation**
-- Problem: Multiple data sources across teams, with no single source of truth for reporting.
-- Approach: Consolidated ingestion pipelines, cleansing rules, and a unified warehouse.
-- Outcome: Leadership dashboards teams could trust without cross-checking source systems.
-- Tags: data consolidation, warehousing, life sciences
+All four case studies previously here were removed — three were invented outright, and the fourth (life sciences) was generic copy never actually sourced from real engagement details. None of it was true. The page now shows one of two states automatically, depending on whether any `.md` files exist in that folder:
 
-**Public sector — BI modernization**
-- Problem: Legacy reporting tools that could not keep pace with policy-driven data demands.
-- Approach: Rebuilt the BI layer on a modern warehouse with documented, auditable transforms.
-- Outcome: Faster reporting that held up under audit.
-- Tags: BI, public sector, warehousing
+- **Empty (current state):** "Case studies are added here as real engagements are finalized for publication."
+- **Once real entries exist:** an anonymization disclaimer — "Client details are withheld by agreement; the work and outcomes below are real." — followed by the case-study grid.
 
-**Retail — predictive customer intelligence**
-- Problem: Customer data fragmented across systems, with no predictive layer.
-- Approach: Built a unified customer data model and a predictive scoring pipeline.
-- Outcome: A single customer view that internal teams could act on directly.
-- Tags: predictive analytics, customer intelligence, retail
-
-**Fitness — agentic customer profiling**
-- Problem: Customer profiling that was manual and inconsistent across channels.
-- Approach: Delivered an agentic profiling system built on top of the cleaned customer data layer.
-- Outcome: Automated profiling that stayed accurate as the underlying data changed.
-- Tags: agentic AI, customer profiling, fitness
-
-*(All four are placeholder/illustrative case studies grounded in BRANDFINAL.md's origin story — not real named clients. Out of scope for this build to have real case study content — see SPEC.md.)*
+To add a real one: write a markdown file in `src/content/case-studies/` with `client` (anonymized by sector/scope, e.g. "a life sciences membership organisation" — never a company name), `problem`, `approach`, `outcome`, and `tags`. Only from real, user-supplied details — nothing invented.
 
 ---
 
@@ -166,7 +153,8 @@ Page title: "Contact"
 
 ## Open placeholders — quick checklist
 
-- [ ] Full name → replaces every `[Your Name]` above (About heading/title/meta, Footer credit, BaseLayout default description)
+- [ ] Full name → replaces every `[Your Name]` above (Home identity hook, About heading/title/meta, Footer credit, BaseLayout default description)
+- [ ] Real case studies → `src/content/case-studies/`, anonymized by sector/scope, one at a time, as you send real details
 - [ ] Personal LinkedIn URL → Footer
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)

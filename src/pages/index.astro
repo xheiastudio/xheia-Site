@@ -1,10 +1,12 @@
 ---
-// Full composition per SPEC.md — Pages & routes: Header, Hero, Capabilities,
-// PillarBlock×3, EngagementStructure, ContactCTA band, Footer. (ProofStrip and
-// AboutTeaser were cut after round-1 feedback — see SPEC.md's revision note.)
+// Full composition per SPEC.md — Pages & routes: Header, Hero, IdentityHook,
+// Capabilities, PillarBlock×3, EngagementStructure, ContactCTA band, Footer.
+// (ProofStrip and AboutTeaser were cut after round-1 feedback; IdentityHook added in
+// the truth-over-theater pass — see SPEC.md's revision notes.)
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import IdentityHook from '../components/IdentityHook.astro';
 import Capabilities from '../components/Capabilities.astro';
 import PillarBlock from '../components/PillarBlock.astro';
 import EngagementStructure from '../components/EngagementStructure.astro';
@@ -15,6 +17,7 @@ import Footer from '../components/Footer.astro';
 <BaseLayout title="Full-stack data consulting">
   <Header />
   <Hero />
+  <IdentityHook />
   <Capabilities />
   <PillarBlock />
   <EngagementStructure />

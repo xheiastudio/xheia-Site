@@ -13,8 +13,8 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 
 | Route | Contents |
 |---|---|
-| `/` | Header, Hero, Capabilities, PillarBlock ×3, EngagementStructure, ContactCTA band, Footer |
-| `/track-record` | Header, intro line, grid of CaseStudyCard (full), Footer |
+| `/` | Header, Hero, IdentityHook, Capabilities, PillarBlock ×3, EngagementStructure, ContactCTA band, Footer |
+| `/track-record` | Header, intro line, then either an in-progress message (no case studies yet) or an anonymization disclaimer + grid of CaseStudyCard (once real entries exist), Footer |
 | `/about` | Header, first-person origin narrative + headshot placeholder, ContactCTA, Footer |
 | `/contact` | Header, ContactForm, mailto fallback, Footer |
 
@@ -22,7 +22,9 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 
 **Revision note (round 1 feedback):** the home page originally also carried a `ProofStrip` (condensed case-study cards) and an `AboutTeaser` section. Both were cut after seeing the live site — the case-study placeholders read as literal CV bullet points on a landing page, and a dedicated origin-story section overweighted the personal narrative for what's meant to read as a reputable company. `Capabilities` (what the work is, not specific past wins) replaces `ProofStrip` on home; the origin story now lives only on `/about`. The route was also renamed `/work` → `/track-record` to match the nav label.
 
-**Revision note (identity & discoverability pass):** the site had zero personal name anywhere, which is a real trust/discoverability gap for a solo consultant growing an international client base (see `BRANDFINAL.md`'s "Personal identity vs. company brand" addendum). Fix stays scoped to where a prospect doing due diligence would actually look — Home/Header/Hero are unchanged. `/about` now reads in first person with a headshot slot; the Footer carries a one-line personal credit plus a personal-LinkedIn link; page meta descriptions name the operator for search (meta-only, not visible page copy). Name and LinkedIn URLs are placeholders (`[Your Name]`, `href="#"`) until supplied — same convention as `ContactForm`'s temporary delivery address.
+**Revision note (identity & discoverability pass):** the site had zero personal name anywhere, which is a real trust/discoverability gap for a solo consultant growing an international client base (see `BRANDFINAL.md`'s "Personal identity vs. company brand" addendum). Fix stays scoped to where a prospect doing due diligence would actually look — Home/Header/Hero were unchanged at the time. `/about` now reads in first person with a headshot slot; the Footer carries a one-line personal credit plus a personal-LinkedIn link; page meta descriptions name the operator for search (meta-only, not visible page copy). Name and LinkedIn URLs are placeholders (`[Your Name]`, `href="#"`) until supplied — same convention as `ContactForm`'s temporary delivery address.
+
+**Revision note (truth-over-theater pass):** all four Track Record case studies were fabricated or unverified — three invented outright, and the fourth (life sciences) written as generic placeholder copy never sourced from the user's real work. All four were deleted; `/track-record` now shows an honest in-progress message when the collection is empty, and will show an anonymization disclaimer ("client details are withheld by agreement...") above the grid once real, user-supplied entries exist — no fabricated content goes back in. `scripts/generate-case-studies.mjs` (a bulk fictional-placeholder generator) was deleted for the same reason; future entries are hand-authored from real details. Separately, all site copy (including `BRANDFINAL.md`'s tagline and "What I do") switched from "we" to "I" — this is a solo consultancy, and the copy shouldn't perform team scale. `IdentityHook` (a one-line "[name] — biomedical science background..." strip linking to `/about`) was added directly under Hero on Home so the homepage doesn't read anonymous, without turning Home into a full personal profile — see `BRANDFINAL.md`'s updated "Personal identity vs. company brand" addendum.
 
 ## Nav
 
@@ -36,8 +38,9 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 - **ThemeToggle** — dark (default) / light; persists to `localStorage`; respects `prefers-color-scheme` on first load
 - **PixelMark** — eye-sprite logo, two color states per theme (see Colors below)
 - **Hero** — mark, tagline headline, one-line outcome-framed subhead, CTA. Hosts the CRT/boot-sequence bezel treatment (thicker retro chrome, pixel rivet corner marks), a real CSS typewriter reveal for the terminal-prompt flourish (blinking caret, `$ whoami`-style lines), and a pixel-art retro mouse cursor on hover. **This is the only component allowed to use these motion/terminal effects.**
-- **Capabilities** — three capability tiles (Cleansing & migration / Warehousing & BI / Agentic AI systems) on Home, grounded in `BRANDFINAL.md` §1 "What we do" — links to `/track-record`. Replaces the original `ProofStrip` (cut after round-1 feedback — see revision note above).
-- **CaseStudyCard** — fields: client/sector (or anonymized descriptor), problem, approach, outcome, tags[]. Single variant (always full detail) — used only on `/track-record` now that `ProofStrip`'s condensed usage on Home is gone.
+- **IdentityHook** — one line directly under Hero on Home: `[Your Name]` + the "biomedical science background, not the usual data path" hook, linking to `/about`. Not a profile — just enough that Home doesn't read anonymous. Added in the truth-over-theater pass — see revision note above.
+- **Capabilities** — three capability tiles (Cleansing & migration / Warehousing & BI / Agentic AI systems) on Home, grounded in `BRANDFINAL.md` §1 "What I do" — links to `/track-record`. Replaces the original `ProofStrip` (cut after round-1 feedback — see revision note above).
+- **CaseStudyCard** — fields: client/sector (or anonymized descriptor), problem, approach, outcome, tags[]. Single variant (always full detail) — used only on `/track-record`. The collection starts empty (all fabricated placeholders removed — see truth-over-theater revision note); entries are added by hand, one at a time, only from real details the user supplies.
 - **PillarBlock** — renders the three pillars from `BRANDFINAL.md` §5 (Truth over theater / Clarity is engineered, not promised / Built to survive scrutiny), copy condensed from that section directly — do not invent new pillar language. Carries a small mono "eyebrow" label and a bordered panel treatment so the section reads as an intentional zone.
 - **EngagementStructure / EngagementPhase** — three phases, in order: **Discovery → Build → Handoff**. Same eyebrow-label + panel treatment as PillarBlock.
 - **ContactForm** — fields: name, email, company, message. Submits via Netlify Forms. Delivers to `hoda.97@live.com` **(temporary — replace with the business address before public launch)**. Plain-text `mailto:hoda.97@live.com` fallback rendered near the form, not styled as a competing CTA
@@ -70,7 +73,7 @@ Light mode: Paper bg, Ink text, Aperture blue for links/CTAs, Coral for occasion
 
 ## Out of scope for this build
 
-- Real case study content (structure/placeholders only — see `CaseStudyCard`)
+- Real case study content — the collection is currently empty (see `CaseStudyCard` and the truth-over-theater revision note); entries get added by hand, from real details only, as they're supplied
 - `/track-record/[slug]` detail pages
 - Blog/insights section
 - Any second contact mechanism (calendar embed, chat widget)
