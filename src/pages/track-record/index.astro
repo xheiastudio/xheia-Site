@@ -1,6 +1,11 @@
 ---
 // Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /track-record).
-// Intro line condenses BRANDFINAL §1 "What we do" — no new claims invented.
+// Intro line condenses BRANDFINAL §1 "What I do" — no new claims invented.
+//
+// Handles two states so real case studies can be dropped into
+// src/content/case-studies/ later with no further code changes: empty (now — an honest
+// in-progress message, no fabricated content) and populated (an anonymization
+// disclaimer above the grid, since entries name sector/scope, never clients).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
@@ -17,9 +22,24 @@ const caseStudies = await getCollection('caseStudies');
       Full-lifecycle data work — cleansing, migration, warehousing, BI — and the
       agentic systems built on top of it.
     </p>
-    <div class="grid">
-      {caseStudies.map(({ data }) => <CaseStudyCard {...data} />)}
-    </div>
+    {
+      caseStudies.length === 0 ? (
+        <p class="pending">
+          Case studies are added here as real engagements are finalized for
+          publication.
+        </p>
+      ) : (
+        <>
+          <p class="disclaimer">
+            Client details are withheld by agreement; the work and outcomes below are
+            real.
+          </p>
+          <div class="grid">
+            {caseStudies.map(({ data }) => <CaseStudyCard {...data} />)}
+          </div>
+        </>
+      )
+    }
   </main>
   <Footer />
 </BaseLayout>
@@ -36,6 +56,21 @@ const caseStudies = await getCollection('caseStudies');
     margin: 0 0 var(--space-8);
     color: var(--text-secondary);
     font-size: 1.0625rem;
+  }
+
+  .pending {
+    padding: var(--space-6);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+  }
+
+  .disclaimer {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
   }
 
   .grid {
