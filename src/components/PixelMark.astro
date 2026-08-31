@@ -35,7 +35,9 @@ const pupil: Array<[number, number]> = [
   aria-label="Xheia"
 >
   {outline.map(([x, y]) => <rect class="outline" x={x} y={y} width="1" height="1" />)}
-  {pupil.map(([x, y]) => <rect class="pupil" x={x} y={y} width="1" height="1" />)}
+  <g class="pupil-group">
+    {pupil.map(([x, y]) => <rect class="pupil" x={x} y={y} width="1" height="1" />)}
+  </g>
 </svg>
 
 <style>
@@ -50,5 +52,29 @@ const pupil: Array<[number, number]> = [
 
   .pupil {
     fill: var(--mark-pupil);
+  }
+
+  /* Idle blink — the mark stays "alive" rather than static, part of the site-wide
+     pixel/retro pass. Brief, infrequent, never distracting. */
+  .pupil-group {
+    animation: pixelmark-blink 6s steps(1) infinite;
+  }
+
+  @keyframes pixelmark-blink {
+    0%,
+    96%,
+    100% {
+      opacity: 1;
+    }
+    97%,
+    99% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pupil-group {
+      animation: none;
+    }
   }
 </style>

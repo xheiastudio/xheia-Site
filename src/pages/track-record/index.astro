@@ -11,6 +11,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import CaseStudyCard from '../../components/CaseStudyCard.astro';
+import PixelRivets from '../../components/PixelRivets.astro';
 
 const caseStudies = await getCollection('caseStudies');
 ---
@@ -25,8 +26,9 @@ const caseStudies = await getCollection('caseStudies');
     {
       caseStudies.length === 0 ? (
         <p class="pending">
+          <PixelRivets inset="0.3rem" />
           Case studies are added here as real engagements are finalized for
-          publication.
+          publication.<span class="pending-caret" aria-hidden="true"></span>
         </p>
       ) : (
         <>
@@ -59,11 +61,39 @@ const caseStudies = await getCollection('caseStudies');
   }
 
   .pending {
+    position: relative;
     padding: var(--space-6);
     border: 1px solid var(--border);
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.9375rem;
+  }
+
+  .pending-caret {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-left: 0.25em;
+    background: var(--accent-status);
+    vertical-align: text-bottom;
+    animation: pending-cursor-blink 1s steps(1) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pending-caret {
+      animation: none;
+    }
+  }
+
+  @keyframes pending-cursor-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
   }
 
   .disclaimer {

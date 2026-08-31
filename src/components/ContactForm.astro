@@ -17,25 +17,25 @@
 
   <label>
     <span>Name</span>
-    <input type="text" name="name" required />
+    <input class="pixel-notch" type="text" name="name" required />
   </label>
 
   <label>
     <span>Email</span>
-    <input type="email" name="email" required />
+    <input class="pixel-notch" type="email" name="email" required />
   </label>
 
   <label>
     <span>Company</span>
-    <input type="text" name="company" />
+    <input class="pixel-notch" type="text" name="company" />
   </label>
 
   <label>
     <span>Message</span>
-    <textarea name="message" rows="6" required></textarea>
+    <textarea class="pixel-notch" name="message" rows="6" required></textarea>
   </label>
 
-  <button type="submit">Send</button>
+  <button class="pixel-notch" type="submit">Send</button>
 </form>
 
 <p class="mailto-fallback">
@@ -79,10 +79,13 @@
     font-size: 1rem;
   }
 
+  /* clip-path (.pixel-notch) cuts two corners off each field, so an outward `outline`/
+     `box-shadow` would get clipped away right where it's cut. An inset ring stays
+     inside the clipped shape instead. */
   input:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid var(--accent-primary);
-    outline-offset: 1px;
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accent-primary);
   }
 
   textarea {
@@ -105,6 +108,12 @@
   button[type='submit']:hover,
   button[type='submit']:focus-visible {
     opacity: 0.85;
+  }
+
+  /* Same clip-path corner issue as inputs above — inset ring instead of outline. */
+  button[type='submit']:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--on-accent-primary);
   }
 
   .mailto-fallback {

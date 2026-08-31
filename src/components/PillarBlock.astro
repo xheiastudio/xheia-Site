@@ -3,18 +3,49 @@
 // pillar language invented (SPEC.md — PillarBlock). Copy revised after round-1 feedback:
 // the original body text ("no overselling AI readiness") read like AI-vendor self-talk —
 // see BRANDFINAL.md §5 for the current approved wording.
+//
+// Rivets/icon/display-font-heading treatment added in the site-wide pixel/retro visual
+// pass — see BRANDFINAL.md's Visual Identity section.
+import PixelRivets from './PixelRivets.astro';
+import PixelIcon from './PixelIcon.astro';
+
+const checkPixels: Array<[number, number]> = [
+  [1, 4], [2, 5], [3, 4], [4, 3], [5, 2], [6, 1],
+];
+
+const gearPixels: Array<[number, number]> = [
+  [2, 2], [3, 2], [4, 2],
+  [2, 3], [3, 3], [4, 3],
+  [2, 4], [3, 4], [4, 4],
+  [3, 0], [3, 6], [0, 3], [6, 3],
+  [1, 1], [5, 1], [1, 5], [5, 5],
+];
+
+const shieldPixels: Array<[number, number]> = [
+  [2, 0], [3, 0], [4, 0],
+  [1, 1], [2, 1], [3, 1], [4, 1], [5, 1],
+  [1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
+  [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
+  [2, 4], [3, 4], [4, 4],
+  [2, 5], [3, 5], [4, 5],
+  [3, 6],
+];
+
 const pillars = [
   {
     title: 'Truth over theater',
     body: 'Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater.',
+    icon: checkPixels,
   },
   {
     title: 'Clarity is engineered, not promised',
     body: 'Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy.',
+    icon: gearPixels,
   },
   {
     title: 'Built to survive scrutiny',
     body: 'Security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.',
+    icon: shieldPixels,
   },
 ];
 ---
@@ -25,6 +56,8 @@ const pillars = [
     {
       pillars.map((pillar) => (
         <article class="pillar">
+          <PixelRivets inset="0.3rem" />
+          <PixelIcon pixels={pillar.icon} cols={7} rows={7} size={28} />
           <h3>{pillar.title}</h3>
           <p>{pillar.body}</p>
         </article>
@@ -56,9 +89,27 @@ const pillars = [
     gap: var(--space-6);
   }
 
+  .pillar {
+    position: relative;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    transition: border-color 0.15s ease;
+  }
+
+  .pillar:hover {
+    border-color: var(--accent-primary);
+  }
+
+  .pillar :global(.pixel-icon) {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-3);
+  }
+
   .pillar h3 {
-    font-size: 1rem;
-    margin-bottom: var(--space-2);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-3);
   }
 
   .pillar p {

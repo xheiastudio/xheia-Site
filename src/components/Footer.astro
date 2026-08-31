@@ -97,5 +97,22 @@ const socialLinks = [
     height: 0.5rem;
     border-radius: 50%;
     background: var(--accent-status);
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot {
+      animation: none;
+    }
   }
 </style>

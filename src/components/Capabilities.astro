@@ -3,18 +3,46 @@
 // in BRANDFINAL §1 "What I do" — no invented claims, no past-client language. Replaces
 // the original ProofStrip (cut after round-1 feedback: CV-shaped case-study cards read
 // wrong on a landing page). Links to /track-record for the actual proof.
+//
+// Rivets/icon/display-font-heading/jitter-hover treatment added in the site-wide
+// pixel/retro visual pass — see BRANDFINAL.md's Visual Identity section.
+import PixelRivets from './PixelRivets.astro';
+import PixelIcon from './PixelIcon.astro';
+
+const sparklePixels: Array<[number, number]> = [
+  [3, 0], [3, 1],
+  [0, 3], [1, 3], [3, 3], [5, 3], [6, 3],
+  [3, 5], [3, 6],
+];
+
+const barsPixels: Array<[number, number]> = [
+  [1, 4], [1, 5], [1, 6],
+  [3, 2], [3, 3], [3, 4], [3, 5], [3, 6],
+  [5, 3], [5, 4], [5, 5], [5, 6],
+];
+
+const chipPixels: Array<[number, number]> = [
+  [2, 2], [3, 2], [4, 2],
+  [2, 3], [3, 3], [4, 3],
+  [2, 4], [3, 4], [4, 4],
+  [3, 0], [3, 6], [0, 3], [6, 3],
+];
+
 const capabilities = [
   {
     title: 'Cleansing & migration',
     body: 'Fixing and moving data so it can actually be trusted downstream.',
+    icon: sparklePixels,
   },
   {
     title: 'Warehousing & BI',
     body: 'A single source of truth, and the reporting layer built on it.',
+    icon: barsPixels,
   },
   {
     title: 'Agentic AI systems',
     body: 'The newest expression of the same full-lifecycle work — never a bolt-on.',
+    icon: chipPixels,
   },
 ];
 ---
@@ -24,7 +52,9 @@ const capabilities = [
   <div class="tiles">
     {
       capabilities.map((c) => (
-        <article class="tile">
+        <article class="tile pixel-jitter-hover">
+          <PixelRivets inset="0.3rem" />
+          <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
           <h3>{c.title}</h3>
           <p>{c.body}</p>
         </article>
@@ -57,6 +87,7 @@ const capabilities = [
   }
 
   .tile {
+    position: relative;
     padding: var(--space-4);
     border: 1px solid var(--border);
     transition: border-color 0.15s ease;
@@ -64,11 +95,19 @@ const capabilities = [
 
   .tile:hover {
     border-color: var(--accent-primary);
+    animation: pixel-jitter 0.3s steps(4);
+  }
+
+  .tile :global(.pixel-icon) {
+    color: var(--accent-primary);
+    margin-bottom: var(--space-3);
   }
 
   .tile h3 {
-    font-size: 1rem;
-    margin-bottom: var(--space-2);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-3);
   }
 
   .tile p {

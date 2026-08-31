@@ -7,7 +7,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<a href="/contact" class:list={['cta-button', className]}>Start a conversation</a>
+<a href="/contact" class:list={['cta-button', 'pixel-notch', className]}>Start a conversation</a>
 
 <style>
   .cta-button {
@@ -44,6 +44,16 @@ const { class: className } = Astro.props;
   .cta-button:focus-visible {
     background: transparent;
     color: var(--accent-primary);
+  }
+
+  /* clip-path (.pixel-notch) cuts two corners off the box, so an outward `outline`
+     would get clipped away right where it's cut — invisible/broken focus ring. An
+     inset ring stays inside the clipped shape instead. Safe to key off accent-primary
+     here since focus-visible always coincides with the transparent-bg state above,
+     which is legible in both themes. */
+  .cta-button:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accent-primary);
   }
 
   .cta-button:hover::before,

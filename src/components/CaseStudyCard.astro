@@ -3,6 +3,8 @@
 // CaseStudyCard). Used only on /track-record now that Capabilities replaced ProofStrip's
 // condensed usage on Home. No dead links: /track-record/[slug] doesn't exist yet, so
 // this renders as a static summary, not a link.
+import PixelRivets from './PixelRivets.astro';
+
 interface Props {
   client: string;
   problem: string;
@@ -14,7 +16,8 @@ interface Props {
 const { client, problem, approach, outcome, tags } = Astro.props;
 ---
 
-<article class="case-study-card">
+<article class="case-study-card pixel-jitter-hover">
+  <PixelRivets inset="0.3rem" />
   <p class="client">{client}</p>
   <p class="field">
     <span class="label">Problem</span>
@@ -35,19 +38,18 @@ const { client, problem, approach, outcome, tags } = Astro.props;
 
 <style>
   .case-study-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
     padding: var(--space-6);
     border: 1px solid var(--border);
-    transition:
-      border-color 0.15s ease,
-      transform 0.15s ease;
+    transition: border-color 0.15s ease;
   }
 
   .case-study-card:hover {
     border-color: var(--accent-primary);
-    transform: translateY(-2px);
+    animation: pixel-jitter 0.3s steps(4);
   }
 
   .client {
