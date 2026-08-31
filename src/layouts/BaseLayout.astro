@@ -1,5 +1,6 @@
 ---
 // See SPEC.md — Design tokens, Theme toggle (FOUC prevention)
+import { ClientRouter } from 'astro:transitions';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/700.css';
@@ -20,15 +21,36 @@ const {
   title,
   description = 'Xheia is a full-stack data consultancy run by [Your Name]. I turn fragmented data into systems you can actually trust.',
 } = Astro.props;
+
+// Sitewide retro pixel cursor — same coordinate-array-to-SVG-rects technique as
+// PixelMark/PixelIcon, computed once here and applied via CSS custom property on <html>
+// (see global.css: `html { cursor: var(--pixel-cursor, auto); }`). Previously this lived
+// only in Hero.astro, scoped to the terminal screen — now it's the cursor everywhere.
+const cursorPixels: Array<[number, number]> = [
+  [0, 0],
+  [0, 1], [1, 1],
+  [0, 2], [1, 2], [2, 2],
+  [0, 3], [1, 3], [2, 3], [3, 3],
+  [0, 4], [1, 4], [2, 4], [3, 4], [4, 4],
+  [0, 5], [1, 5], [2, 5],
+  [0, 6], [2, 6],
+  [3, 7],
+];
+const cursorRects = cursorPixels
+  .map(([x, y]) => `<rect x='${x}' y='${y}' width='1' height='1' fill='black'/>`)
+  .join('');
+const cursorSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 8 10' shape-rendering='crispEdges'><rect x='-1' y='-1' width='8' height='10' fill='white' fill-opacity='0.85'/>${cursorRects}</svg>`;
+const cursorCss = `url("data:image/svg+xml,${encodeURIComponent(cursorSvg)}") 0 0, auto`;
 ---
 
-<html lang="en">
+<html lang="en" style={{ '--pixel-cursor': cursorCss }}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title} · Xheia</title>
+    <ClientRouter />
     <script is:inline>
       (function () {
         var stored = localStorage.getItem('xheia-theme');
@@ -43,27 +65,32 @@ const {
     </script>
   </head>
   <body>
+    <div class="boot-flicker" aria-hidden="true"></div>
     <slot />
     <script>
-      // Reveal-on-scroll for [data-reveal] sections (Capabilities, PillarBlock,
-      // EngagementStructure). Progressive enhancement: if IntersectionObserver isn't
-      // available, sections just show immediately rather than staying hidden.
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
+      // Reveal-on-scroll for [data-reveal] sections, and (elsewhere) ThemeToggle's click
+      // handler, both wrapped in astro:page-load rather than run at top-level: with
+      // <ClientRouter /> enabled, navigation swaps <body> content without a hard reload,
+      // so anything that needs to (re)initialize per page — including the very first
+      // load — must listen for this event rather than assume a one-time script run.
+      document.addEventListener('astro:page-load', () => {
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  observer.unobserve(entry.target);
+                }
               }
-            }
-          },
-          { threshold: 0.15 },
-        );
-        document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
-      } else {
-        document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
-      }
+            },
+            { threshold: 0.15 },
+          );
+          document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+        } else {
+          document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+        }
+      });
     </script>
   </body>
 </html>

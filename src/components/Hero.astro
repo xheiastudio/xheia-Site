@@ -1,43 +1,23 @@
 ---
 // Mark, tagline headline, one-line outcome-framed subhead, CTA — wrapped in the CRT/
 // boot-sequence bezel with terminal-prompt flourish (typewriter reveal, blinking caret,
-// $ whoami-style lines) and a pixel-art retro mouse cursor on hover. SPEC.md is explicit:
-// Hero is the ONLY component allowed to use these motion/CRT effects — don't reuse the
-// bezel, caret-blink, or typewriter animation elsewhere.
+// $ whoami-style lines). SPEC.md is explicit: the literal boot-sequence device (typed
+// terminal lines, chrome-buttons bar) stays Hero-exclusive — don't duplicate it
+// elsewhere. The broader pixel-art system (rivets, cursor, scanlines) now extends
+// site-wide as of the big visual pass — see BRANDFINAL.md's Visual Identity section.
 //
 // Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead is
 // outcome-framed per BRANDFINAL §2 ("lead with what the client gets, not the AI
 // label"), grounded in §5's "Clarity is engineered, not promised" pillar — full
 // lifecycle discipline is what makes any AI layer trustworthy — no new claims invented.
 import PixelMark from './PixelMark.astro';
+import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
-
-// Hand-authored pixel-art retro cursor (classic chunky arrow, white backing for
-// visibility on both Ink and Paper) — round-1 feedback asked for "old-fashioned mouse
-// icon" styling. Built the same way as PixelMark: a coordinate list rendered to rects.
-const cursorPixels: Array<[number, number]> = [
-  [0, 0],
-  [0, 1], [1, 1],
-  [0, 2], [1, 2], [2, 2],
-  [0, 3], [1, 3], [2, 3], [3, 3],
-  [0, 4], [1, 4], [2, 4], [3, 4], [4, 4],
-  [0, 5], [1, 5], [2, 5],
-  [0, 6], [2, 6],
-  [3, 7],
-];
-const cursorRects = cursorPixels
-  .map(([x, y]) => `<rect x='${x}' y='${y}' width='1' height='1' fill='black'/>`)
-  .join('');
-const cursorSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 8 10' shape-rendering='crispEdges'><rect x='-1' y='-1' width='8' height='10' fill='white' fill-opacity='0.85'/>${cursorRects}</svg>`;
-const cursorCss = `url("data:image/svg+xml,${encodeURIComponent(cursorSvg)}") 0 0, auto`;
 ---
 
-<section class="hero" style={{ '--pixel-cursor': cursorCss }}>
+<section class="hero">
   <div class="bezel">
-    <span class="rivet corner-tl" aria-hidden="true"></span>
-    <span class="rivet corner-tr" aria-hidden="true"></span>
-    <span class="rivet corner-bl" aria-hidden="true"></span>
-    <span class="rivet corner-br" aria-hidden="true"></span>
+    <PixelRivets />
 
     <div class="bezel-chrome">
       <span class="led" aria-hidden="true"></span>
@@ -92,33 +72,6 @@ const cursorCss = `url("data:image/svg+xml,${encodeURIComponent(cursorSvg)}") 0 
     box-shadow: inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent);
   }
 
-  .rivet {
-    position: absolute;
-    width: 0.4rem;
-    height: 0.4rem;
-    background: var(--border);
-  }
-
-  .corner-tl {
-    top: 0.4rem;
-    left: 0.4rem;
-  }
-
-  .corner-tr {
-    top: 0.4rem;
-    right: 0.4rem;
-  }
-
-  .corner-bl {
-    bottom: 0.4rem;
-    left: 0.4rem;
-  }
-
-  .corner-br {
-    bottom: 0.4rem;
-    right: 0.4rem;
-  }
-
   .bezel-chrome {
     display: flex;
     align-items: center;
@@ -154,7 +107,6 @@ const cursorCss = `url("data:image/svg+xml,${encodeURIComponent(cursorSvg)}") 0 
     overflow: hidden;
     padding: var(--space-12) var(--space-6);
     text-align: center;
-    cursor: var(--pixel-cursor);
   }
 
   .scanlines {

@@ -1,0 +1,45 @@
+---
+// Four corner "hardware" rivets — extracted from Hero's original bezel (previously
+// hand-duplicated markup/CSS there only). Used to give other bordered panels the same
+// CRT-hardware detail as part of the site-wide pixel/retro visual pass.
+// IMPORTANT: the parent element must have `position: relative` for these to anchor.
+interface Props {
+  inset?: string;
+}
+
+const { inset = "0.4rem" } = Astro.props;
+---
+
+<span class="rivet corner-tl" aria-hidden="true" style={{ '--inset': inset }}></span>
+<span class="rivet corner-tr" aria-hidden="true" style={{ '--inset': inset }}></span>
+<span class="rivet corner-bl" aria-hidden="true" style={{ '--inset': inset }}></span>
+<span class="rivet corner-br" aria-hidden="true" style={{ '--inset': inset }}></span>
+
+<style>
+  .rivet {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--border);
+  }
+
+  .corner-tl {
+    top: var(--inset);
+    left: var(--inset);
+  }
+
+  .corner-tr {
+    top: var(--inset);
+    right: var(--inset);
+  }
+
+  .corner-bl {
+    bottom: var(--inset);
+    left: var(--inset);
+  }
+
+  .corner-br {
+    bottom: var(--inset);
+    right: var(--inset);
+  }
+</style>

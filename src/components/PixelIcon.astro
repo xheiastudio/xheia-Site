@@ -1,0 +1,35 @@
+---
+// Generic pixel-art icon: renders a coordinate list as crisp SVG rects. Same technique
+// as PixelMark.astro and Hero's cursor — extracted here so Capabilities/PillarBlock/
+// EngagementPhase can each use small icons without duplicating the rect-mapping code.
+interface Props {
+  pixels: Array<[number, number]>;
+  cols: number;
+  rows: number;
+  size?: number;
+  label?: string;
+  class?: string;
+}
+
+const { pixels, cols, rows, size = 24, label, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['pixel-icon', className]}
+  viewBox={`0 0 ${cols} ${rows}`}
+  width={size}
+  height={(size * rows) / cols}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  {pixels.map(([x, y]) => <rect x={x} y={y} width="1" height="1" />)}
+</svg>
+
+<style>
+  .pixel-icon {
+    shape-rendering: crispEdges;
+    display: block;
+    fill: currentColor;
+  }
+</style>
