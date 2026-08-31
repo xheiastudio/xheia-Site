@@ -26,6 +26,8 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 
 **Revision note (truth-over-theater pass):** all four Track Record case studies were fabricated or unverified — three invented outright, and the fourth (life sciences) written as generic placeholder copy never sourced from the user's real work. All four were deleted; `/track-record` now shows an honest in-progress message when the collection is empty, and will show an anonymization disclaimer ("client details are withheld by agreement...") above the grid once real, user-supplied entries exist — no fabricated content goes back in. `scripts/generate-case-studies.mjs` (a bulk fictional-placeholder generator) was deleted for the same reason; future entries are hand-authored from real details. Separately, all site copy (including `BRANDFINAL.md`'s tagline and "What I do") switched from "we" to "I" — this is a solo consultancy, and the copy shouldn't perform team scale. `IdentityHook` (a one-line "[name] — biomedical science background..." strip linking to `/about`) was added directly under Hero on Home so the homepage doesn't read anonymous, without turning Home into a full personal profile — see `BRANDFINAL.md`'s updated "Personal identity vs. company brand" addendum.
 
+**Revision note (big visual pass):** the site read as "boring" outside Hero — every other section was a plain bordered box with the same subtle hover state. Extended the retro/pixel visual system site-wide: `PixelRivets` (shared corner-hardware component, extracted from what was hand-duplicated only in Hero) and `PixelIcon` (shared coordinate-array-to-SVG-rects icon component, same technique as `PixelMark`) are now used across Capabilities, PillarBlock, EngagementStructure, CaseStudyCard, the Track Record empty-state, and About's headshot frame. The sitewide pixel cursor (previously Hero-only) now lives on `<html>` in `BaseLayout.astro`. Section headings/numerals escalate from mono to the Display tier (Press Start 2P) throughout — see `BRANDFINAL.md`'s updated type-tier scope. Added Astro's native `<ClientRouter />` for page-to-page transitions with a custom CRT-flicker effect, a brief boot-flicker on every page load, and a `steps()`-timing scroll-reveal so sections materialize rather than fade. The literal boot-sequence device (typed terminal lines, chrome-buttons bar) stays Hero-exclusive — only the surrounding pixel-art system went site-wide. No sound was added. **Implementation note:** enabling `<ClientRouter />` required migrating the reveal-on-scroll script and `ThemeToggle`'s click handler to listen for the `astro:page-load` event instead of running once at top-level, since soft navigation swaps `<body>` content without a hard reload.
+
 ## Nav
 
 `Xheia (mark+wordmark)` — `Track Record` — `About` — `Contact` — theme toggle — one CTA button. No dropdowns, no secondary items.
@@ -37,7 +39,9 @@ Source documents: `BRANDFINAL.md` (brand truth) and the structure plan at `/User
 - **Header/Nav** — theme toggle + nav links + CTA button
 - **ThemeToggle** — dark (default) / light; persists to `localStorage`; respects `prefers-color-scheme` on first load
 - **PixelMark** — eye-sprite logo, two color states per theme (see Colors below)
-- **Hero** — mark, tagline headline, one-line outcome-framed subhead, CTA. Hosts the CRT/boot-sequence bezel treatment (thicker retro chrome, pixel rivet corner marks), a real CSS typewriter reveal for the terminal-prompt flourish (blinking caret, `$ whoami`-style lines), and a pixel-art retro mouse cursor on hover. **This is the only component allowed to use these motion/terminal effects.**
+- **Hero** — mark, tagline headline, one-line outcome-framed subhead, CTA. Hosts the CRT/boot-sequence bezel treatment (thicker retro chrome, `PixelRivets` corner marks) and a real CSS typewriter reveal for the terminal-prompt flourish (blinking caret, `$ whoami`-style lines). **The literal boot-sequence device (typed lines, chrome-buttons bar) is Hero-exclusive** — the surrounding pixel-art system (rivets, cursor, scanlines) is shared site-wide as of the big visual pass, see revision note above.
+- **PixelRivets** — shared 4-corner "hardware" detail for bordered panels (extracted from Hero). Requires the parent to be `position: relative`.
+- **PixelIcon** — shared coordinate-array-to-SVG-rects icon renderer (same technique as `PixelMark`). Used for small icons in Capabilities/PillarBlock and the pixel-art sun/moon in `ThemeToggle`.
 - **IdentityHook** — one line directly under Hero on Home: `[Your Name]` + the "biomedical science background, not the usual data path" hook, linking to `/about`. Not a profile — just enough that Home doesn't read anonymous. Added in the truth-over-theater pass — see revision note above.
 - **Capabilities** — three capability tiles (Cleansing & migration / Warehousing & BI / Agentic AI systems) on Home, grounded in `BRANDFINAL.md` §1 "What I do" — links to `/track-record`. Replaces the original `ProofStrip` (cut after round-1 feedback — see revision note above).
 - **CaseStudyCard** — fields: client/sector (or anonymized descriptor), problem, approach, outcome, tags[]. Single variant (always full detail) — used only on `/track-record`. The collection starts empty (all fabricated placeholders removed — see truth-over-theater revision note); entries are added by hand, one at a time, only from real details the user supplies.
@@ -67,7 +71,7 @@ Light mode: Paper bg, Ink text, Aperture blue for links/CTAs, Coral for occasion
 **Type tiers**
 | Tier | Font | Scope |
 |---|---|---|
-| Display | Pixel/bitmap (Press Start 2P) | Hero headline, boot-sequence/social graphics only — never body text |
+| Display | Pixel/bitmap (Press Start 2P) | Hero headline, boot-sequence/social graphics, and (site-wide as of the big visual pass) section headings/numerals — short phrases/labels only, never body text |
 | Wordmark/UI/code | IBM Plex Mono | Logo, buttons, nav labels, terminal moments |
 | Body | IBM Plex Sans | All paragraph copy — case studies, about, form labels |
 
@@ -80,7 +84,7 @@ Light mode: Paper bg, Ink text, Aperture blue for links/CTAs, Coral for occasion
 
 ## Verification (run before calling any page/section done)
 
-1. Screenshot the page in both dark and light mode; compare against the Colors table above — confirm no Signal green in light mode, Ink/Paper swap correctly, CRT/terminal effects appear only in Hero
+1. Screenshot the page in both dark and light mode; compare against the Colors table above — confirm no Signal green in light mode, Ink/Paper swap correctly, and the literal boot-sequence device (typed terminal lines, chrome-buttons bar) appears only in Hero (the broader pixel-art system — rivets, cursor, icons — is intentionally site-wide as of the big visual pass)
 2. Check mobile width: nav, hero offer, and the single CTA all stay visible/clear above the fold
 3. Click every CTA on the page — confirm all resolve to `/contact`
 4. Once `npm run build`/lint exist, run them and fix failures before considering the task done

@@ -58,6 +58,7 @@ Pixel-art eye sprite — a blocky, retro-console-style eye outline with a small 
 - **Light mode:** outline switches to Ink (#0D0D10), pupil stays Aperture blue (#3E6BF0), on Paper (#F2F0EA). Signal green loses contrast on light backgrounds and is not used there.
 - **Favicon:** the mark holds up at small sizes but is not crisp at true 16px — a simplified low-detail variant is recommended before final favicon export.
 - **Console/CRT frame:** a bezel-and-screen treatment (scanlines, power LED, console buttons) wraps the mark for hero and motion contexts — homepage boot sequences, launch video, social content. This is a content treatment, not the everyday logo lockup.
+- **Site-wide pixel system (added in the "big visual pass"):** the literal boot-sequence device — typed terminal lines, the chrome-buttons bar — stays a Hero-exclusive narrative moment; duplicating it elsewhere would be redundant, not purposeful. But the pixel-art visual language around it now extends across the whole site: corner rivets on bordered panels, a sitewide custom pixel cursor, small pixel-art icons, and a CRT-flicker page-transition effect. Every such addition still respects the rest of this section (Signal green dark-mode-only, no rounded corners) and always respects `prefers-reduced-motion`.
 
 ### Wordmark
 Lowercase, set in IBM Plex Mono, paired with terminal-style flourishes (a blinking caret, `$ whoami`-style prompt lines) in motion and hero contexts.
@@ -67,7 +68,7 @@ Three tiers, each with a distinct job:
 
 | Tier | Typeface | Use |
 |---|---|---|
-| Display | Pixel/bitmap font (e.g. Press Start 2P) | Hero headlines, boot-sequence screens, social graphics — used sparingly, never for body text |
+| Display | Pixel/bitmap font (e.g. Press Start 2P) | Hero headlines, boot-sequence screens, social graphics, and (as of the site-wide pixel pass) section headings and numerals throughout the site — always short phrases/labels, never for body text |
 | Wordmark / UI / code | IBM Plex Mono | Logo, buttons, nav labels, terminal moments |
 | Body | IBM Plex Sans | Paragraph copy — proposals, case studies, site content |
 
