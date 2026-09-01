@@ -15,7 +15,7 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/layouts/BaseLayout.astro`
 
 - Page `<title>` format: `{page title} · Xheia`
-- Default meta description (used by Home, Track Record, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **[Your Name]**. I turn fragmented data into systems you can actually trust."
+- Default meta description (used by Home, Track Record, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **Hoda**. I turn fragmented data into systems you can actually trust."
 
 ---
 
@@ -43,7 +43,7 @@ Boot sequence, in order:
 5. `$ whoami` (typed)
 6. `> full-stack data consultant` (typed)
 7. `$ operator --info`
-8. `> **[Your Name]** — biomedical science background, not the usual data path. (more: /about)` — this used to be a separate line under the Hero (`IdentityHook.astro`, now deleted); it's part of the terminal script instead.
+8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)`
 
 Then the visible (non-animated) content below the terminal:
 - Headline: **"I turn fragmented data into systems you can actually trust."**
@@ -94,6 +94,16 @@ Heading: "How an engagement runs". Rendered as a level-path — three connected 
 
 ---
 
+## Tools (`/approach`)
+
+**File:** `src/components/Tools.astro`
+Eyebrow: `// tools`. Real stack, grounded in `xheia-content-worksheet.md` — nothing invented. Rendered as a pixel-tag list (same visual style as case-study tags).
+
+- Azure Synapse, Power BI, Power Automate, SharePoint, HubSpot, Apollo, Python, SQL, Microsoft Foundry, rapidfuzz, Claude Code
+- Caption: "Exact-match preferred over fuzzy auto-merging on company records — a deliberate choice, not a limitation."
+
+---
+
 ## Approach page intro
 
 **File:** `src/pages/approach/index.astro`
@@ -117,36 +127,53 @@ Appears on `/approach` and `/about`. Not on Home — Hero already carries its ow
 Page title: "Track Record"
 
 - Intro line: "Full-lifecycle data work — cleansing, migration, warehousing, BI — and the agentic systems built on top of it."
+- Disclaimer (shown above the case studies): "Client details are withheld by agreement; the work and outcomes below are real."
 
-### Case studies — currently empty [PLACEHOLDER]
-**Files:** `src/content/case-studies/*.md` (none exist yet)
+### Case studies — 3 real, anonymized entries
+**Files:** `src/content/case-studies/*.md`
 
-All four case studies previously here were removed — three were invented outright, and the fourth (life sciences) was generic copy never actually sourced from real engagement details. None of it was true. The page shows one of two states automatically, depending on whether any `.md` files exist:
+**A life sciences membership organisation** — post-acquisition customer intelligence
+- Problem: Three acquisitions had left customer data fragmented across systems, with no way to score, segment, or act on it as one combined base.
+- Approach: Built a post-acquisition customer intelligence pipeline — ICP scoring, churn detection, reactivation targeting, and cross-sell mapping — delivered through a six-tab Power BI dashboard, with full documentation handed over.
+- Outcome: A single, actionable view of the combined customer base, backed by full documentation handover.
+- Tags: ICP scoring, churn detection, post-acquisition, life sciences
 
-- **Empty (current state):** "Case studies are added here as real engagements are finalized for publication."
-- **Once real entries exist:** an anonymization disclaimer — "Client details are withheld by agreement; the work and outcomes below are real." — followed by the case-study grid.
+**A major UK supply chain organisation** — CRM migration
+- Problem: Legacy systems needed to migrate to a modern CRM, with the data cleansing that migration depended on.
+- Approach: Helped with the CRM implementation — data migration and cleansing work moving legacy data into the new system.
+- Outcome: A clean migration into the new system, with the underlying data trustworthy from day one.
+- Tags: data migration, CRM implementation, cleansing, public sector
+- Note: the worksheet described this as "the biggest supply chain company in the UK" — softened here since that superlative is identifying even without naming the company. "Helped with" (not "led") matches the worksheet's own wording of her role.
 
-To add a real one: write a markdown file in `src/content/case-studies/` with `client` (anonymized by sector/scope, e.g. "a life sciences membership organisation" — never a company name), `problem`, `approach`, `outcome`, and `tags`. Only from real, user-supplied details — nothing invented.
+**A fitness organisation** — compensation modelling
+- Problem: The organisation needed to redesign compensation for personal trainers working across multiple countries.
+- Approach: Delivered the financial analysis behind a new pay structure, working directly with the CPO, and presented the findings to the board.
+- Outcome: A board presentation grounded in real financial analysis, not guesswork.
+- Tags: financial modelling, compensation strategy, fitness
+- Note: outcome says "a board presentation," not "board-approved" — the worksheet confirms findings were presented, not that the model was approved.
+
+No Retail/Education entries — no real detail supplied for either yet. To add more: write a markdown file in `src/content/case-studies/` with `client` (anonymized by sector/scope, never a company name), `problem`, `approach`, `outcome`, and `tags` — only from real, user-supplied details.
 
 ---
 
 ## About (`/about`)
 
 **File:** `src/pages/about.astro`
-Page title: "About — **[Your Name]**"
-Meta description: "I'm **[Your Name]** — I have a biomedical science background, not the usual data path."
+Page title: "About — Hoda"
+Meta description: "I'm Hoda — a full-stack data consultant who's spent four-plus years contracting across the UK."
 
-- Name heading: **[Your Name]** [PLACEHOLDER]
+- Name heading: **Hoda**
 - Role line: "I do full-stack data consulting under the name Xheia."
+- Location line: "Based remotely — working with clients across the UK and internationally."
 - Photo: **[PLACEHOLDER]** — styled placeholder box, no image yet
 
-Narrative (first person):
+Narrative (first person, rewritten in the real-content pass — service-first, no project-level detail, no biomedical framing):
 
-> I have a biomedical science background — not the usual data or computer science path. Moving into data work wasn't a planned trajectory for me; it was an unexpected, self-directed shift.
+> I've spent four-plus years contracting across the UK — moving between industries, systems, and problems rather than staying inside one company or one specialism.
 >
-> Four-plus years since, I've delivered enterprise-scale data consolidation, predictive customer intelligence, financial modelling, and BI — across life sciences, public sector, retail, education, and fitness.
+> That range is the point: life sciences, public sector, and fitness organisations have all needed the same underlying thing — data cleaned, consolidated, and turned into something a team can actually act on.
 >
-> That work is now extending into agentic AI systems, most recently an agentic customer profiling build I delivered. The AI is downstream of the data-quality work — not a separate offering, and not the headline.
+> That work is now extending into agentic AI systems — the newest expression of the same full-lifecycle discipline, not a separate offering.
 
 Ends with the Contact CTA band (see above).
 
@@ -169,7 +196,7 @@ Page title: "Contact"
 **File:** `src/components/Footer.astro`
 
 - Wordmark: `xheia`
-- Credit line: "Built and run by **[Your Name]**." [PLACEHOLDER]
+- Credit line: "Built and run by **Hoda**."
 - Social links: `GitHub` **[PLACEHOLDER URL]**, `LinkedIn` **[PLACEHOLDER — your personal profile URL]**, `Xheia · LinkedIn` **[PLACEHOLDER — held back until the company page has real content]**
 - Flavor line: "$ status: operational"
 
@@ -177,13 +204,23 @@ Page title: "Contact"
 
 ## Open placeholders — quick checklist
 
-- [ ] Full name → replaces every `[Your Name]` above (Hero boot sequence, About heading/title/meta, Footer credit, BaseLayout default description)
-- [ ] Real case studies → `src/content/case-studies/`, anonymized by sector/scope, one at a time, as you send real details
+- [x] ~~Full name~~ → **Hoda**, resolved sitewide in the real-content pass
+- [x] ~~Real case studies~~ → 3 real, anonymized entries added (life sciences, public sector, fitness); more can be added the same way as real detail comes in
 - [ ] Personal LinkedIn URL → Footer
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)
 - [ ] Headshot image → `/about`
 - [ ] Real business contact email → replaces `hoda.97@live.com` in `ContactForm.astro` before public launch
+- [ ] Retail/Education substance — still no real detail; narrative and case studies both skip these sectors until there is
+
+## Still open (from xheia-content-worksheet.md, not addressed in this pass)
+
+These are genuinely open questions, not something guessed at — see the worksheet for the full list:
+- Ideal client profile (size, sector, kind of problem)
+- Whether "Gen Z" should be visible in tone, or stay purely biographical
+- Banned words / words that feel like "you"
+- A concrete personal anecdote for About (texture, not a case study)
+- What made the biomedical-to-data transition happen, if any of that texture is wanted anywhere now that the framing itself has changed
 
 ## Anything you want to change?
 
