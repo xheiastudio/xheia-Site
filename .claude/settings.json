@@ -7,7 +7,9 @@
       "Bash(npm run check)",
       "Bash(npm run lint)",
       "Bash(python3 -c ' *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(curl -s http://localhost:4321/approach -o /dev/null -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(grep -n \"#[0-9A-Fa-f]\\\\{3,6\\\\}\" src/components/Tools.astro src/components/Hero.astro)"
     ]
   }
 }
