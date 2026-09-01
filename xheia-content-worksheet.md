@@ -87,9 +87,9 @@ Once this is solid I'll turn it into actual site wording.
 - Stated principle: work should survive scrutiny — documented, evidence-based
 
 **Fill in:**
-- Who's the ideal client? (company size, sector, a specific kind of problem they have when they come to you)
-- What do you want them to feel is different about hiring you vs. a bigger consultancy or an in-house hire?
-- Is there a specific moment or client reaction that made you proud of the work — something concrete enough to turn into a real anecdote (not a case study, just texture for About)?
+- Who's the ideal client? (company size, sector, a specific kind of problem they have when they come to you)Companies struggling with data and need order. Enterprise companies from all over the world. 
+- What do you want them to feel is different about hiring you vs. a bigger consultancy or an in-house hire? I have years of experience building data systems for various industries, im flexible, and adaptable. 
+- Is there a specific moment or client reaction that made you proud of the work — something concrete enough to turn into a real anecdote (not a case study, just texture for About)?Always doing above and beyond, my solutions are new and fit the modern tech trajcetory bringing excitment, advancement, and better systems. 
 
 ---
 
