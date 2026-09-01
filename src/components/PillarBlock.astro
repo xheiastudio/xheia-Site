@@ -1,66 +1,56 @@
 ---
-// Three messaging pillars, copy condensed directly from BRANDFINAL.md §5 — no new
-// pillar language invented (SPEC.md — PillarBlock). Copy revised after round-1 feedback:
-// the original body text ("no overselling AI readiness") read like AI-vendor self-talk —
-// see BRANDFINAL.md §5 for the current approved wording.
+// Three messaging pillars, relocated from Home to /approach as part of the structural
+// redesign. Copy condensed directly from BRANDFINAL.md §5 — no new pillar language
+// invented (SPEC.md — PillarBlock).
 //
-// Rivets/icon/display-font-heading treatment added in the site-wide pixel/retro visual
-// pass — see BRANDFINAL.md's Visual Identity section.
-import PixelRivets from './PixelRivets.astro';
-import PixelIcon from './PixelIcon.astro';
-
-const checkPixels: Array<[number, number]> = [
-  [1, 4], [2, 5], [3, 4], [4, 3], [5, 2], [6, 1],
-];
-
-const gearPixels: Array<[number, number]> = [
-  [2, 2], [3, 2], [4, 2],
-  [2, 3], [3, 3], [4, 3],
-  [2, 4], [3, 4], [4, 4],
-  [3, 0], [3, 6], [0, 3], [6, 3],
-  [1, 1], [5, 1], [1, 5], [5, 5],
-];
-
-const shieldPixels: Array<[number, number]> = [
-  [2, 0], [3, 0], [4, 0],
-  [1, 1], [2, 1], [3, 1], [4, 1], [5, 1],
-  [1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
-  [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
-  [2, 4], [3, 4], [4, 4],
-  [2, 5], [3, 5], [4, 5],
-  [3, 6],
-];
-
+// Redesigned as a diagnostic self-check (native <details>/<summary> again, for the same
+// keyboard/screen-reader/no-JS reasons as Capabilities' boot-menu) instead of bordered
+// icon tiles: each principle starts collapsed; opening it plays a brief "verifying..."
+// progress bar, then a checkmark and the body text land. Ties the interaction to the
+// pillar's own meaning — evidence over claims — rather than being decoration for its
+// own sake. Deliberately a different mechanic from Capabilities' menu, per the
+// "boxes under boxes" feedback: relocated sections each get a distinct interaction.
 const pillars = [
   {
     title: 'Truth over theater',
     body: 'Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater.',
-    icon: checkPixels,
   },
   {
     title: 'Clarity is engineered, not promised',
     body: 'Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy.',
-    icon: gearPixels,
   },
   {
     title: 'Built to survive scrutiny',
     body: 'Security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.',
-    icon: shieldPixels,
   },
 ];
 ---
 
 <section class="pillar-block" data-reveal>
   <p class="eyebrow">// principles</p>
-  <div class="pillars">
+  <div class="checks">
     {
       pillars.map((pillar) => (
-        <article class="pillar">
-          <PixelRivets inset="0.3rem" />
-          <PixelIcon pixels={pillar.icon} cols={7} rows={7} size={28} />
-          <h3>{pillar.title}</h3>
-          <p>{pillar.body}</p>
-        </article>
+        <details class="check-item">
+          <summary>
+            <span class="check-indicator" aria-hidden="true" />
+            <span class="check-title">{pillar.title}</span>
+            <span class="check-action" aria-hidden="true">
+              run check →
+            </span>
+          </summary>
+          <div class="check-result">
+            <div class="check-bar" aria-hidden="true">
+              <span class="check-bar-fill" />
+            </div>
+            <p class="check-body">
+              <span class="check-mark" aria-hidden="true">
+                ✓
+              </span>{' '}
+              {pillar.body}
+            </p>
+          </div>
+        </details>
       ))
     }
   </div>
@@ -83,38 +73,128 @@ const pillars = [
     color: var(--accent-primary);
   }
 
-  .pillars {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: var(--space-6);
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
-  .pillar {
-    position: relative;
-    padding: var(--space-4);
+  .check-item {
     border: 1px solid var(--border);
-    transition: border-color 0.15s ease;
+    background: var(--bg);
   }
 
-  .pillar:hover {
-    border-color: var(--accent-primary);
-  }
-
-  .pillar :global(.pixel-icon) {
-    color: var(--accent-primary);
-    margin-bottom: var(--space-3);
-  }
-
-  .pillar h3 {
+  .check-item summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    cursor: pointer;
+    list-style: none;
     font-family: var(--font-display);
     font-size: 0.75rem;
-    line-height: 1.7;
-    margin-bottom: var(--space-3);
+    line-height: 1.5;
   }
 
-  .pillar p {
+  .check-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .check-item summary::marker {
+    content: '';
+  }
+
+  .check-item summary:hover,
+  .check-item summary:focus-visible {
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+
+  .check-indicator {
+    flex-shrink: 0;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1px solid var(--accent-primary);
+    border-radius: 50%;
+  }
+
+  .check-item[open] .check-indicator {
+    background: var(--accent-status);
+    border-color: var(--accent-status);
+  }
+
+  .check-action {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .check-item[open] .check-action {
+    display: none;
+  }
+
+  .check-result {
+    padding: 0 var(--space-4) var(--space-4);
+  }
+
+  .check-bar {
+    width: 100%;
+    max-width: 12rem;
+    height: 0.4rem;
+    border: 1px solid var(--border);
+    margin-bottom: var(--space-3);
+    overflow: hidden;
+  }
+
+  .check-bar-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+  }
+
+  .check-item[open] .check-bar-fill {
+    animation: check-fill 0.5s steps(10, end) forwards;
+    background: var(--accent-status);
+  }
+
+  @keyframes check-fill {
+    to {
+      width: 100%;
+    }
+  }
+
+  .check-body {
     margin: 0;
     color: var(--text-secondary);
     font-size: 0.9375rem;
+    opacity: 0;
+  }
+
+  .check-item[open] .check-body {
+    animation: check-reveal 0.01s steps(1) forwards;
+    animation-delay: 0.55s;
+  }
+
+  @keyframes check-reveal {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .check-mark {
+    color: var(--accent-status);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .check-item[open] .check-bar-fill {
+      width: 100%;
+      animation: none;
+    }
+
+    .check-item[open] .check-body {
+      opacity: 1;
+      animation: none;
+    }
   }
 </style>

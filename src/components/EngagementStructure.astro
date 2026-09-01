@@ -1,9 +1,21 @@
 ---
-// Three phases, in order: Discovery → Build → Handoff (SPEC.md — EngagementStructure).
-// Phase descriptions stay tied to BRANDFINAL §1's described work (ingestion, cleansing,
-// warehousing, BI) and §5's evidence/documentation themes — no new promises invented.
+// Three phases, in order: Discovery → Build → Handoff, relocated from Home to
+// /approach as part of the structural redesign. Phase descriptions stay tied to
+// BRANDFINAL §1's described work (ingestion, cleansing, warehousing, BI) and §5's
+// evidence/documentation themes — no new promises invented.
+//
+// Redesigned as a level-path — nodes connected by a dashed line, game level-select map
+// style — instead of a three-column card row, per the "boxes under boxes" feedback:
+// a third distinct interaction/visual (Capabilities = boot-menu, PillarBlock =
+// diagnostic self-check, this = level-path), not the same pattern a third time. The
+// path metaphor doesn't survive narrow viewports, so mobile falls back to a stacked
+// list (see EngagementPhase.astro's own responsive styles).
+//
+// Deliberately no PixelRivets/bordered-panel shell here — a path is a stretch of open
+// ground, not a boxed module. Reusing PillarBlock's bordered-box+rivets container would
+// have quietly recreated the exact "boxes under boxes" pattern this redesign exists to
+// fix (caught in review). Capabilities' lighter border-top divider is the closer match.
 import EngagementPhase from './EngagementPhase.astro';
-import PixelRivets from './PixelRivets.astro';
 
 const phases = [
   {
@@ -22,22 +34,20 @@ const phases = [
 ---
 
 <section class="engagement-structure" data-reveal>
-  <PixelRivets />
   <p class="eyebrow">// how I work</p>
   <h2>How an engagement runs</h2>
-  <div class="phases">
+  <div class="level-path">
+    <div class="path-line" aria-hidden="true"></div>
     {phases.map((phase, i) => <EngagementPhase order={i + 1} title={phase.title} body={phase.body} />)}
   </div>
 </section>
 
 <style>
   .engagement-structure {
-    position: relative;
-    width: min(100% - 2 * var(--space-4), var(--content-max-width));
-    margin: var(--space-8) auto;
-    padding: var(--space-8);
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+    border-top: 1px solid var(--border);
   }
 
   .eyebrow {
@@ -55,9 +65,31 @@ const phases = [
     margin-bottom: var(--space-6);
   }
 
-  .phases {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: var(--space-6);
+  .level-path {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .path-line {
+    position: absolute;
+    z-index: 0;
+    top: 1rem;
+    left: 16.67%;
+    right: 16.67%;
+    height: 0;
+    border-top: 2px dashed var(--border);
+  }
+
+  @media (max-width: 40rem) {
+    .level-path {
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .path-line {
+      display: none;
+    }
   }
 </style>

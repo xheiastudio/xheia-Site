@@ -1,7 +1,7 @@
 ---
-// One phase within EngagementStructure (SPEC.md — EngagementStructure / EngagementPhase).
-// Order number escalated to a big chunky display-font numeral, hover upgraded from a
-// left-border accent to a pixel-jitter snap — site-wide pixel/retro visual pass.
+// One node on EngagementStructure's level-path (SPEC.md — EngagementStructure /
+// EngagementPhase). Content is always visible (no progressive disclosure here, unlike
+// Capabilities/PillarBlock) — hover is decorative feedback only, not required to read.
 interface Props {
   order: number;
   title: string;
@@ -11,46 +11,79 @@ interface Props {
 const { order, title, body } = Astro.props;
 ---
 
-<article class="engagement-phase pixel-jitter-hover">
-  <p class="order">{String(order).padStart(2, '0')}</p>
-  <h3>{title}</h3>
-  <p class="body">{body}</p>
-</article>
+<div class="node">
+  <div class="node-marker" aria-hidden="true">{order}</div>
+  <div class="node-content">
+    <h3>{title}</h3>
+    <p>{body}</p>
+  </div>
+</div>
 
 <style>
-  .engagement-phase {
+  .node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: var(--space-2);
+    padding: 0 var(--space-2);
+    text-align: center;
+  }
+
+  .node-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--accent-primary);
+    background: var(--bg);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--accent-primary);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .node:hover .node-marker {
+    background: var(--accent-status);
+    border-color: var(--accent-status);
+    color: var(--bg);
+  }
+
+  .node-content {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .engagement-phase:hover {
-    animation: pixel-jitter 0.3s steps(4);
-  }
-
-  .engagement-phase:hover .order {
-    color: var(--accent-status);
-  }
-
-  .order {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    line-height: 1;
-    color: var(--accent-primary);
-    transition: color 0.15s ease;
-  }
-
-  h3 {
-    margin: 0;
+  .node h3 {
     font-family: var(--font-display);
     font-size: 0.8125rem;
-    line-height: 1.6;
+    line-height: 1.5;
+    margin: 0;
   }
 
-  .body {
+  .node p {
     margin: 0;
     color: var(--text-secondary);
     font-size: 0.9375rem;
+  }
+
+  @media (max-width: 40rem) {
+    .node {
+      flex-direction: row;
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+
+    .node-marker {
+      flex-shrink: 0;
+    }
   }
 </style>

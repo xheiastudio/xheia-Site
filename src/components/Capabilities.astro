@@ -1,12 +1,13 @@
 ---
-// Three capability tiles on Home — what the work is, not specific past wins. Grounded
-// in BRANDFINAL §1 "What I do" — no invented claims, no past-client language. Replaces
-// the original ProofStrip (cut after round-1 feedback: CV-shaped case-study cards read
-// wrong on a landing page). Links to /track-record for the actual proof.
+// "What I do," relocated from Home to /approach as part of the structural redesign —
+// grounded in BRANDFINAL §1 "What I do", no invented claims, no past-client language.
+// Links to /track-record for the actual proof.
 //
-// Rivets/icon/display-font-heading/jitter-hover treatment added in the site-wide
-// pixel/retro visual pass — see BRANDFINAL.md's Visual Identity section.
-import PixelRivets from './PixelRivets.astro';
+// Redesigned as a boot-menu / select-screen (native <details>/<summary> — real keyboard
+// and screen-reader support for free, degrades to a plain expandable list without JS)
+// instead of three identical bordered tiles, per the "boxes under boxes" feedback: each
+// relocated section now gets its own distinct interaction rather than repeating one
+// card pattern. See BRANDFINAL.md's Visual Identity section.
 import PixelIcon from './PixelIcon.astro';
 
 const sparklePixels: Array<[number, number]> = [
@@ -49,17 +50,24 @@ const capabilities = [
 
 <section class="capabilities" data-reveal>
   <p class="eyebrow">// what I do</p>
-  <div class="tiles">
-    {
-      capabilities.map((c) => (
-        <article class="tile pixel-jitter-hover">
-          <PixelRivets inset="0.3rem" />
-          <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
-          <h3>{c.title}</h3>
-          <p>{c.body}</p>
-        </article>
-      ))
-    }
+  <div class="menu-frame">
+    <p class="menu-frame-label">select module</p>
+    <div class="menu">
+      {
+        capabilities.map((c) => (
+          <details class="menu-item">
+            <summary>
+              <span class="selector" aria-hidden="true">
+                ▶
+              </span>
+              <PixelIcon pixels={c.icon} cols={7} rows={7} size={20} />
+              <span class="menu-title">{c.title}</span>
+            </summary>
+            <p class="menu-body">{c.body}</p>
+          </details>
+        ))
+      }
+    </div>
   </div>
   <a href="/track-record" class="see-more">See the track record →</a>
 </section>
@@ -80,38 +88,78 @@ const capabilities = [
     color: var(--accent-primary);
   }
 
-  .tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--space-6);
-  }
-
-  .tile {
-    position: relative;
-    padding: var(--space-4);
+  .menu-frame {
     border: 1px solid var(--border);
-    transition: border-color 0.15s ease;
   }
 
-  .tile:hover {
-    border-color: var(--accent-primary);
-    animation: pixel-jitter 0.3s steps(4);
+  .menu-frame-label {
+    margin: 0;
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
   }
 
-  .tile :global(.pixel-icon) {
+  .menu-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .menu-item:last-child {
+    border-bottom: none;
+  }
+
+  .menu-item summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .menu-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-item summary::marker {
+    content: '';
+  }
+
+  .menu-item summary:hover,
+  .menu-item summary:focus-visible {
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+
+  .selector {
     color: var(--accent-primary);
-    margin-bottom: var(--space-3);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    font-size: 0.75rem;
   }
 
-  .tile h3 {
+  .menu-item[open] .selector,
+  .menu-item summary:hover .selector,
+  .menu-item summary:focus-visible .selector {
+    opacity: 1;
+  }
+
+  .menu-item :global(.pixel-icon) {
+    color: var(--accent-primary);
+    flex-shrink: 0;
+  }
+
+  .menu-title {
     font-family: var(--font-display);
     font-size: 0.75rem;
-    line-height: 1.7;
-    margin-bottom: var(--space-3);
+    line-height: 1.5;
   }
 
-  .tile p {
+  .menu-body {
     margin: 0;
+    padding: 0 var(--space-4) var(--space-4) calc(1.5rem + 20px + var(--space-3) * 2);
     color: var(--text-secondary);
     font-size: 0.9375rem;
   }
