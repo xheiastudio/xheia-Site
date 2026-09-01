@@ -17,9 +17,6 @@ html {
   color: var(--text);
   font-family: var(--font-body);
   color-scheme: dark light;
-  /* --pixel-cursor is set inline on <html> by BaseLayout.astro (data-URI SVG, computed
-     once, same technique PixelMark/PixelIcon use) — sitewide retro pixel cursor. */
-  cursor: var(--pixel-cursor, auto);
 }
 
 body {

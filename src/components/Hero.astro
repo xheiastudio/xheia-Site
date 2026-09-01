@@ -1,18 +1,51 @@
 ---
 // Mark, tagline headline, one-line outcome-framed subhead, CTA — wrapped in the CRT/
-// boot-sequence bezel with terminal-prompt flourish (typewriter reveal, blinking caret,
-// $ whoami-style lines). SPEC.md is explicit: the literal boot-sequence device (typed
-// terminal lines, chrome-buttons bar) stays Hero-exclusive — don't duplicate it
-// elsewhere. The broader pixel-art system (rivets, cursor, scanlines) now extends
-// site-wide as of the big visual pass — see BRANDFINAL.md's Visual Identity section.
+// boot-sequence bezel. Home is now Hero-only (see SPEC.md's structural-redesign
+// revision note), so this fills most of the viewport and carries a much richer boot
+// sequence than before: a fast module-loading preamble, the signature typed $ whoami
+// exchange, then an operator--info line folding in what used to be a separate
+// IdentityHook component below the Hero. SPEC.md is explicit: this literal boot-sequence
+// device (typed terminal lines, chrome-buttons bar) stays Hero-exclusive — the broader
+// pixel-art system (rivets, cursor, scanlines) extends site-wide, see BRANDFINAL.md.
 //
 // Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead is
 // outcome-framed per BRANDFINAL §2 ("lead with what the client gets, not the AI
-// label"), grounded in §5's "Clarity is engineered, not promised" pillar — full
-// lifecycle discipline is what makes any AI layer trustworthy — no new claims invented.
+// label"), grounded in §5's "Clarity is engineered, not promised" pillar. Module names
+// in the boot preamble are the existing Capabilities categories staged as a boot
+// flourish, not new claims. Operator line is the same fact as /about's opening line.
 import PixelMark from './PixelMark.astro';
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
+
+// Sequential boot-log timing, computed once rather than hand-tuned per line — a running
+// clock that each phase advances, so reordering/adding lines doesn't require re-deriving
+// every delay by hand.
+let clock = 0;
+const next = (duration: number) => {
+  const delay = clock;
+  clock += duration;
+  return delay;
+};
+
+const preamble = ['$ xheia --init', '> loading modules...'].map((text) => ({
+  text,
+  delay: next(0.2),
+}));
+
+const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
+  const delay = next(0.4);
+  return { name, delay, barDelay: delay + 0.05 };
+});
+
+const postamble = ['> system ready'].map((text) => ({ text, delay: next(0.3) }));
+
+const typedWhoamiDelay = clock + 0.2;
+const typedRoleDelay = typedWhoamiDelay + 0.4 + 0.3;
+const roleTypedDuration = 1;
+
+const operatorCommandDelay = typedRoleDelay + roleTypedDuration + 0.3;
+const operatorResponseDelay = operatorCommandDelay + 0.25;
+const finalCaretDelay = operatorResponseDelay + 0.3;
 ---
 
 <section class="hero">
@@ -30,14 +63,61 @@ import CTAButton from './CTAButton.astro';
     <div class="screen">
       <div class="scanlines" aria-hidden="true"></div>
 
-      <p class="prompt-line">
-        <span class="prompt-glyph">$</span> <span class="typed typed-1">whoami</span>
-      </p>
-      <p class="prompt-line prompt-response">
-        <span class="prompt-glyph">&gt;</span> <span class="typed typed-2"
-          >full-stack data consultant</span
-        ><span class="caret" aria-hidden="true"></span>
-      </p>
+      <div class="boot-log">
+        {
+          preamble.map((line) => (
+            <p class="boot-line" style={{ animationDelay: `${line.delay}s` }}>
+              {line.text}
+            </p>
+          ))
+        }
+        {
+          modules.map((mod) => (
+            <p class="boot-line module-line" style={{ animationDelay: `${mod.delay}s` }}>
+              <span class="module-name">{mod.name}</span>
+              <span class="progress-bar" aria-hidden="true">
+                <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
+              </span>
+              <span class="module-status" style={{ animationDelay: `${mod.barDelay + 0.35}s` }}>
+                OK
+              </span>
+            </p>
+          ))
+        }
+        {
+          postamble.map((line) => (
+            <p class="boot-line" style={{ animationDelay: `${line.delay}s` }}>
+              {line.text}
+            </p>
+          ))
+        }
+
+        <p class="prompt-line">
+          <span class="prompt-glyph">$</span>{' '}
+          <span class="typed typed-1" style={{ animationDelay: `${typedWhoamiDelay}s` }}>
+            whoami
+          </span>
+        </p>
+        <p class="prompt-line prompt-response">
+          <span class="prompt-glyph">&gt;</span>{' '}
+          <span class="typed typed-2" style={{ animationDelay: `${typedRoleDelay}s` }}
+            >full-stack data consultant</span
+          >
+        </p>
+
+        <p class="boot-line" style={{ animationDelay: `${operatorCommandDelay}s` }}>
+          $ operator --info
+        </p>
+        <p
+          class="boot-line prompt-response operator-line"
+          style={{ animationDelay: `${operatorResponseDelay}s` }}
+        >
+          &gt; [Your Name] — biomedical science background, not the usual data path. (<a
+            href="/about">more</a
+          >)<span class="caret" style={{ animationDelay: `${finalCaretDelay}s` }} aria-hidden="true"
+          ></span>
+        </p>
+      </div>
 
       <div class="brand-row">
         <PixelMark size={40} />
@@ -60,6 +140,8 @@ import CTAButton from './CTAButton.astro';
   .hero {
     display: flex;
     justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 5rem);
     padding: var(--space-8) var(--space-4);
   }
 
@@ -121,19 +203,75 @@ import CTAButton from './CTAButton.astro';
     );
   }
 
+  .boot-log {
+    max-width: 26rem;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .boot-line,
   .prompt-line {
     position: relative;
     margin: 0 0 var(--space-2);
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    text-align: left;
-    max-width: 24rem;
-    margin-inline: auto;
+    font-size: 0.8125rem;
     white-space: nowrap;
+    opacity: 0;
+    animation: boot-line-in 0.01s steps(1) forwards;
+  }
+
+  @keyframes boot-line-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .module-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-left: 1.5em;
+    color: var(--text-secondary);
+  }
+
+  .module-name {
+    min-width: 8ch;
+  }
+
+  .progress-bar {
+    display: inline-flex;
+    width: 5rem;
+    height: 0.5rem;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent-status);
+    animation: progress-fill-in 0.35s steps(8, end) forwards;
+  }
+
+  @keyframes progress-fill-in {
+    to {
+      width: 100%;
+    }
+  }
+
+  .module-status {
+    color: var(--accent-status);
+    opacity: 0;
+    animation: boot-line-in 0.01s steps(1) forwards;
   }
 
   .prompt-response {
     color: var(--text-secondary);
+  }
+
+  .operator-line {
+    white-space: normal;
   }
 
   .prompt-glyph {
@@ -159,7 +297,6 @@ import CTAButton from './CTAButton.astro';
     width: 27ch;
     animation-name: type-reveal;
     animation-duration: 1s;
-    animation-delay: 0.5s;
   }
 
   @keyframes type-reveal {
@@ -177,8 +314,9 @@ import CTAButton from './CTAButton.astro';
     vertical-align: text-bottom;
     opacity: 0;
     animation:
-      caret-appear 0s forwards 1.5s,
-      caret-blink 1s steps(1) infinite 1.5s;
+      caret-appear 0s forwards,
+      caret-blink 1s steps(1) infinite;
+    /* animation-delay set inline per-instance (see markup) — overrides any value here. */
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -189,6 +327,17 @@ import CTAButton from './CTAButton.astro';
 
     .typed {
       width: auto !important;
+      animation: none;
+    }
+
+    .boot-line,
+    .module-status {
+      opacity: 1;
+      animation: none;
+    }
+
+    .progress-fill {
+      width: 100%;
       animation: none;
     }
   }

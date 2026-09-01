@@ -1,0 +1,43 @@
+---
+// New page per SPEC.md's structural-redesign revision note: "what I do" (Capabilities),
+// "principles" (PillarBlock), and "how I work" (EngagementStructure) used to be stacked
+// on Home as three look-alike boxes — moved here as one coherent page instead, each
+// section keeping its own distinct interaction (boot-menu / diagnostic-check /
+// level-path) rather than repeating the same card pattern three times.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Capabilities from '../../components/Capabilities.astro';
+import PillarBlock from '../../components/PillarBlock.astro';
+import EngagementStructure from '../../components/EngagementStructure.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout title="Approach" description="What I do, how I think about it, and how an engagement runs.">
+  <Header />
+  <main class="approach-page">
+    <p class="intro">
+      What I do, how I think about it, and how an engagement actually runs.
+    </p>
+    <Capabilities />
+    <PillarBlock />
+    <EngagementStructure />
+  </main>
+  <ContactCTA />
+  <Footer />
+</BaseLayout>
+
+<style>
+  .approach-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) 0;
+  }
+
+  .intro {
+    max-width: 32rem;
+    margin: 0 0 var(--space-8);
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+</style>
