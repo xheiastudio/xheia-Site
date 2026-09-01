@@ -1,9 +1,12 @@
 ---
 // Header, full origin narrative, ContactCTA, Footer (SPEC.md — Pages & routes /about).
-// Narrative is BRANDFINAL §1's Origin story, voiced in first person — this is the "small
-// space" for the personal story the user approved in round-1 feedback, not a rewrite of
-// the facts. Name and headshot are placeholders — see [Your Name] / .headshot-placeholder
-// below — swap in real values once supplied; don't invent them.
+// Narrative rewritten in the real-content pass from xheia-content-worksheet.md — drops
+// the earlier biomedical-science framing entirely (confirmed by the operator as not
+// fitting: "the biomed story just doesn't fit at all") in favor of the real hook: years
+// of UK contracting across varied industries. Kept deliberately service-first per that
+// pass's decision — day-to-day project detail lives only in Track Record's case
+// studies, not here. Name resolved to Hoda (first name only, no surname, by choice).
+// Headshot is still a placeholder — see .headshot-placeholder below.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ContactCTA from '../components/ContactCTA.astro';
@@ -12,8 +15,8 @@ import PixelRivets from '../components/PixelRivets.astro';
 ---
 
 <BaseLayout
-  title="About — [Your Name]"
-  description="I'm [Your Name] — I have a biomedical science background, not the usual data path."
+  title="About — Hoda"
+  description="I'm Hoda — a full-stack data consultant who's spent four-plus years contracting across the UK."
 >
   <Header />
   <main class="about-page">
@@ -23,25 +26,25 @@ import PixelRivets from '../components/PixelRivets.astro';
         <span>[photo pending]</span>
       </div>
       <div class="intro-text">
-        <h1>[Your Name]</h1>
+        <h1>Hoda</h1>
         <p class="role">I do full-stack data consulting under the name Xheia.</p>
+        <p class="location">Based remotely — working with clients across the UK and internationally.</p>
       </div>
     </div>
 
     <p>
-      I have a biomedical science background — not the usual data or computer science
-      path. Moving into data work wasn't a planned trajectory for me; it was an
-      unexpected, self-directed shift.
+      I've spent four-plus years contracting across the UK — moving between
+      industries, systems, and problems rather than staying inside one company or one
+      specialism.
     </p>
     <p>
-      Four-plus years since, I've delivered enterprise-scale data consolidation,
-      predictive customer intelligence, financial modelling, and BI — across life
-      sciences, public sector, retail, education, and fitness.
+      That range is the point: life sciences, public sector, and fitness
+      organisations have all needed the same underlying thing — data cleaned,
+      consolidated, and turned into something a team can actually act on.
     </p>
     <p>
-      That work is now extending into agentic AI systems, most recently an agentic
-      customer profiling build I delivered. The AI is downstream of the data-quality
-      work — not a separate offering, and not the headline.
+      That work is now extending into agentic AI systems — the newest expression of
+      the same full-lifecycle discipline, not a separate offering.
     </p>
   </main>
   <ContactCTA />
@@ -89,9 +92,15 @@ import PixelRivets from '../components/PixelRivets.astro';
   }
 
   .role {
-    margin: 0;
+    margin: 0 0 var(--space-1);
     color: var(--text-secondary);
     font-size: 0.9375rem;
+  }
+
+  .location {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
   }
 
   .about-page p {
