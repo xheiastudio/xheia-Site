@@ -1,9 +1,16 @@
 # Xheia Site — All Content
 
-Every piece of visible (and meta) text on the live site, in one place. Each section
-names the source file it lives in — edit here for a quick read, but the actual site is
-generated from those `.astro`/`.md` files, so changes made only here won't appear live
-until they're copied back into the source.
+Every piece of visible (and meta) text on the site, organized by concept rather than by
+file, so it's easy to review/edit in one place. Each section names its current source
+file — edit here for a quick read, but the actual site is generated from those
+`.astro`/`.md` files, so changes made only here won't appear live until they're copied
+back into the source (tell me what you've changed and I'll sync it in).
+
+**A structural pass is in progress** (moving "What I do" / "Principles" / "How I work"
+off the home page onto a new `/approach` page, and reworking the terminal). Where a
+section is about to move, it's flagged below with **→ moving to ...** so this doesn't
+read confusingly mid-change. The words themselves aren't changing in that pass — only
+where they live and how they're presented — so it's safe to start editing copy now.
 
 Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 
@@ -23,17 +30,13 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Header.astro`
 
 - Wordmark: `xheia`
-- Nav links: `Track Record` · `About` · `Contact`
+- Nav links: `Track Record` · `About` · `Contact` **(→ a fourth item, `Approach`, is being added)**
 - CTA button (site-wide, same everywhere): **"Start a conversation"** → links to `/contact`
 
 ---
 
-## Home (`/`)
+## Hero / terminal (Home, `/`)
 
-**File:** `src/pages/index.astro` (assembles the sections below)
-Page title: "Full-stack data consulting"
-
-### Hero
 **File:** `src/components/Hero.astro`
 
 - Terminal line 1: `$ whoami`
@@ -42,17 +45,20 @@ Page title: "Full-stack data consulting"
 - Subhead: "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
 - CTA: "Start a conversation"
 
-### Identity hook
-**File:** `src/components/IdentityHook.astro`
-One line directly under Hero, so Home doesn't read anonymous — not a profile, just a hook + link to `/about`.
+**→ Getting a richer boot sequence** as part of the current pass — more terminal lines (fake module-loading for cleansing/warehousing/agentic-AI, styled as a boot-up), plus the identity-hook line below folded in as one more line:
 
-- "**[Your Name]** — biomedical science background, not the usual data path. [More about me →](/about)"
+- "**[Your Name]** — biomedical science background, not the usual data path. (more: /about)" — previously a separate line under the Hero (`IdentityHook.astro`, being removed); becomes part of the terminal script instead.
 
-### Capabilities
+Page title (Home): "Full-stack data consulting"
+
+---
+
+## What I do (currently Home → **moving to `/approach`**)
+
 **File:** `src/components/Capabilities.astro`
 Eyebrow: `// what I do`
 
-| Tile | Body |
+| Item | Body |
 |---|---|
 | Cleansing & migration | Fixing and moving data so it can actually be trusted downstream. |
 | Warehousing & BI | A single source of truth, and the reporting layer built on it. |
@@ -60,7 +66,10 @@ Eyebrow: `// what I do`
 
 Link: "See the track record →" → `/track-record`
 
-### Pillars
+---
+
+## Principles (currently Home → **moving to `/approach`**)
+
 **File:** `src/components/PillarBlock.astro`
 Eyebrow: `// principles`
 
@@ -70,7 +79,10 @@ Eyebrow: `// principles`
 | Clarity is engineered, not promised | Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy. |
 | Built to survive scrutiny | Security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in. |
 
-### How an engagement runs
+---
+
+## How I work (currently Home → **moving to `/approach`**)
+
 **File:** `src/components/EngagementStructure.astro`
 Eyebrow: `// how I work`
 Heading: "How an engagement runs"
@@ -81,9 +93,14 @@ Heading: "How an engagement runs"
 | 02 Build | Ingestion, cleansing, warehousing, BI — the full-lifecycle work, done in the open. |
 | 03 Handoff | Delivered work, documented plainly — evidence you can check, not just a claim. |
 
-### Contact CTA band
+---
+
+## Contact CTA band
+
 **File:** `src/components/ContactCTA.astro`
 - "I turn fragmented data into systems you can actually trust." + "Start a conversation" button
+
+Currently appears on Home and About. **→ Removed from Home** in the current pass (Hero already carries the CTA, and Home is being trimmed to just the terminal); stays on About, and will appear on the new `/approach` page too.
 
 ---
 
@@ -97,7 +114,7 @@ Page title: "Track Record"
 ### Case studies — currently empty [PLACEHOLDER]
 **Files:** `src/content/case-studies/*.md` (none exist yet)
 
-All four case studies previously here were removed — three were invented outright, and the fourth (life sciences) was generic copy never actually sourced from real engagement details. None of it was true. The page now shows one of two states automatically, depending on whether any `.md` files exist in that folder:
+All four case studies previously here were removed — three were invented outright, and the fourth (life sciences) was generic copy never actually sourced from real engagement details. None of it was true. The page shows one of two states automatically, depending on whether any `.md` files exist:
 
 - **Empty (current state):** "Case studies are added here as real engagements are finalized for publication."
 - **Once real entries exist:** an anonymization disclaimer — "Client details are withheld by agreement; the work and outcomes below are real." — followed by the case-study grid.
@@ -153,10 +170,16 @@ Page title: "Contact"
 
 ## Open placeholders — quick checklist
 
-- [ ] Full name → replaces every `[Your Name]` above (Home identity hook, About heading/title/meta, Footer credit, BaseLayout default description)
+- [ ] Full name → replaces every `[Your Name]` above (Hero boot sequence, About heading/title/meta, Footer credit, BaseLayout default description)
 - [ ] Real case studies → `src/content/case-studies/`, anonymized by sector/scope, one at a time, as you send real details
 - [ ] Personal LinkedIn URL → Footer
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)
 - [ ] Headshot image → `/about`
 - [ ] Real business contact email → replaces `hoda.97@live.com` in `ContactForm.astro` before public launch
+
+## Anything you want to change?
+
+If you edit wording here, just flag which section changed (or paste the new version)
+and I'll copy it into the actual site files — this doc itself doesn't update the live
+site on its own.
