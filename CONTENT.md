@@ -6,12 +6,6 @@ file — edit here for a quick read, but the actual site is generated from those
 `.astro`/`.md` files, so changes made only here won't appear live until they're copied
 back into the source (tell me what you've changed and I'll sync it in).
 
-**A structural pass is in progress** (moving "What I do" / "Principles" / "How I work"
-off the home page onto a new `/approach` page, and reworking the terminal). Where a
-section is about to move, it's flagged below with **→ moving to ...** so this doesn't
-read confusingly mid-change. The words themselves aren't changing in that pass — only
-where they live and how they're presented — so it's safe to start editing copy now.
-
 Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 
 ---
@@ -30,33 +24,38 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Header.astro`
 
 - Wordmark: `xheia`
-- Nav links: `Track Record` · `About` · `Contact` **(→ a fourth item, `Approach`, is being added)**
+- Nav links: `Track Record` · `Approach` · `About` · `Contact`
 - CTA button (site-wide, same everywhere): **"Start a conversation"** → links to `/contact`
 
 ---
 
-## Hero / terminal (Home, `/`)
+## Home / Hero terminal (`/`)
 
-**File:** `src/components/Hero.astro`
+**File:** `src/components/Hero.astro`. Home is Hero-only — Header, Hero, Footer, nothing else.
+Page title: "Full-stack data consulting"
 
-- Terminal line 1: `$ whoami`
-- Terminal line 2: `> full-stack data consultant`
+Boot sequence, in order:
+
+1. `$ xheia --init`
+2. `> loading modules...`
+3. Module-loading lines (name + progress bar + "OK"): `cleansing.sys`, `warehousing.sys`, `agentic_ai.sys`
+4. `> system ready`
+5. `$ whoami` (typed)
+6. `> full-stack data consultant` (typed)
+7. `$ operator --info`
+8. `> **[Your Name]** — biomedical science background, not the usual data path. (more: /about)` — this used to be a separate line under the Hero (`IdentityHook.astro`, now deleted); it's part of the terminal script instead.
+
+Then the visible (non-animated) content below the terminal:
 - Headline: **"I turn fragmented data into systems you can actually trust."**
 - Subhead: "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
 - CTA: "Start a conversation"
 
-**→ Getting a richer boot sequence** as part of the current pass — more terminal lines (fake module-loading for cleansing/warehousing/agentic-AI, styled as a boot-up), plus the identity-hook line below folded in as one more line:
-
-- "**[Your Name]** — biomedical science background, not the usual data path. (more: /about)" — previously a separate line under the Hero (`IdentityHook.astro`, being removed); becomes part of the terminal script instead.
-
-Page title (Home): "Full-stack data consulting"
-
 ---
 
-## What I do (currently Home → **moving to `/approach`**)
+## What I do (`/approach`)
 
 **File:** `src/components/Capabilities.astro`
-Eyebrow: `// what I do`
+Eyebrow: `// what I do`. Rendered as a boot-menu — click/tap an item to expand it.
 
 | Item | Body |
 |---|---|
@@ -68,10 +67,10 @@ Link: "See the track record →" → `/track-record`
 
 ---
 
-## Principles (currently Home → **moving to `/approach`**)
+## Principles (`/approach`)
 
 **File:** `src/components/PillarBlock.astro`
-Eyebrow: `// principles`
+Eyebrow: `// principles`. Rendered as a diagnostic self-check — click/tap a principle to "run" it and reveal the body text.
 
 | Title | Body |
 |---|---|
@@ -81,11 +80,11 @@ Eyebrow: `// principles`
 
 ---
 
-## How I work (currently Home → **moving to `/approach`**)
+## How I work (`/approach`)
 
 **File:** `src/components/EngagementStructure.astro`
 Eyebrow: `// how I work`
-Heading: "How an engagement runs"
+Heading: "How an engagement runs". Rendered as a level-path — three connected nodes.
 
 | Phase | Body |
 |---|---|
@@ -95,12 +94,20 @@ Heading: "How an engagement runs"
 
 ---
 
+## Approach page intro
+
+**File:** `src/pages/approach/index.astro`
+- Intro line: "What I do, how I think about it, and how an engagement actually runs."
+- Ends with the Contact CTA band (see below).
+
+---
+
 ## Contact CTA band
 
 **File:** `src/components/ContactCTA.astro`
 - "I turn fragmented data into systems you can actually trust." + "Start a conversation" button
 
-Currently appears on Home and About. **→ Removed from Home** in the current pass (Hero already carries the CTA, and Home is being trimmed to just the terminal); stays on About, and will appear on the new `/approach` page too.
+Appears on `/approach` and `/about`. Not on Home — Hero already carries its own CTA there.
 
 ---
 
