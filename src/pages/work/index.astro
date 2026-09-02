@@ -1,11 +1,17 @@
 ---
-// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /track-record).
+// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
 // Intro line condenses BRANDFINAL §1 "What I do" — no new claims invented.
 //
 // Handles two states so real case studies can be dropped into
 // src/content/case-studies/ later with no further code changes: empty (now — an honest
 // in-progress message, no fabricated content) and populated (an anonymization
 // disclaimer above the grid, since entries name sector/scope, never clients).
+//
+// Renamed from "Track Record" (see SPEC.md revision note) — the compass_artifact
+// research doc flags that label as priming a resume reading for a services buyer.
+// Sectors strip is derived from each case study's tags (sector is always the last
+// tag by convention — see src/content/case-studies/*.md) rather than hardcoded, so
+// it stays in sync automatically as entries are added or removed.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
@@ -14,15 +20,26 @@ import CaseStudyCard from '../../components/CaseStudyCard.astro';
 import PixelRivets from '../../components/PixelRivets.astro';
 
 const caseStudies = await getCollection('caseStudies');
+
+const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
+  (sector) => sector!.replace(/^./, (c) => c.toUpperCase()),
+);
 ---
 
-<BaseLayout title="Track Record" description="Full-lifecycle data work, delivered.">
+<BaseLayout title="Work" description="Full-lifecycle data work, delivered.">
   <Header />
-  <main class="track-record-page">
+  <main class="work-page">
     <p class="intro">
       Full-lifecycle data work — cleansing, migration, warehousing, BI — and the
       agentic systems built on top of it.
     </p>
+    {
+      sectors.length > 0 && (
+        <p class="eyebrow">
+          // sectors <span class="sectors">{sectors.join(' · ')}</span>
+        </p>
+      )
+    }
     {
       caseStudies.length === 0 ? (
         <p class="pending">
@@ -47,7 +64,7 @@ const caseStudies = await getCollection('caseStudies');
 </BaseLayout>
 
 <style>
-  .track-record-page {
+  .work-page {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
@@ -58,6 +75,19 @@ const caseStudies = await getCollection('caseStudies');
     margin: 0 0 var(--space-8);
     color: var(--text-secondary);
     font-size: 1.0625rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
+  }
+
+  .eyebrow .sectors {
+    color: var(--text-secondary);
+    letter-spacing: normal;
   }
 
   .pending {
