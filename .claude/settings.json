@@ -13,7 +13,26 @@
       "Bash(git push *)",
       "Bash(git -C /Users/hoda/Documents/Xheia mv src/pages/track-record/index.astro src/pages/work/index.astro)",
       "Bash(grep -n \"^a\\\\b\\\\|^a,\\\\|^a {\" -A 5 /Users/hoda/Documents/Xheia/src/styles/global.css)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(lsof -nP -iTCP:4321 -sTCP:LISTEN)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4321/ --max-time 5)",
+      "Bash(kill 81475)",
+      "Bash(nohup npm run dev)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4321/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4321/work)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4321/about)",
+      "Bash(npx --yes playwright install chromium)",
+      "Bash(npm install *)",
+      "Read(//Users/hoda/Library/Caches/ms-playwright/**)",
+      "Bash(find ~/Library/Caches/ms-playwright/chromium-1234 -maxdepth 4 -iname \"*.app\" -o -iname \"Chromium\" -o -iname \"headless_shell\" 2>/dev/null)",
+      "Read(//Users/hoda/Library/Caches/ms-playwright/chromium-1234/**)",
+      "Bash(grep -n '\\\\.length}ch`' /Users/hoda/Documents/Xheia/src/components/Hero.astro)",
+      "Bash(awk 'NR>1{print $2}')",
+      "Bash(node /private/tmp/claude-501/-Users-hoda-Documents-Xheia/bbf5fb4a-292b-4c24-81a3-2f23a2b03f53/scratchpad/shot.mjs)",
+      "Bash(node /private/tmp/claude-501/-Users-hoda-Documents-Xheia/bbf5fb4a-292b-4c24-81a3-2f23a2b03f53/scratchpad/nav-test.mjs)",
+      "Bash(npm uninstall *)",
+      "Bash(grep -n \"\\\\.length}ch\\\\`\" src/components/Hero.astro)"
     ]
   }
 }
