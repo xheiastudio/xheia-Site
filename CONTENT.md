@@ -15,7 +15,7 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/layouts/BaseLayout.astro`
 
 - Page `<title>` format: `{page title} · Xheia`
-- Default meta description (used by Home, Track Record, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **Hoda**. I turn fragmented data into systems you can actually trust."
+- Default meta description (used by Home, Work, Contact — pages that don't set their own): "Xheia is a full-stack data consultancy run by **Hoda**. I turn fragmented data into systems you can actually trust."
 
 ---
 
@@ -24,7 +24,7 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Header.astro`
 
 - Wordmark: `xheia`
-- Nav links: `Track Record` · `Approach` · `About` · `Contact`
+- Nav links: `Work` · `Approach` · `About` · `Contact` (renamed from "Track Record" — see SPEC.md revision note)
 - CTA button (site-wide, same everywhere): **"Start a conversation"** → links to `/contact`
 
 ---
@@ -34,18 +34,20 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Hero.astro`. Home is Hero-only — Header, Hero, Footer, nothing else.
 Page title: "Full-stack data consulting"
 
-Boot sequence, in order:
+Boot sequence, in order — every line now types out character-by-character (terminal-rewrite
+pass; previously only the whoami exchange typed, everything else instant-faded):
 
-1. `$ xheia --init`
-2. `> loading modules...`
-3. Module-loading lines (name + progress bar + "OK"): `cleansing.sys`, `warehousing.sys`, `agentic_ai.sys`
-4. `> system ready`
+1. `$ xheia --init` (typed)
+2. `> loading modules...` (typed)
+3. Module-loading lines (name typed + progress bar + "OK"): `cleansing.sys`, `warehousing.sys`, `agentic_ai.sys`
+4. `> system ready` (typed)
 5. `$ whoami` (typed)
 6. `> full-stack data consultant` (typed)
-7. `$ operator --info`
-8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)`
+7. `$ operator --info` (typed)
+8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (typed)
 
-Then the visible (non-animated) content below the terminal:
+Then, once a beat after the sequence's final caret — not immediately on page load — the
+headline/subhead/CTA fade in together as if they were the terminal's own final output:
 - Headline: **"I turn fragmented data into systems you can actually trust."**
 - Subhead: "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
 - CTA: "Start a conversation"
@@ -63,7 +65,7 @@ Eyebrow: `// what I do`. Rendered as a boot-menu — click/tap an item to expand
 | Warehousing & BI | A single source of truth, and the reporting layer built on it. |
 | Agentic AI systems | The newest expression of the same full-lifecycle work — never a bolt-on. |
 
-Link: "See the track record →" → `/track-record`
+Link: "See the work →" → `/work`
 
 ---
 
@@ -121,12 +123,15 @@ Appears on `/approach` and `/about`. Not on Home — Hero already carries its ow
 
 ---
 
-## Track Record (`/track-record`)
+## Work (`/work`)
 
-**File:** `src/pages/track-record/index.astro`
-Page title: "Track Record"
+**File:** `src/pages/work/index.astro`
+Page title: "Work" (renamed from "Track Record" — a proof-of-work research doc flagged that
+label as priming a resume reading; the case-study structure itself already matched the
+research's recommendation, so only the label/route changed)
 
 - Intro line: "Full-lifecycle data work — cleansing, migration, warehousing, BI — and the agentic systems built on top of it."
+- Sectors strip: `// sectors Fitness · Life sciences · Public sector` — derived automatically from each case study's tags (sector is always the last tag), not hardcoded
 - Disclaimer (shown above the case studies): "Client details are withheld by agreement; the work and outcomes below are real."
 
 ### Case studies — 3 real, anonymized entries
@@ -173,7 +178,14 @@ Narrative (first person, rewritten in the real-content pass — service-first, n
 >
 > That range is the point: life sciences, public sector, and fitness organisations have all needed the same underlying thing — data cleaned, consolidated, and turned into something a team can actually act on.
 >
+> Most recently, that meant building a post-acquisition customer intelligence pipeline spanning three acquisitions for a life sciences client, delivered as a six-tab Power BI dashboard. [More case studies →](/work)
+>
 > That work is now extending into agentic AI systems — the newest expression of the same full-lifecycle discipline, not a separate offering.
+
+The third paragraph (headline result) was added per the proof-of-work research doc — About
+previously had zero concrete proof in it. Wording traces exactly to the life-sciences case
+study; the other two case studies stay exclusive to `/work`, per the standing "About is
+service-first, not a CV" decision.
 
 Ends with the Contact CTA band (see above).
 
@@ -206,12 +218,15 @@ Page title: "Contact"
 
 - [x] ~~Full name~~ → **Hoda**, resolved sitewide in the real-content pass
 - [x] ~~Real case studies~~ → 3 real, anonymized entries added (life sciences, public sector, fitness); more can be added the same way as real detail comes in
+- [x] ~~"Track Record" label~~ → renamed to **Work** (nav, route, page title), per the proof-of-work research doc
 - [ ] Personal LinkedIn URL → Footer
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)
 - [ ] Headshot image → `/about`
 - [ ] Real business contact email → replaces `hoda.97@live.com` in `ContactForm.astro` before public launch
 - [ ] Retail/Education substance — still no real detail; narrative and case studies both skip these sectors until there is
+- [ ] Public-proof link (article/demo/repo) on `/work` — recommended by the research doc, blocked until something real exists to link
+- [ ] Named/testimonial-backed case study — blocked until client permission or a testimonial exists
 
 ## Still open (from xheia-content-worksheet.md, not addressed in this pass)
 
