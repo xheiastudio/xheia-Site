@@ -27,6 +27,23 @@
 // `.reveal-content` and stay hidden until the boot sequence's final caret appears (plus
 // a short beat) — they "pop up" as if they were the terminal's own final output, per
 // the terminal-rewrite pass.
+//
+// Three fixes after the first pass shipped: (1) each `.typed` span's width was set to
+// exactly its character count in `ch`, which font-metric rounding could clip the last
+// character (e.g. "system ready" rendering as "system read") — `padWidth()` adds a
+// full-character buffer. (2) the operator-response line is the one line long enough to
+// wrap onto multiple lines — the width-growing typewriter technique is fundamentally
+// incompatible with wrapped text (as the box's width grows step by step, the browser
+// re-wraps the partially-revealed text at each step, throwing the `>` glyph and line
+// breaks around chaotically mid-animation). That line now reveals as a complete block
+// once it "would have" finished typing, rather than using the width-clip trick at all.
+// (3) the reveal was replaying (and re-hiding the headline/CTA for the full ~6.5s
+// sequence) every time a visitor navigated back to Home via `<ClientRouter />` soft
+// navigation, which is a real regression — Home's headline/CTA used to always be
+// visible immediately. A `boot-skip` class (set once per session, after the sequence
+// has played through once) now short-circuits straight to the fully "booted" state on
+// repeat visits, so the animation is a first-visit flourish, not something that can
+// make the page's core content vanish on every revisit.
 import PixelMark from './PixelMark.astro';
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
@@ -44,6 +61,10 @@ const typeLine = (glyph: '$' | '>', text: string) => {
   clock = delay + duration + DWELL;
   return { glyph, text, delay, duration };
 };
+
+// A full character of slack so font-metric rounding can't clip the last glyph — the
+// reveal still reads as "typed to completion," just with breathing room at the edge.
+const padWidth = (charCount: number) => `${charCount + 1}ch`;
 
 const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules...')];
 
@@ -70,6 +91,7 @@ const operatorResponse = typeLine('>', operatorResponseText);
 const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.1;
 
 const revealDelay = finalCaretDelay + 0.6;
+const revealDelayMs = Math.ceil(revealDelay * 1000);
 ---
 
 <section class="hero">
@@ -95,7 +117,7 @@ const revealDelay = finalCaretDelay + 0.6;
               <span
                 class="typed"
                 style={{
-                  width: `${line.text.length}ch`,
+                  width: padWidth(line.text.length),
                   animationDuration: `${line.duration}s`,
                   animationDelay: `${line.delay}s`,
                   animationTimingFunction: `steps(${line.text.length}, end)`,
@@ -113,7 +135,7 @@ const revealDelay = finalCaretDelay + 0.6;
                 <span
                   class="typed"
                   style={{
-                    width: `${mod.name.length}ch`,
+                    width: padWidth(mod.name.length),
                     animationDuration: `${mod.duration}s`,
                     animationDelay: `${mod.delay}s`,
                     animationTimingFunction: `steps(${mod.name.length}, end)`,
@@ -138,7 +160,7 @@ const revealDelay = finalCaretDelay + 0.6;
               <span
                 class="typed"
                 style={{
-                  width: `${line.text.length}ch`,
+                  width: padWidth(line.text.length),
                   animationDuration: `${line.duration}s`,
                   animationDelay: `${line.delay}s`,
                   animationTimingFunction: `steps(${line.text.length}, end)`,
@@ -155,7 +177,7 @@ const revealDelay = finalCaretDelay + 0.6;
           <span
             class="typed"
             style={{
-              width: `${whoami.text.length}ch`,
+              width: padWidth(whoami.text.length),
               animationDuration: `${whoami.duration}s`,
               animationDelay: `${whoami.delay}s`,
               animationTimingFunction: `steps(${whoami.text.length}, end)`,
@@ -169,7 +191,7 @@ const revealDelay = finalCaretDelay + 0.6;
           <span
             class="typed"
             style={{
-              width: `${role.text.length}ch`,
+              width: padWidth(role.text.length),
               animationDuration: `${role.duration}s`,
               animationDelay: `${role.delay}s`,
               animationTimingFunction: `steps(${role.text.length}, end)`,
@@ -184,7 +206,7 @@ const revealDelay = finalCaretDelay + 0.6;
           <span
             class="typed"
             style={{
-              width: `${operatorCommand.text.length}ch`,
+              width: padWidth(operatorCommand.text.length),
               animationDuration: `${operatorCommand.duration}s`,
               animationDelay: `${operatorCommand.delay}s`,
               animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
@@ -193,21 +215,14 @@ const revealDelay = finalCaretDelay + 0.6;
             {operatorCommand.text}
           </span>
         </p>
-        <p class="boot-line prompt-response operator-line">
+        <p
+          class="boot-line prompt-response operator-line"
+          style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
+        >
           <span class="prompt-glyph">{operatorResponse.glyph}</span>{' '}
-          <span
-            class="typed"
-            style={{
-              width: `${operatorResponseText.length}ch`,
-              animationDuration: `${operatorResponse.duration}s`,
-              animationDelay: `${operatorResponse.delay}s`,
-              animationTimingFunction: `steps(${operatorResponseText.length}, end)`,
-            }}
-          >
-            Hoda — four-plus years contracting across the UK, not one specialism. (<a
-              href="/about">more</a
-            >)
-          </span><span
+          Hoda — four-plus years contracting across the UK, not one specialism. (<a
+            href="/about">more</a
+          >)<span
             class="caret"
             style={{ animationDelay: `${finalCaretDelay}s` }}
             aria-hidden="true"
@@ -235,6 +250,24 @@ const revealDelay = finalCaretDelay + 0.6;
     </div>
   </div>
 </section>
+
+<script is:inline define:vars={{ revealDelayMs }}>
+  // is:inline re-executes this block on every soft navigation that lands on Home, so
+  // the addEventListener call itself must be guarded — otherwise each revisit stacks
+  // another listener for the session's lifetime (same guard pattern as PixelCursor.astro).
+  if (!window.__xheiaBootBound) {
+    window.__xheiaBootBound = true;
+    document.addEventListener('astro:page-load', () => {
+      const bezel = document.querySelector('.hero .bezel');
+      if (!bezel) return;
+      if (sessionStorage.getItem('xheia-boot-played')) {
+        bezel.classList.add('boot-skip');
+      } else {
+        setTimeout(() => sessionStorage.setItem('xheia-boot-played', '1'), revealDelayMs);
+      }
+    });
+  }
+</script>
 
 <style>
   .hero {
@@ -380,6 +413,8 @@ const revealDelay = finalCaretDelay + 0.6;
 
   .operator-line {
     white-space: normal;
+    opacity: 0;
+    animation: instant-reveal 0.01s steps(1) forwards;
   }
 
   .prompt-glyph {
@@ -436,10 +471,49 @@ const revealDelay = finalCaretDelay + 0.6;
       animation: none;
     }
 
+    .operator-line {
+      opacity: 1;
+      animation: none;
+    }
+
     .reveal-content {
       opacity: 1;
       animation: none;
     }
+  }
+
+  /* Session-repeat visits: skip straight to the fully "booted" state instead of
+     replaying (and re-hiding the headline/CTA behind) the whole sequence — see the
+     `astro:page-load` script below. Same end state as the reduced-motion block above,
+     just gated on a runtime class instead of a media feature. */
+  .bezel.boot-skip .typed {
+    width: auto !important;
+    animation: none;
+  }
+
+  .bezel.boot-skip .module-status {
+    opacity: 1;
+    animation: none;
+  }
+
+  .bezel.boot-skip .progress-fill {
+    width: 100%;
+    animation: none;
+  }
+
+  .bezel.boot-skip .operator-line {
+    opacity: 1;
+    animation: none;
+  }
+
+  .bezel.boot-skip .caret {
+    animation: none;
+    opacity: 1;
+  }
+
+  .bezel.boot-skip .reveal-content {
+    opacity: 1;
+    animation: none;
   }
 
   @keyframes caret-appear {
