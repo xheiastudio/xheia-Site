@@ -9,7 +9,11 @@
       "Bash(python3 -c ' *)",
       "Bash(git commit -m ' *)",
       "Bash(curl -s http://localhost:4321/approach -o /dev/null -w \"HTTP %{http_code}\\\\n\")",
-      "Bash(grep -n \"#[0-9A-Fa-f]\\\\{3,6\\\\}\" src/components/Tools.astro src/components/Hero.astro)"
+      "Bash(grep -n \"#[0-9A-Fa-f]\\\\{3,6\\\\}\" src/components/Tools.astro src/components/Hero.astro)",
+      "Bash(git push *)",
+      "Bash(git -C /Users/hoda/Documents/Xheia mv src/pages/track-record/index.astro src/pages/work/index.astro)",
+      "Bash(grep -n \"^a\\\\b\\\\|^a,\\\\|^a {\" -A 5 /Users/hoda/Documents/Xheia/src/styles/global.css)",
+      "Bash(node -e ' *)"
     ]
   }
 }
