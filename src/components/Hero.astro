@@ -19,39 +19,57 @@
 // the brand-row/headline content, rather than floating loose in the screen's padding —
 // fixes the "boot log on top, then massive writing underneath" seam that read as two
 // unrelated things stacked, not one composition.
+//
+// Typing: every line in the boot log actually types out character-by-character (not
+// just the whoami/role exchange, as before) — a single `typeLine()` helper derives each
+// line's duration from its own character count, so the log reads as a real terminal
+// session instead of a series of instant fades. The headline/subhead/CTA are wrapped in
+// `.reveal-content` and stay hidden until the boot sequence's final caret appears (plus
+// a short beat) — they "pop up" as if they were the terminal's own final output, per
+// the terminal-rewrite pass.
 import PixelMark from './PixelMark.astro';
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
 
-// Sequential boot-log timing, computed once rather than hand-tuned per line — a running
-// clock that each phase advances, so reordering/adding lines doesn't require re-deriving
-// every delay by hand.
+const CPS = 70; // characters typed per second — fast but still visibly "typed"
+const DWELL = 0.1; // pause after a line finishes before the next one starts
+const BEAT = 0.25; // longer pause marking a new "section" of the session
+const BAR_FILL_DURATION = 0.35;
+
 let clock = 0;
-const next = (duration: number) => {
+
+const typeLine = (glyph: '$' | '>', text: string) => {
   const delay = clock;
-  clock += duration;
-  return delay;
+  const duration = text.length / CPS;
+  clock = delay + duration + DWELL;
+  return { glyph, text, delay, duration };
 };
 
-const preamble = ['$ xheia --init', '> loading modules...'].map((text) => ({
-  text,
-  delay: next(0.2),
-}));
+const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules...')];
 
 const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
-  const delay = next(0.4);
-  return { name, delay, barDelay: delay + 0.05 };
+  const delay = clock;
+  const duration = name.length / CPS;
+  const barDelay = delay + duration + 0.05;
+  const statusDelay = barDelay + BAR_FILL_DURATION + 0.1;
+  clock = statusDelay + DWELL;
+  return { name, delay, duration, barDelay, statusDelay };
 });
 
-const postamble = ['> system ready'].map((text) => ({ text, delay: next(0.3) }));
+const postamble = [typeLine('>', 'system ready')];
 
-const typedWhoamiDelay = clock + 0.2;
-const typedRoleDelay = typedWhoamiDelay + 0.4 + 0.3;
-const roleTypedDuration = 1;
+clock += BEAT;
+const whoami = typeLine('$', 'whoami');
+const role = typeLine('>', 'full-stack data consultant');
 
-const operatorCommandDelay = typedRoleDelay + roleTypedDuration + 0.3;
-const operatorResponseDelay = operatorCommandDelay + 0.25;
-const finalCaretDelay = operatorResponseDelay + 0.3;
+clock += BEAT;
+const operatorCommand = typeLine('$', 'operator --info');
+const operatorResponseText =
+  'Hoda — four-plus years contracting across the UK, not one specialism. (more)';
+const operatorResponse = typeLine('>', operatorResponseText);
+const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.1;
+
+const revealDelay = finalCaretDelay + 0.6;
 ---
 
 <section class="hero">
@@ -72,19 +90,42 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
       <div class="boot-log">
         {
           preamble.map((line) => (
-            <p class="boot-line" style={{ animationDelay: `${line.delay}s` }}>
-              {line.text}
+            <p class="boot-line">
+              <span class="prompt-glyph">{line.glyph}</span>{' '}
+              <span
+                class="typed"
+                style={{
+                  width: `${line.text.length}ch`,
+                  animationDuration: `${line.duration}s`,
+                  animationDelay: `${line.delay}s`,
+                  animationTimingFunction: `steps(${line.text.length}, end)`,
+                }}
+              >
+                {line.text}
+              </span>
             </p>
           ))
         }
         {
           modules.map((mod) => (
-            <p class="boot-line module-line" style={{ animationDelay: `${mod.delay}s` }}>
-              <span class="module-name">{mod.name}</span>
+            <p class="boot-line module-line">
+              <span class="module-name">
+                <span
+                  class="typed"
+                  style={{
+                    width: `${mod.name.length}ch`,
+                    animationDuration: `${mod.duration}s`,
+                    animationDelay: `${mod.delay}s`,
+                    animationTimingFunction: `steps(${mod.name.length}, end)`,
+                  }}
+                >
+                  {mod.name}
+                </span>
+              </span>
               <span class="progress-bar" aria-hidden="true">
                 <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
               </span>
-              <span class="module-status" style={{ animationDelay: `${mod.barDelay + 0.35}s` }}>
+              <span class="module-status" style={{ animationDelay: `${mod.statusDelay}s` }}>
                 OK
               </span>
             </p>
@@ -92,54 +133,105 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
         }
         {
           postamble.map((line) => (
-            <p class="boot-line" style={{ animationDelay: `${line.delay}s` }}>
-              {line.text}
+            <p class="boot-line">
+              <span class="prompt-glyph">{line.glyph}</span>{' '}
+              <span
+                class="typed"
+                style={{
+                  width: `${line.text.length}ch`,
+                  animationDuration: `${line.duration}s`,
+                  animationDelay: `${line.delay}s`,
+                  animationTimingFunction: `steps(${line.text.length}, end)`,
+                }}
+              >
+                {line.text}
+              </span>
             </p>
           ))
         }
 
-        <p class="prompt-line">
-          <span class="prompt-glyph">$</span>{' '}
-          <span class="typed typed-1" style={{ animationDelay: `${typedWhoamiDelay}s` }}>
-            whoami
+        <p class="boot-line">
+          <span class="prompt-glyph">{whoami.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: `${whoami.text.length}ch`,
+              animationDuration: `${whoami.duration}s`,
+              animationDelay: `${whoami.delay}s`,
+              animationTimingFunction: `steps(${whoami.text.length}, end)`,
+            }}
+          >
+            {whoami.text}
           </span>
         </p>
-        <p class="prompt-line prompt-response">
-          <span class="prompt-glyph">&gt;</span>{' '}
-          <span class="typed typed-2" style={{ animationDelay: `${typedRoleDelay}s` }}
-            >full-stack data consultant</span
+        <p class="boot-line prompt-response">
+          <span class="prompt-glyph">{role.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: `${role.text.length}ch`,
+              animationDuration: `${role.duration}s`,
+              animationDelay: `${role.delay}s`,
+              animationTimingFunction: `steps(${role.text.length}, end)`,
+            }}
           >
+            {role.text}
+          </span>
         </p>
 
-        <p class="boot-line" style={{ animationDelay: `${operatorCommandDelay}s` }}>
-          $ operator --info
+        <p class="boot-line">
+          <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: `${operatorCommand.text.length}ch`,
+              animationDuration: `${operatorCommand.duration}s`,
+              animationDelay: `${operatorCommand.delay}s`,
+              animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
+            }}
+          >
+            {operatorCommand.text}
+          </span>
         </p>
-        <p
-          class="boot-line prompt-response operator-line"
-          style={{ animationDelay: `${operatorResponseDelay}s` }}
-        >
-          &gt; Hoda — four-plus years contracting across the UK, not one specialism. (<a
-            href="/about">more</a
-          >)<span class="caret" style={{ animationDelay: `${finalCaretDelay}s` }} aria-hidden="true"
+        <p class="boot-line prompt-response operator-line">
+          <span class="prompt-glyph">{operatorResponse.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: `${operatorResponseText.length}ch`,
+              animationDuration: `${operatorResponse.duration}s`,
+              animationDelay: `${operatorResponse.delay}s`,
+              animationTimingFunction: `steps(${operatorResponseText.length}, end)`,
+            }}
+          >
+            Hoda — four-plus years contracting across the UK, not one specialism. (<a
+              href="/about">more</a
+            >)
+          </span><span
+            class="caret"
+            style={{ animationDelay: `${finalCaretDelay}s` }}
+            aria-hidden="true"
           ></span>
         </p>
       </div>
 
       <div class="zone-divider" aria-hidden="true"></div>
 
-      <div class="brand-row">
-        <PixelMark size={40} />
-        <span class="wordmark">xheia</span>
+      <div class="reveal-content" style={{ animationDelay: `${revealDelay}s` }}>
+        <div class="brand-row">
+          <PixelMark size={40} />
+          <span class="wordmark">xheia</span>
+        </div>
+
+        <h1 class="headline">I turn fragmented data into systems you can actually trust.</h1>
+
+        <p class="subhead">
+          Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you
+          build on top actually holds up.
+        </p>
+
+        <CTAButton class="hero-cta" />
       </div>
-
-      <h1 class="headline">I turn fragmented data into systems you can actually trust.</h1>
-
-      <p class="subhead">
-        Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you
-        build on top actually holds up.
-      </p>
-
-      <CTAButton class="hero-cta" />
     </div>
   </div>
 </section>
@@ -227,21 +319,12 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
     border-top: 2px dashed var(--border);
   }
 
-  .boot-line,
-  .prompt-line {
+  .boot-line {
     position: relative;
     margin: 0 0 var(--space-1);
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     white-space: nowrap;
-    opacity: 0;
-    animation: boot-line-in 0.01s steps(1) forwards;
-  }
-
-  @keyframes boot-line-in {
-    to {
-      opacity: 1;
-    }
   }
 
   .module-line {
@@ -253,7 +336,8 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
   }
 
   .module-name {
-    min-width: 8ch;
+    display: inline-block;
+    min-width: 15ch;
   }
 
   .progress-bar {
@@ -281,7 +365,13 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
   .module-status {
     color: var(--accent-status);
     opacity: 0;
-    animation: boot-line-in 0.01s steps(1) forwards;
+    animation: instant-reveal 0.01s steps(1) forwards;
+  }
+
+  @keyframes instant-reveal {
+    to {
+      opacity: 1;
+    }
   }
 
   .prompt-response {
@@ -301,20 +391,8 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
     overflow: hidden;
     vertical-align: bottom;
     width: 0;
-    animation-timing-function: steps(30, end);
+    animation-name: type-reveal;
     animation-fill-mode: forwards;
-  }
-
-  .typed-1 {
-    width: 6ch;
-    animation-name: type-reveal;
-    animation-duration: 0.4s;
-  }
-
-  .typed-2 {
-    width: 27ch;
-    animation-name: type-reveal;
-    animation-duration: 1s;
   }
 
   @keyframes type-reveal {
@@ -348,7 +426,6 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
       animation: none;
     }
 
-    .boot-line,
     .module-status {
       opacity: 1;
       animation: none;
@@ -356,6 +433,11 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
 
     .progress-fill {
       width: 100%;
+      animation: none;
+    }
+
+    .reveal-content {
+      opacity: 1;
       animation: none;
     }
   }
@@ -375,6 +457,11 @@ const finalCaretDelay = operatorResponseDelay + 0.3;
     100% {
       opacity: 0;
     }
+  }
+
+  .reveal-content {
+    opacity: 0;
+    animation: instant-reveal 0.01s steps(1) forwards;
   }
 
   .brand-row {
