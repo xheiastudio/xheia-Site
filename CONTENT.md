@@ -34,8 +34,12 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Hero.astro`. Home is Hero-only — Header, Hero, Footer, nothing else.
 Page title: "Full-stack data consulting"
 
-Boot sequence, in order — every line now types out character-by-character (terminal-rewrite
-pass; previously only the whoami exchange typed, everything else instant-faded):
+Single terminal frame (no nested boxed panel — see SPEC.md's single-terminal-frame
+revision note), sized to fill the available viewport rather than a capped content width.
+
+The boot log **loops indefinitely** as ambient decoration (skipped under
+`prefers-reduced-motion`, which just shows it complete and static) — every line types out
+character-by-character:
 
 1. `$ xheia --init` (typed)
 2. `> loading modules...` (typed)
@@ -44,12 +48,14 @@ pass; previously only the whoami exchange typed, everything else instant-faded):
 5. `$ whoami` (typed)
 6. `> full-stack data consultant` (typed)
 7. `$ operator --info` (typed)
-8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (typed)
+8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (revealed as a block, not typed — it wraps onto two lines)
 
-Then, once a beat after the sequence's final caret — not immediately on page load — the
-headline/subhead/CTA fade in together as if they were the terminal's own final output:
-- Headline: **"I turn fragmented data into systems you can actually trust."**
-- Subhead: "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
+The headline/subhead/CTA are **permanently visible, not gated behind the loop at all** —
+they don't "load," they're just there from first paint, styled as the terminal's own
+biggest output lines (IBM Plex Mono, `>`/`//` prompt glyphs), not a separate pixel-font
+headline:
+- Headline (`>` prefix): **"I turn fragmented data into systems you can actually trust."**
+- Subhead (`//` prefix): "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
 - CTA: "Start a conversation"
 
 ---
