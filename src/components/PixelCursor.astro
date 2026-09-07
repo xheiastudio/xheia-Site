@@ -1,10 +1,14 @@
 ---
 // Real, visible pixel-art cursor — replaces the old CSS `cursor:` swap, which was too
 // subtle to register as a feature. Tracked via mousemove/transform (cheap, GPU-friendly),
-// theme-aware (fill/backing use --text/--bg so it adapts to dark/light automatically),
-// swaps color + scales up over interactive elements. Only activates on fine-pointer
-// devices — touch/coarse-pointer users keep native behavior untouched, and the native
-// cursor is only hidden via a JS-added class, so a JS failure never leaves a dead cursor.
+// theme-aware (fill uses --text so it adapts to dark/light automatically), swaps color +
+// scales up over interactive elements. Only activates on fine-pointer devices —
+// touch/coarse-pointer users keep native behavior untouched, and the native cursor is
+// only hidden via a JS-added class, so a JS failure never leaves a dead cursor.
+//
+// No solid backing plate behind the arrow (dropped after live feedback: a filled
+// rect — even at reduced opacity — read as an unwanted dark box trailing the cursor,
+// and no other pixel-art element on the site uses a backing plate either).
 const arrowPixels: Array<[number, number]> = [
   [0, 0],
   [0, 1], [1, 1],
@@ -19,7 +23,6 @@ const arrowPixels: Array<[number, number]> = [
 
 <div id="pixel-cursor" class="pixel-cursor" aria-hidden="true" transition:persist>
   <svg viewBox="-1 -1 8 10" width="32" height="40" shape-rendering="crispEdges">
-    <rect x="-1" y="-1" width="8" height="10" class="cursor-backing" />
     {arrowPixels.map(([x, y]) => <rect x={x} y={y} width="1" height="1" class="cursor-fill" />)}
   </svg>
 </div>
@@ -61,11 +64,6 @@ const arrowPixels: Array<[number, number]> = [
     z-index: 10000;
     pointer-events: none;
     will-change: transform;
-  }
-
-  .cursor-backing {
-    fill: var(--bg);
-    opacity: 0.85;
   }
 
   .cursor-fill {
