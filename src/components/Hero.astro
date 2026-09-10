@@ -46,15 +46,18 @@
 // causes the browser to re-wrap the partially-revealed text at every animation step,
 // throwing line breaks around chaotically (this broke the operator-response line in an
 // earlier pass — see git history). Wrapped content uses `.line-reveal` instead: a
-// plain delayed opacity reveal. Keep new multi-line content on `.line-reveal`, not
+// real eased opacity+translateY transition (not an instant snap — see the CSS comment
+// on `.line-reveal` for why a `steps(1)` "instant" version actually never appeared at
+// all on first load, a real bug fixed alongside making this reveal smoother/more
+// deliberate per live feedback). Keep new multi-line content on `.line-reveal`, not
 // `.typed` — standing rule.
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
 
-const CPS = 70; // characters typed per second — fast but still visibly "typed"
-const DWELL = 0.1; // pause after a line finishes before the next one starts
-const BEAT = 0.25; // longer pause marking a new "section" of the session
-const BAR_FILL_DURATION = 0.35;
+const CPS = 105; // characters typed per second — fast but still visibly "typed"
+const DWELL = 0.06; // pause after a line finishes before the next one starts
+const BEAT = 0.15; // longer pause marking a new "section" of the session
+const BAR_FILL_DURATION = 0.25;
 
 let clock = 0;
 
@@ -83,8 +86,8 @@ const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules.
 const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
   const delay = clock;
   const duration = name.length / CPS;
-  const barDelay = delay + duration + 0.05;
-  const statusDelay = barDelay + BAR_FILL_DURATION + 0.1;
+  const barDelay = delay + duration + 0.03;
+  const statusDelay = barDelay + BAR_FILL_DURATION + 0.06;
   clock = statusDelay + DWELL;
   return { name, delay, duration, barDelay, statusDelay };
 });
@@ -100,7 +103,7 @@ const operatorCommand = typeLine('$', 'operator --info');
 const operatorResponseText =
   'Hoda — four-plus years contracting across the UK, not one specialism. (more)';
 const operatorResponse = blockLine(operatorResponseText);
-const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.1;
+const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.06;
 
 clock += BEAT;
 const headlineText = 'I turn fragmented data into systems you can actually trust.';
@@ -110,7 +113,7 @@ const subheadText =
   'Full-lifecycle data work — cleansing, migration, warehousing, BI — so whatever you build on it actually holds up.';
 const subhead = blockLine(subheadText);
 
-const ctaDelay = clock + 0.1;
+const ctaDelay = clock + 0.06;
 const revealDelayMs = Math.ceil(ctaDelay * 1000);
 ---
 
@@ -407,10 +410,10 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   .module-status {
     color: var(--accent-status);
     opacity: 0;
-    animation: instant-reveal 0.01s steps(1) forwards;
+    animation: fade-in 0.15s ease-out forwards;
   }
 
-  @keyframes instant-reveal {
+  @keyframes fade-in {
     to {
       opacity: 1;
     }
@@ -462,11 +465,26 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   }
 
   /* Anything that wraps onto multiple lines (see the frontmatter note on why it can't
-     use `.typed`) reveals as a plain delayed block instead — one shared class so the
-     reduced-motion/boot-skip overrides below only need to say it once. */
+     use `.typed`) reveals as a real eased transition instead — one shared class so the
+     reduced-motion/boot-skip overrides below only need to say it once.
+     NOTE: this used to be an "instant" 0.01s steps(1) snap, which had a real bug — the
+     delay values are computed floating-point numbers (e.g. 7.049999999999999s), and
+     steps(1) changes value only at the EXACT end of its duration; landing fractionally
+     short of that exact instant due to float imprecision meant the animation reported
+     as "finished" via the Web Animations API while still rendering its 0%-keyframe
+     value, i.e. permanently invisible. A smooth (non-stepped) timing function has no
+     such cliff — being 0.0001% short of "done" is visually indistinguishable from done. */
   .line-reveal {
     opacity: 0;
-    animation: instant-reveal 0.01s steps(1) forwards;
+    transform: translateY(0.6em);
+    animation: line-reveal-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes line-reveal-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -492,6 +510,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
     .line-reveal {
       opacity: 1;
+      transform: none;
       animation: none;
     }
   }
@@ -522,6 +541,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .bezel.boot-skip .line-reveal {
     opacity: 1;
+    transform: none;
     animation: none;
   }
 
