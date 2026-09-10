@@ -1,50 +1,53 @@
 ---
 // Mark, tagline headline, one-line outcome-framed subhead, CTA — wrapped in the CRT/
 // boot-sequence bezel. Home is now Hero-only (see SPEC.md's structural-redesign
-// revision note), so this fills most of the viewport and carries a much richer boot
-// sequence than before: a fast module-loading preamble, the signature typed $ whoami
-// exchange, then an operator--info line folding in what used to be a separate
-// IdentityHook component below the Hero. SPEC.md is explicit: this literal boot-sequence
-// device (typed terminal lines, chrome-buttons bar) stays Hero-exclusive — the broader
-// pixel-art system (rivets, cursor, scanlines) extends site-wide, see BRANDFINAL.md.
+// revision note), so this carries a much richer boot sequence than before: a fast
+// module-loading preamble, the signature typed $ whoami exchange, then an
+// operator--info line folding in what used to be a separate IdentityHook component
+// below the Hero. SPEC.md is explicit: this literal boot-sequence device (typed
+// terminal lines, chrome-buttons bar) stays Hero-exclusive — the broader pixel-art
+// system (rivets, cursor, scanlines) extends site-wide, see BRANDFINAL.md.
 //
 // Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead is
 // outcome-framed per BRANDFINAL §2 ("lead with what the client gets, not the AI
-// label"), grounded in §5's "Clarity is engineered, not promised" pillar. Module names
-// in the boot preamble are the existing Capabilities categories staged as a boot
-// flourish, not new claims. Operator line matches the real-content pass's revised
-// origin story (BRANDFINAL.md §1) — same fact as /about's opening line.
+// label"), grounded in §5's "Clarity is engineered, not promised" pillar — deliberately
+// not AI-specific (home-finalization pass: dropped "so any AI you build on top..." for
+// a full-stack-data-professional framing that isn't AI-first). Module names in the boot
+// preamble are the existing Capabilities categories staged as a boot flourish, not new
+// claims. Operator line matches the real-content pass's revised origin story
+// (BRANDFINAL.md §1) — same fact as /about's opening line.
 //
-// Single-frame terminal pass: everything (boot log, headline, subhead, CTA) lives inside
-// ONE left-aligned `.terminal-body`, not a separately bordered/tinted box nested inside
-// the outer CRT bezel — the previous layout had a "terminal within a terminal" look. The
-// headline/subhead are the terminal's own biggest lines of output, in the same mono font
-// and `>`/`//` prompt conventions as everything above them (BRANDFINAL.md's type-system
-// note updated: the pixel font's Hero-headline use no longer applies to Home). No
+// Single-frame terminal: everything (boot log, headline, subhead, CTA) lives inside ONE
+// left-aligned `.terminal-body`, not a separately bordered/tinted box nested inside the
+// outer CRT bezel — a nested box read as "a terminal within a terminal." The
+// headline/subhead are the terminal's own biggest lines of output, in the same mono
+// font and `>`/`//` prompt conventions as everything above them (BRANDFINAL.md's
+// type-system note: the pixel font's Hero-headline use no longer applies to Home). No
 // brand-row here — Header already shows the mark+wordmark on every page including Home.
-// The bezel now stretches to fill the available viewport height/width (not capped to
-// `--content-max-width`) — live feedback was that the terminal read as small/oddly
-// proportioned relative to the page.
 //
-// Looping boot log, static tagline: the boot log (preamble through the operator-info
-// exchange) loops indefinitely — it's ambient "the system is alive" decoration, not a
-// one-shot narrative gate. It lives in its own `#boot-loop` container; a small script
-// re-inserts that container's own markup on an interval (`container.innerHTML =
-// container.innerHTML`), which is the simplest reliable way to restart every child's
-// CSS animation-delay from zero without hand-toggling each one individually. The
-// headline/subhead/CTA are NOT part of that loop and are NOT gated behind any reveal —
-// they're plain, always-visible content, so there's no scenario where they "disappear"
-// on a revisit (the earlier `boot-skip`/sessionStorage mechanism existed only to paper
-// over that; it's gone now because there's nothing left to skip).
+// One-time sequence, not a loop: an earlier pass tried making the boot log replay
+// forever with the tagline permanently static and independent of it. Live use showed
+// that's not wanted — the sequence should play once, end with the tagline as its own
+// final output, and the whole thing (log + tagline) stays on screen together
+// afterward. Headline/subhead/CTA are timed items on the same `clock` the boot log
+// uses (`blockLine()`), revealed via `.line-reveal` same as the operator-response line.
+// A `boot-skip` class (set once per session, after the sequence first completes) skips
+// straight to the fully "booted" end state on repeat visits to Home, so revisiting
+// doesn't mean sitting through the whole thing again with the tagline hidden meanwhile.
+//
+// Sized to content, not the viewport: a prior pass forced the bezel to fill the full
+// viewport height, which just left empty space below the (fixed-length) content —
+// reverted to a normal content-sized frame, capped at --content-max-width.
 //
 // Typing: every single-line item (preamble/postamble/whoami/role/operator command,
-// module names) types out character-by-character via the width-clip `.typed` technique.
-// The operator-response line does NOT — it wraps onto multiple lines, and animating a
-// fixed inline-block's width while its content wraps causes the browser to re-wrap the
-// partially-revealed text at every animation step, throwing line breaks around
-// chaotically (this broke the operator-response line in an earlier pass — see git
-// history). It uses `.line-reveal` instead: a plain delayed opacity reveal. Keep new
-// multi-line content inside the loop on `.line-reveal`, not `.typed` — standing rule.
+// module names) types out character-by-character via the width-clip `.typed`
+// technique. Anything that wraps onto multiple lines (operator-response, headline,
+// subhead) does NOT — animating a fixed inline-block's width while its content wraps
+// causes the browser to re-wrap the partially-revealed text at every animation step,
+// throwing line breaks around chaotically (this broke the operator-response line in an
+// earlier pass — see git history). Wrapped content uses `.line-reveal` instead: a
+// plain delayed opacity reveal. Keep new multi-line content on `.line-reveal`, not
+// `.typed` — standing rule.
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
 
@@ -52,7 +55,6 @@ const CPS = 70; // characters typed per second — fast but still visibly "typed
 const DWELL = 0.1; // pause after a line finishes before the next one starts
 const BEAT = 0.25; // longer pause marking a new "section" of the session
 const BAR_FILL_DURATION = 0.35;
-const HOLD = 2; // how long the fully-booted log stays put before the loop resets
 
 let clock = 0;
 
@@ -67,8 +69,8 @@ const typeLine = (glyph: '$' | '>', text: string) => {
 // reveal still reads as "typed to completion," just with breathing room at the edge.
 const padWidth = (charCount: number) => `${charCount + 1}ch`;
 
-// Same delay+duration budget as typeLine(), for the one line that reveals as a block
-// instead of typing character-by-character (see the wrapping note above).
+// Same delay+duration budget as typeLine(), for lines that reveal as a block instead
+// of typing character-by-character (see the wrapping note above).
 const blockLine = (text: string) => {
   const delay = clock;
   const duration = text.length / CPS;
@@ -100,12 +102,16 @@ const operatorResponseText =
 const operatorResponse = blockLine(operatorResponseText);
 const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.1;
 
-const loopDuration = finalCaretDelay + HOLD;
-const loopDurationMs = Math.ceil(loopDuration * 1000);
-
+clock += BEAT;
 const headlineText = 'I turn fragmented data into systems you can actually trust.';
+const headline = blockLine(headlineText);
+
 const subheadText =
-  'Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up.';
+  'Full-lifecycle data work — cleansing, migration, warehousing, BI — so whatever you build on it actually holds up.';
+const subhead = blockLine(subheadText);
+
+const ctaDelay = clock + 0.1;
+const revealDelayMs = Math.ceil(ctaDelay * 1000);
 ---
 
 <section class="hero">
@@ -124,136 +130,140 @@ const subheadText =
       <div class="scanlines" aria-hidden="true"></div>
 
       <div class="terminal-body">
-        <div id="boot-loop" class="boot-loop">
-          {
-            preamble.map((line) => (
-              <p class="boot-line">
-                <span class="prompt-glyph">{line.glyph}</span>{' '}
+        {
+          preamble.map((line) => (
+            <p class="boot-line">
+              <span class="prompt-glyph">{line.glyph}</span>{' '}
+              <span
+                class="typed"
+                style={{
+                  width: padWidth(line.text.length),
+                  animationDuration: `${line.duration}s`,
+                  animationDelay: `${line.delay}s`,
+                  animationTimingFunction: `steps(${line.text.length}, end)`,
+                }}
+              >
+                {line.text}
+              </span>
+            </p>
+          ))
+        }
+        {
+          modules.map((mod) => (
+            <p class="boot-line module-line">
+              <span class="module-name">
                 <span
                   class="typed"
                   style={{
-                    width: padWidth(line.text.length),
-                    animationDuration: `${line.duration}s`,
-                    animationDelay: `${line.delay}s`,
-                    animationTimingFunction: `steps(${line.text.length}, end)`,
+                    width: padWidth(mod.name.length),
+                    animationDuration: `${mod.duration}s`,
+                    animationDelay: `${mod.delay}s`,
+                    animationTimingFunction: `steps(${mod.name.length}, end)`,
                   }}
                 >
-                  {line.text}
+                  {mod.name}
                 </span>
-              </p>
-            ))
-          }
-          {
-            modules.map((mod) => (
-              <p class="boot-line module-line">
-                <span class="module-name">
-                  <span
-                    class="typed"
-                    style={{
-                      width: padWidth(mod.name.length),
-                      animationDuration: `${mod.duration}s`,
-                      animationDelay: `${mod.delay}s`,
-                      animationTimingFunction: `steps(${mod.name.length}, end)`,
-                    }}
-                  >
-                    {mod.name}
-                  </span>
-                </span>
-                <span class="progress-bar" aria-hidden="true">
-                  <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
-                </span>
-                <span class="module-status" style={{ animationDelay: `${mod.statusDelay}s` }}>
-                  OK
-                </span>
-              </p>
-            ))
-          }
-          {
-            postamble.map((line) => (
-              <p class="boot-line">
-                <span class="prompt-glyph">{line.glyph}</span>{' '}
-                <span
-                  class="typed"
-                  style={{
-                    width: padWidth(line.text.length),
-                    animationDuration: `${line.duration}s`,
-                    animationDelay: `${line.delay}s`,
-                    animationTimingFunction: `steps(${line.text.length}, end)`,
-                  }}
-                >
-                  {line.text}
-                </span>
-              </p>
-            ))
-          }
+              </span>
+              <span class="progress-bar" aria-hidden="true">
+                <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
+              </span>
+              <span class="module-status" style={{ animationDelay: `${mod.statusDelay}s` }}>
+                OK
+              </span>
+            </p>
+          ))
+        }
+        {
+          postamble.map((line) => (
+            <p class="boot-line">
+              <span class="prompt-glyph">{line.glyph}</span>{' '}
+              <span
+                class="typed"
+                style={{
+                  width: padWidth(line.text.length),
+                  animationDuration: `${line.duration}s`,
+                  animationDelay: `${line.delay}s`,
+                  animationTimingFunction: `steps(${line.text.length}, end)`,
+                }}
+              >
+                {line.text}
+              </span>
+            </p>
+          ))
+        }
 
-          <p class="boot-line">
-            <span class="prompt-glyph">{whoami.glyph}</span>{' '}
-            <span
-              class="typed"
-              style={{
-                width: padWidth(whoami.text.length),
-                animationDuration: `${whoami.duration}s`,
-                animationDelay: `${whoami.delay}s`,
-                animationTimingFunction: `steps(${whoami.text.length}, end)`,
-              }}
-            >
-              {whoami.text}
-            </span>
-          </p>
-          <p class="boot-line prompt-response">
-            <span class="prompt-glyph">{role.glyph}</span>{' '}
-            <span
-              class="typed"
-              style={{
-                width: padWidth(role.text.length),
-                animationDuration: `${role.duration}s`,
-                animationDelay: `${role.delay}s`,
-                animationTimingFunction: `steps(${role.text.length}, end)`,
-              }}
-            >
-              {role.text}
-            </span>
-          </p>
-
-          <p class="boot-line">
-            <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
-            <span
-              class="typed"
-              style={{
-                width: padWidth(operatorCommand.text.length),
-                animationDuration: `${operatorCommand.duration}s`,
-                animationDelay: `${operatorCommand.delay}s`,
-                animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
-              }}
-            >
-              {operatorCommand.text}
-            </span>
-          </p>
-          <p
-            class="boot-line prompt-response operator-line line-reveal"
-            style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
+        <p class="boot-line">
+          <span class="prompt-glyph">{whoami.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: padWidth(whoami.text.length),
+              animationDuration: `${whoami.duration}s`,
+              animationDelay: `${whoami.delay}s`,
+              animationTimingFunction: `steps(${whoami.text.length}, end)`,
+            }}
           >
-            <span class="prompt-glyph">&gt;</span>{' '}
-            Hoda — four-plus years contracting across the UK, not one specialism. (<a
-              href="/about">more</a
-            >)<span
-              class="caret"
-              style={{ animationDelay: `${finalCaretDelay}s` }}
-              aria-hidden="true"
-            ></span>
-          </p>
-        </div>
+            {whoami.text}
+          </span>
+        </p>
+        <p class="boot-line prompt-response">
+          <span class="prompt-glyph">{role.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: padWidth(role.text.length),
+              animationDuration: `${role.duration}s`,
+              animationDelay: `${role.delay}s`,
+              animationTimingFunction: `steps(${role.text.length}, end)`,
+            }}
+          >
+            {role.text}
+          </span>
+        </p>
 
-        <h1 class="headline">
+        <p class="boot-line">
+          <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
+          <span
+            class="typed"
+            style={{
+              width: padWidth(operatorCommand.text.length),
+              animationDuration: `${operatorCommand.duration}s`,
+              animationDelay: `${operatorCommand.delay}s`,
+              animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
+            }}
+          >
+            {operatorCommand.text}
+          </span>
+        </p>
+        <p
+          class="boot-line prompt-response operator-line line-reveal"
+          style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
+        >
+          <span class="prompt-glyph">&gt;</span>{' '}
+          Hoda — four-plus years contracting across the UK, not one specialism. (<a
+            href="/about">more</a
+          >)<span
+            class="caret"
+            style={{ animationDelay: `${finalCaretDelay}s` }}
+            aria-hidden="true"
+          ></span>
+        </p>
+
+        <h1
+          class="headline line-reveal"
+          style={{ animationDelay: `${headline.delay + headline.duration}s` }}
+        >
           <span class="prompt-glyph" aria-hidden="true">&gt;</span> {headlineText}
         </h1>
 
-        <p class="subhead">
+        <p
+          class="subhead line-reveal"
+          style={{ animationDelay: `${subhead.delay + subhead.duration}s` }}
+        >
           <span class="comment-glyph" aria-hidden="true">//</span> {subheadText}
         </p>
 
-        <div class="cta-wrap">
+        <div class="cta-wrap line-reveal" style={{ animationDelay: `${ctaDelay}s` }}>
           <CTAButton class="hero-cta" />
         </div>
       </div>
@@ -261,37 +271,20 @@ const subheadText =
   </div>
 </section>
 
-<script is:inline define:vars={{ loopDurationMs }}>
-  // Restarts the boot log's animations by re-inserting its own markup — the simplest
-  // reliable way to reset every child's animation-delay to zero without individually
-  // toggling `animation: none` + reflow on each of the ~15 separately-animated spans.
-  // Skips a given cycle if focus is currently inside the loop (its only focusable
-  // element is the "more" link) — rebuilding the DOM would silently drop focus to
-  // <body> mid-navigation for a keyboard/screen-reader user; the loop just tries again
-  // next interval instead of forcing a reset through.
-  //
-  // The addEventListener call itself is guarded (`__xheiaLoopBound`) since `is:inline`
-  // re-executes this block on every soft navigation that lands on Home — without the
-  // guard, each revisit would stack another permanent `astro:page-load` listener (same
-  // guard pattern as PixelCursor.astro). The interval clear+recreate logic still runs
-  // on every page-load *inside* that one listener, so revisits correctly get a fresh
-  // interval targeting the newly-swapped-in `#boot-loop` element.
-  if (!window.__xheiaLoopBound) {
-    window.__xheiaLoopBound = true;
+<script is:inline define:vars={{ revealDelayMs }}>
+  // is:inline re-executes this block on every soft navigation that lands on Home, so
+  // the addEventListener call itself must be guarded — otherwise each revisit stacks
+  // another listener for the session's lifetime (same guard pattern as PixelCursor.astro).
+  if (!window.__xheiaBootBound) {
+    window.__xheiaBootBound = true;
     document.addEventListener('astro:page-load', () => {
-      if (window.__xheiaLoopInterval) {
-        clearInterval(window.__xheiaLoopInterval);
-        window.__xheiaLoopInterval = null;
+      const bezel = document.querySelector('.hero .bezel');
+      if (!bezel) return;
+      if (sessionStorage.getItem('xheia-boot-played')) {
+        bezel.classList.add('boot-skip');
+      } else {
+        setTimeout(() => sessionStorage.setItem('xheia-boot-played', '1'), revealDelayMs);
       }
-
-      const loop = document.getElementById('boot-loop');
-      if (!loop) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      window.__xheiaLoopInterval = setInterval(() => {
-        if (loop.contains(document.activeElement)) return;
-        loop.innerHTML = loop.innerHTML;
-      }, loopDurationMs);
     });
   }
 </script>
@@ -300,16 +293,15 @@ const subheadText =
   .hero {
     display: flex;
     justify-content: center;
-    align-items: stretch;
+    align-items: center;
     min-height: calc(100vh - 5rem);
-    padding: var(--space-4);
+    padding: var(--space-8) var(--space-4);
   }
 
   .bezel {
     position: relative;
-    display: flex;
-    flex-direction: column;
     width: 100%;
+    max-width: var(--content-max-width);
     border: 3px solid var(--border);
     background: var(--bg);
     box-shadow: inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent);
@@ -347,10 +339,6 @@ const subheadText =
 
   .screen {
     position: relative;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     padding: var(--space-12) var(--space-8);
   }
@@ -473,8 +461,9 @@ const subheadText =
     /* animation-delay set inline per-instance (see markup) — overrides any value here. */
   }
 
-  /* The operator-response line wraps (see the frontmatter note on why it can't use
-     `.typed`) and reveals as a plain delayed block instead. */
+  /* Anything that wraps onto multiple lines (see the frontmatter note on why it can't
+     use `.typed`) reveals as a plain delayed block instead — one shared class so the
+     reduced-motion/boot-skip overrides below only need to say it once. */
   .line-reveal {
     opacity: 0;
     animation: instant-reveal 0.01s steps(1) forwards;
@@ -505,6 +494,35 @@ const subheadText =
       opacity: 1;
       animation: none;
     }
+  }
+
+  /* Session-repeat visits: skip straight to the fully "booted" state instead of
+     replaying (and re-hiding the headline/subhead/CTA behind) the whole sequence — see
+     the `astro:page-load` script above. Same end state as the reduced-motion block
+     above, just gated on a runtime class instead of a media feature. */
+  .bezel.boot-skip .typed {
+    width: auto !important;
+    animation: none;
+  }
+
+  .bezel.boot-skip .module-status {
+    opacity: 1;
+    animation: none;
+  }
+
+  .bezel.boot-skip .progress-fill {
+    width: 100%;
+    animation: none;
+  }
+
+  .bezel.boot-skip .caret {
+    animation: none;
+    opacity: 1;
+  }
+
+  .bezel.boot-skip .line-reveal {
+    opacity: 1;
+    animation: none;
   }
 
   @keyframes caret-appear {
@@ -547,15 +565,5 @@ const subheadText =
 
   .cta-wrap {
     margin: var(--space-4) 0 0;
-  }
-
-  /* Full-viewport-height stretching reads as "a maximized terminal window" on desktop,
-     but on a short/narrow viewport it just leaves a large empty gap below the content —
-     fall back to intrinsic content height there instead. */
-  @media (max-width: 40rem) {
-    .hero {
-      align-items: center;
-      min-height: auto;
-    }
   }
 </style>
