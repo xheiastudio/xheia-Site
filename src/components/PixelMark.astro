@@ -55,19 +55,22 @@ const pupil: Array<[number, number]> = [
   }
 
   /* Idle blink — the mark stays "alive" rather than static, part of the site-wide
-     pixel/retro pass. Brief, infrequent, never distracting. */
+     pixel/retro pass. The original 6s cycle with a ~2%-of-cycle closed-eye window was
+     too subtle to register as "blinking" at a glance (live feedback) — same failure
+     mode the old CSS-only pixel cursor had before it became a real visible element.
+     Shorter cycle, wider closed-eye window: still brief per-blink, but perceptible. */
   .pupil-group {
-    animation: pixelmark-blink 6s steps(1) infinite;
+    animation: pixelmark-blink 3s steps(1) infinite;
   }
 
   @keyframes pixelmark-blink {
     0%,
-    96%,
+    92%,
     100% {
       opacity: 1;
     }
-    97%,
-    99% {
+    94%,
+    98% {
       opacity: 0;
     }
   }
