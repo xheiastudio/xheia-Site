@@ -35,11 +35,14 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 Page title: "Full-stack data consulting"
 
 Single terminal frame (no nested boxed panel — see SPEC.md's single-terminal-frame
-revision note), sized to fill the available viewport rather than a capped content width.
+revision note), sized to its content — no longer forced to fill the full viewport
+height, which used to leave empty space below the (fixed-length) content.
 
-The boot log **loops indefinitely** as ambient decoration (skipped under
-`prefers-reduced-motion`, which just shows it complete and static) — every line types out
-character-by-character:
+The boot sequence **plays once** (home-finalization pass — an intermediate version
+made it loop forever with the tagline permanently static; live use showed that wasn't
+wanted). Every single-line item types out character-by-character; the headline,
+subhead, and operator-response line reveal as a block instead (they wrap, and the
+per-character technique breaks on wrapped text):
 
 1. `$ xheia --init` (typed)
 2. `> loading modules...` (typed)
@@ -48,15 +51,16 @@ character-by-character:
 5. `$ whoami` (typed)
 6. `> full-stack data consultant` (typed)
 7. `$ operator --info` (typed)
-8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (revealed as a block, not typed — it wraps onto two lines)
+8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (block reveal)
+9. Headline (`>` prefix, block reveal): **"I turn fragmented data into systems you can actually trust."**
+10. Subhead (`//` prefix, block reveal): "Full-lifecycle data work — cleansing, migration, warehousing, BI — so whatever you build on it actually holds up." (dropped the AI-specific framing for a full-stack-data-professional one)
+11. CTA: "Start a conversation"
 
-The headline/subhead/CTA are **permanently visible, not gated behind the loop at all** —
-they don't "load," they're just there from first paint, styled as the terminal's own
-biggest output lines (IBM Plex Mono, `>`/`//` prompt glyphs), not a separate pixel-font
-headline:
-- Headline (`>` prefix): **"I turn fragmented data into systems you can actually trust."**
-- Subhead (`//` prefix): "Full-lifecycle data work — cleansing, migration, warehousing, BI — so any AI you build on top actually holds up."
-- CTA: "Start a conversation"
+Once the sequence finishes, everything (boot log + tagline + CTA) stays on screen
+together — nothing clears, nothing loops. A `boot-skip` class (set once per session
+after the sequence first completes) shows the fully "booted" end state instantly on
+repeat visits to Home, so revisiting doesn't mean sitting through the whole sequence
+again with the tagline hidden meanwhile.
 
 ---
 
