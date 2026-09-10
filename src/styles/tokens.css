@@ -46,10 +46,16 @@
 }
 
 /* Signal green is dark-mode only (BRANDFINAL §4) — this override is the only place
-   --accent-status is ever redefined, so no component needs to branch on theme itself. */
+   --accent-status is ever redefined, so no component needs to branch on theme itself.
+   Light mode's --accent-status is Flare coral, not a fallback to Aperture blue: with
+   --accent-primary already Aperture blue in both modes, falling status back to the
+   same blue collapsed two distinct roles (links/CTAs vs. status/terminal-accent) into
+   one color, reading as flat "just white and blue." BRANDFINAL.md's own light-mode
+   guidance already calls for "Coral for occasional secondary emphasis" — this was an
+   unimplemented gap, not a new design decision. */
 [data-theme="light"] {
   --bg: var(--color-paper);
   --text: var(--color-ink);
-  --accent-status: var(--color-aperture);
+  --accent-status: var(--color-flare);
   --mark-outline: var(--color-ink);
 }
