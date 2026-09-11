@@ -2,13 +2,8 @@
 // Three phases, in order: Discovery → Build → Handoff, relocated from Home to
 // /approach as part of the structural redesign. Phase descriptions stay tied to
 // BRANDFINAL §1's described work (ingestion, cleansing, warehousing, BI) and §5's
-// evidence/documentation themes — no new promises invented. Bodies rewritten in the
-// copy pass to first-person, more concrete language (see approach-copy-edits.md) — with
-// one correction: the supplied Discovery text named "pharma, public sector, retail, and
-// education," but BRANDFINAL.md §1 explicitly says retail/education must not be
-// asserted until real detail exists, and "pharma" doesn't match the established "life
-// sciences" term used everywhere else. Swapped in the three confirmed sectors instead
-// (life sciences, public sector, fitness) — same sentence, same voice, no invented claim.
+// evidence/documentation themes — no new promises invented. Bodies shortened in the
+// copy V2 pass.
 //
 // Redesigned as a level-path — nodes connected by a dashed line, game level-select map
 // style — instead of a three-column card row, per the "boxes under boxes" feedback:
@@ -21,30 +16,44 @@
 // ground, not a boxed module. Reusing PillarBlock's bordered-box+rivets container would
 // have quietly recreated the exact "boxes under boxes" pattern this redesign exists to
 // fix (caught in review). Capabilities' lighter border-top divider is the closer match.
+//
+// Each node fades in staggered one after another as the section scrolls into view
+// (see EngagementPhase.astro), via this section's own data-reveal
+// (src/styles/global.css) — no SectionLoader bar here, unlike Capabilities/
+// PillarBlock: a boot-check bar next to short step labels (Discovery/Build/Handoff)
+// read as visual noise rather than a meaningful "load."
 import EngagementPhase from './EngagementPhase.astro';
+
+const ITEM_STAGGER = 0.35;
 
 const phases = [
   {
     title: 'Discovery',
-    body: 'First, I get into your data and your systems and work out what "reliable" needs to mean for your business specifically. I\'ve worked across life sciences, public sector, and fitness without knowing the domain going in - so I don\'t assume I already understand your context, I ask until I do.',
+    body: 'I look at your data and systems, and work out what you actually need.',
   },
   {
     title: 'Build',
-    body: 'Ingestion, cleansing, warehousing, BI. You see it get built as it happens, not just a finished dashboard dropped on you at the end.',
+    body: 'I clean it up, structure it, and build the reporting or systems on top.',
   },
   {
     title: 'Handoff',
-    body: 'You get the finished work, plus documentation good enough that someone else could pick it up without me in the room. That\'s not a nice-to-have - it\'s what I actually leave behind on every project.',
+    body: 'You get the finished work, plus documentation clear enough that anyone can pick it up.',
   },
 ];
 ---
 
 <section class="engagement-structure" data-reveal>
   <p class="eyebrow">// how I work</p>
-  <h2>How an engagement runs</h2>
-  <div class="level-path">
-    <div class="path-line" aria-hidden="true"></div>
-    {phases.map((phase, i) => <EngagementPhase order={i + 1} title={phase.title} body={phase.body} />)}
+  <div class="section-content">
+    <h2>How an engagement runs</h2>
+    <div class="level-path">
+      <div class="path-line" aria-hidden="true"></div>
+      {
+        phases.map((phase, i) => (
+          <EngagementPhase order={i + 1} title={phase.title} body={phase.body} delay={i * ITEM_STAGGER} />
+        ))
+      }
+    </div>
   </div>
 </section>
 
@@ -52,23 +61,23 @@ const phases = [
   .engagement-structure {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
+    padding: var(--space-16) var(--space-4);
     border-top: 1px solid var(--border);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
 
   h2 {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 1.25rem;
     line-height: 1.7;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-8);
   }
 
   .level-path {

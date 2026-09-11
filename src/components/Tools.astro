@@ -2,25 +2,26 @@
 // Small dedicated tools section on /approach, per the real-content pass — grounded
 // directly in xheia-content-worksheet.md's confirmed stack, nothing invented. Reuses
 // CaseStudyCard's existing pixel-tag visual pattern (.tags li) for consistency rather
-// than introducing a new tag style.
+// than introducing a new tag style. Copy V2 pass condensed the 11 individual tools
+// into grouped tags (still the same real stack, just fewer/grouped labels).
+//
+// Deliberately no SectionLoader here — a boot-check bar next to a flat tag list read
+// as visual noise, not a meaningful "load" (unlike Capabilities/PillarBlock's named
+// modules). The tag list just fades in as a group on scroll (.section-content, see
+// src/styles/global.css), same as the rest of the site's data-reveal sections.
+
 const tools = [
-  'Azure Synapse',
-  'Power BI',
-  'Power Automate',
-  'SharePoint',
-  'HubSpot',
-  'Apollo',
+  'Microsoft data & AI stack (Azure, Power BI, Foundry)',
   'Python',
   'SQL',
-  'Microsoft Foundry',
-  'rapidfuzz',
+  'Power Automate',
   'Claude Code',
 ];
 ---
 
 <section class="tools" data-reveal>
   <p class="eyebrow">// tools</p>
-  <ul class="tags">
+  <ul class="tags section-content">
     {tools.map((tool) => <li>{tool}</li>)}
   </ul>
 </section>
@@ -29,14 +30,14 @@ const tools = [
   .tools {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
+    padding: var(--space-16) var(--space-4);
     border-top: 1px solid var(--border);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
@@ -44,18 +45,17 @@ const tools = [
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: 0 0 var(--space-4);
+    gap: var(--space-3);
+    margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .tags li {
-    padding: 0.125rem var(--space-2);
+    padding: var(--space-2) var(--space-3);
     border: 1px solid var(--border);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
   }
-
 </style>

@@ -1,17 +1,26 @@
 ---
 // One node on EngagementStructure's level-path (SPEC.md — EngagementStructure /
-// EngagementPhase). Content is always visible (no progressive disclosure here, unlike
-// Capabilities/PillarBlock) — hover is decorative feedback only, not required to read.
+// EngagementPhase). Content is always visible once revealed (no progressive
+// disclosure, unlike Capabilities/PillarBlock's items) — hover on the marker is
+// decorative feedback only.
+//
+// Fades in staggered one after another as the section scrolls into view (keyed off
+// the parent's data-reveal .is-visible, src/styles/global.css) — but deliberately NO
+// SectionLoader bar here: unlike Capabilities/PillarBlock's named modules, these are
+// short step labels (Discovery/Build/Handoff) where a boot-check bar read as visual
+// noise rather than a meaningful "load." `delay` (seconds) is computed by
+// EngagementStructure.astro from this node's position in the sequence.
 interface Props {
   order: number;
   title: string;
   body: string;
+  delay: number;
 }
 
-const { order, title, body } = Astro.props;
+const { order, title, body, delay } = Astro.props;
 ---
 
-<div class="node">
+<div class="node item-content" style={{ transitionDelay: `${delay}s` }}>
   <div class="node-marker" aria-hidden="true">{order}</div>
   <div class="node-content">
     <h3>{title}</h3>
@@ -27,7 +36,7 @@ const { order, title, body } = Astro.props;
     flex-direction: column;
     align-items: center;
     flex: 1;
-    gap: var(--space-2);
+    gap: var(--space-3);
     padding: 0 var(--space-2);
     text-align: center;
   }
@@ -36,12 +45,12 @@ const { order, title, body } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border: 1px solid var(--accent-primary);
     background: var(--bg);
     font-family: var(--font-display);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     color: var(--accent-primary);
     transition:
       background-color 0.15s ease,
@@ -63,15 +72,15 @@ const { order, title, body } = Astro.props;
 
   .node h3 {
     font-family: var(--font-display);
-    font-size: 0.8125rem;
-    line-height: 1.5;
+    font-size: 0.9375rem;
+    line-height: 1.6;
     margin: 0;
   }
 
   .node p {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.9375rem;
+    font-size: 1.0625rem;
   }
 
   @media (max-width: 40rem) {
