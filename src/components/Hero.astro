@@ -8,14 +8,14 @@
 // terminal lines, chrome-buttons bar) stays Hero-exclusive — the broader pixel-art
 // system (rivets, cursor, scanlines) extends site-wide, see BRANDFINAL.md.
 //
-// Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead is
-// outcome-framed per BRANDFINAL §2 ("lead with what the client gets, not the AI
-// label"), grounded in §5's "Clarity is engineered, not promised" pillar — deliberately
-// not AI-specific (home-finalization pass: dropped "so any AI you build on top..." for
-// a full-stack-data-professional framing that isn't AI-first). Module names in the boot
-// preamble are the existing Capabilities categories staged as a boot flourish, not new
-// claims. Operator line matches the real-content pass's revised origin story
-// (BRANDFINAL.md §1) — same fact as /about's opening line.
+// Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead
+// (rewritten in the copy pass) leads with the full-lifecycle work itself, deliberately
+// not AI-specific — same "not AI-first" framing decision as the home-finalization
+// pass, just newer wording. Module names in the boot preamble are the existing
+// Capabilities categories staged as a boot flourish, not new claims. Operator line
+// (also rewritten in the copy pass, to a skills-summary framing rather than the
+// years-contracting fact — same "Hoda -" lead-in and (more) link to /about kept)
+// still points at the same real bio /about tells in full.
 //
 // Single-frame terminal: everything (boot log, headline, subhead, CTA) lives inside ONE
 // left-aligned `.terminal-body`, not a separately bordered/tinted box nested inside the
@@ -54,10 +54,10 @@
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
 
-const CPS = 105; // characters typed per second — fast but still visibly "typed"
-const DWELL = 0.06; // pause after a line finishes before the next one starts
-const BEAT = 0.15; // longer pause marking a new "section" of the session
-const BAR_FILL_DURATION = 0.25;
+const CPS = 140; // characters typed per second — fast but still visibly "typed"
+const DWELL = 0.04; // pause after a line finishes before the next one starts
+const BEAT = 0.1; // longer pause marking a new "section" of the session
+const BAR_FILL_DURATION = 0.18;
 
 let clock = 0;
 
@@ -86,8 +86,8 @@ const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules.
 const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
   const delay = clock;
   const duration = name.length / CPS;
-  const barDelay = delay + duration + 0.03;
-  const statusDelay = barDelay + BAR_FILL_DURATION + 0.06;
+  const barDelay = delay + duration + 0.02;
+  const statusDelay = barDelay + BAR_FILL_DURATION + 0.04;
   clock = statusDelay + DWELL;
   return { name, delay, duration, barDelay, statusDelay };
 });
@@ -101,19 +101,19 @@ const role = typeLine('>', 'full-stack data consultant');
 clock += BEAT;
 const operatorCommand = typeLine('$', 'operator --info');
 const operatorResponseText =
-  'Hoda — four-plus years contracting across the UK, not one specialism. (more)';
+  'Hoda - multidisciplinary across BI, automation and data strategy. (more)';
 const operatorResponse = blockLine(operatorResponseText);
-const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.06;
+const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.04;
 
 clock += BEAT;
 const headlineText = 'I turn fragmented data into systems you can actually trust.';
 const headline = blockLine(headlineText);
 
 const subheadText =
-  'Full-lifecycle data work — cleansing, migration, warehousing, BI — so whatever you build on it actually holds up.';
+  'From cleansing and migration to warehousing and BI - building the foundation that makes reliable decisions possible.';
 const subhead = blockLine(subheadText);
 
-const ctaDelay = clock + 0.06;
+const ctaDelay = clock + 0.04;
 const revealDelayMs = Math.ceil(ctaDelay * 1000);
 ---
 
@@ -243,7 +243,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
           style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
         >
           <span class="prompt-glyph">&gt;</span>{' '}
-          Hoda — four-plus years contracting across the UK, not one specialism. (<a
+          Hoda - multidisciplinary across BI, automation and data strategy. (<a
             href="/about">more</a
           >)<span
             class="caret"
