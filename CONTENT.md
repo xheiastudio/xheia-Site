@@ -42,7 +42,9 @@ The boot sequence **plays once** (home-finalization pass — an intermediate ver
 made it loop forever with the tagline permanently static; live use showed that wasn't
 wanted). Every single-line item types out character-by-character; the headline,
 subhead, and operator-response line reveal as a block instead (they wrap, and the
-per-character technique breaks on wrapped text):
+per-character technique breaks on wrapped text). Pacing sped up a third time in the
+copy pass (CPS/DWELL/BEAT all tightened again) — same full sequence, noticeably faster
+than before:
 
 1. `$ xheia --init` (typed)
 2. `> loading modules...` (typed)
@@ -51,9 +53,9 @@ per-character technique breaks on wrapped text):
 5. `$ whoami` (typed)
 6. `> full-stack data consultant` (typed)
 7. `$ operator --info` (typed)
-8. `> Hoda — four-plus years contracting across the UK, not one specialism. (more: /about)` (block reveal)
+8. `> Hoda - multidisciplinary across BI, automation and data strategy. (more: /about)` (block reveal; copy pass — reworded from the years-contracting fact to a skills-summary line, keeping the `Hoda -` lead-in and the `(more)` link)
 9. Headline (`>` prefix, block reveal): **"I turn fragmented data into systems you can actually trust."**
-10. Subhead (`//` prefix, block reveal): "Full-lifecycle data work — cleansing, migration, warehousing, BI — so whatever you build on it actually holds up." (dropped the AI-specific framing for a full-stack-data-professional one)
+10. Subhead (`//` prefix, block reveal): "From cleansing and migration to warehousing and BI - building the foundation that makes reliable decisions possible." (copy pass — replaces the earlier "so whatever you build on it actually holds up" line)
 11. CTA: "Start a conversation"
 
 Once the sequence finishes, everything (boot log + tagline + CTA) stays on screen
@@ -73,7 +75,9 @@ Eyebrow: `// what I do`. Rendered as a boot-menu — click/tap an item to expand
 |---|---|
 | Cleansing & migration | Fixing and moving data so it can actually be trusted downstream. |
 | Warehousing & BI | A single source of truth, and the reporting layer built on it. |
-| Agentic AI systems | The newest expression of the same full-lifecycle work — never a bolt-on. |
+| AI agents & automation | The newest expression of the same full-lifecycle work - never a bolt-on. |
+
+(Renamed from "Agentic AI systems" in the copy pass.)
 
 Link: "See the work →" → `/work`
 
@@ -87,8 +91,10 @@ Eyebrow: `// principles`. Rendered as a diagnostic self-check — click/tap a pr
 | Title | Body |
 |---|---|
 | Truth over theater | Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater. |
-| Clarity is engineered, not promised | Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy. |
-| Built to survive scrutiny | Security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in. |
+| Clarity is engineered, not promised | Full-lifecycle discipline - ingestion, cleansing, warehousing, BI - is what makes anything built on top of the data actually trustworthy. |
+| Built to survive scrutiny | Security-conscious, evidence-based, documented - not a pitch that only holds up in the room it was delivered in. |
+
+(Wording unchanged in the copy pass — explicitly held back — punctuation-only fix.)
 
 ---
 
@@ -100,9 +106,9 @@ Heading: "How an engagement runs". Rendered as a level-path — three connected 
 
 | Phase | Body |
 |---|---|
-| 01 Discovery | Understand the data, the systems, and what "trustworthy" actually needs to mean here. |
-| 02 Build | Ingestion, cleansing, warehousing, BI — the full-lifecycle work, done in the open. |
-| 03 Handoff | Delivered work, documented plainly — evidence you can check, not just a claim. |
+| 01 Discovery | First, I get into your data and your systems and work out what "reliable" needs to mean for your business specifically. I've worked across life sciences, public sector, and fitness without knowing the domain going in - so I don't assume I already understand your context, I ask until I do. |
+| 02 Build | Ingestion, cleansing, warehousing, BI. You see it get built as it happens, not just a finished dashboard dropped on you at the end. |
+| 03 Handoff | You get the finished work, plus documentation good enough that someone else could pick it up without me in the room. That's not a nice-to-have - it's what I actually leave behind on every project. |
 
 ---
 
@@ -112,14 +118,14 @@ Heading: "How an engagement runs". Rendered as a level-path — three connected 
 Eyebrow: `// tools`. Real stack, grounded in `xheia-content-worksheet.md` — nothing invented. Rendered as a pixel-tag list (same visual style as case-study tags).
 
 - Azure Synapse, Power BI, Power Automate, SharePoint, HubSpot, Apollo, Python, SQL, Microsoft Foundry, rapidfuzz, Claude Code
-- Caption: "Exact-match preferred over fuzzy auto-merging on company records — a deliberate choice, not a limitation."
+- No caption (removed in the copy pass — the previous exact-match/fuzzy-matching explainer line didn't land, per direct feedback; just the tag list now)
 
 ---
 
 ## Approach page intro
 
 **File:** `src/pages/approach/index.astro`
-- Intro line: "What I do, how I think about it, and how an engagement actually runs."
+- Intro line: "What I do, how I think about it, and how a project runs from first call to handover."
 - Ends with the Contact CTA band (see below).
 
 ---
@@ -127,9 +133,9 @@ Eyebrow: `// tools`. Real stack, grounded in `xheia-content-worksheet.md` — no
 ## Contact CTA band
 
 **File:** `src/components/ContactCTA.astro`
-- "I turn fragmented data into systems you can actually trust." + "Start a conversation" button
+- "I turn fragmented data into systems that hold up after I've moved on." + "Start a conversation" button (copy pass — was "...systems you can actually trust.", the same line as Home's tagline; now a distinct closing line so the two aren't identical)
 
-Appears on `/approach` and `/about`. Not on Home — Hero already carries its own CTA there.
+Appears on `/approach` and `/about`. Not on Home — Hero already carries its own CTA there, with its own (unchanged) primary tagline.
 
 ---
 
@@ -140,22 +146,23 @@ Page title: "Work" (renamed from "Track Record" — a proof-of-work research doc
 label as priming a resume reading; the case-study structure itself already matched the
 research's recommendation, so only the label/route changed)
 
-- Intro line: "Full-lifecycle data work — cleansing, migration, warehousing, BI — and the agentic systems built on top of it."
+- Intro line: "Real engagements across life sciences, public sector, and fitness - different sectors, same underlying problem to solve." (copy pass — replaces a line that repeated Home's lifecycle phrasing verbatim)
 - Sectors strip: `// sectors Fitness · Life sciences · Public sector` — derived automatically from each case study's tags (sector is always the last tag), not hardcoded
 - Disclaimer (shown above the case studies): "Client details are withheld by agreement; the work and outcomes below are real."
+- Below the grid (copy pass, new): "More case studies loading" + a blinking caret, reusing the existing `.pending-caret` treatment (previously dormant — only used for the true empty-state message, which isn't active with 3 real entries)
 
 ### Case studies — 3 real, anonymized entries
 **Files:** `src/content/case-studies/*.md`
 
 **A life sciences membership organisation** — post-acquisition customer intelligence
 - Problem: Three acquisitions had left customer data fragmented across systems, with no way to score, segment, or act on it as one combined base.
-- Approach: Built a post-acquisition customer intelligence pipeline — ICP scoring, churn detection, reactivation targeting, and cross-sell mapping — delivered through a six-tab Power BI dashboard, with full documentation handed over.
+- Approach: Built a post-acquisition customer intelligence pipeline - ICP scoring, churn detection, reactivation targeting, and cross-sell mapping - delivered through a six-tab Power BI dashboard, with full documentation handed over.
 - Outcome: A single, actionable view of the combined customer base, backed by full documentation handover.
 - Tags: ICP scoring, churn detection, post-acquisition, life sciences
 
 **A major UK supply chain organisation** — CRM migration
 - Problem: Legacy systems needed to migrate to a modern CRM, with the data cleansing that migration depended on.
-- Approach: Helped with the CRM implementation — data migration and cleansing work moving legacy data into the new system.
+- Approach: Helped with the CRM implementation - data migration and cleansing work moving legacy data into the new system.
 - Outcome: A clean migration into the new system, with the underlying data trustworthy from day one.
 - Tags: data migration, CRM implementation, cleansing, public sector
 - Note: the worksheet described this as "the biggest supply chain company in the UK" — softened here since that superlative is identifying even without naming the company. "Helped with" (not "led") matches the worksheet's own wording of her role.
@@ -174,25 +181,23 @@ No Retail/Education entries — no real detail supplied for either yet. To add m
 ## About (`/about`)
 
 **File:** `src/pages/about.astro`
-Page title: "About — Hoda"
-Meta description: "I'm Hoda — a full-stack data consultant who's spent four-plus years contracting across the UK."
+Page title: "About - Hoda"
+Meta description: "I'm Hoda - a full-stack data consultant who's spent four-plus years contracting across the UK."
 
 - Name heading: **Hoda**
-- Role line: "I do full-stack data consulting under the name Xheia."
-- Location line: "Based remotely — working with clients across the UK and internationally."
+- Role line (copy pass — merges the previous separate role + location lines into one sentence): "I do full-stack data consulting under the name Xheia - based remotely, working with clients across the UK and internationally."
 - Photo: **[PLACEHOLDER]** — styled placeholder box, no image yet
 
-Narrative (first person, rewritten in the real-content pass — service-first, no project-level detail, no biomedical framing):
+Narrative (first person; copy pass rewrote the body from 4 paragraphs to 3 — service-first,
+no biomedical framing, still no project-level detail beyond the one headline result):
 
-> I've spent four-plus years contracting across the UK — moving between industries, systems, and problems rather than staying inside one company or one specialism.
+> Four-plus years contracting across life sciences, public sector, and fitness organisations. Different industries, same job every time: take data that's scattered and unreliable and turn it into something a team can actually run the business on.
 >
-> That range is the point: life sciences, public sector, and fitness organisations have all needed the same underlying thing — data cleaned, consolidated, and turned into something a team can actually act on.
+> Most recently, that meant building a post-acquisition customer intelligence pipeline across three acquisitions for a life sciences client - a six-tab Power BI dashboard covering everything from ICP scoring to churn detection. [More case studies →](/work)
 >
-> Most recently, that meant building a post-acquisition customer intelligence pipeline spanning three acquisitions for a life sciences client, delivered as a six-tab Power BI dashboard. [More case studies →](/work)
->
-> That work is now extending into agentic AI systems — the newest expression of the same full-lifecycle discipline, not a separate offering.
+> I'm now applying the same approach to AI agents and automation - same discipline, newer tools.
 
-The third paragraph (headline result) was added per the proof-of-work research doc — About
+The headline-result paragraph was added per the proof-of-work research doc — About
 previously had zero concrete proof in it. Wording traces exactly to the life-sciences case
 study; the other two case studies stay exclusive to `/work`, per the standing "About is
 service-first, not a CV" decision.

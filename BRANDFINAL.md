@@ -109,4 +109,8 @@ Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what 
 For technical leaders and regulated enterprises who will actually check the work: security-conscious, evidence-based, documented — not a pitch that only holds up in the room it was delivered in.
 
 ## Tagline
-"I turn fragmented data into systems you can actually trust."
+"I turn fragmented data into systems you can actually trust." — this is the primary
+tagline, used verbatim on Home's Hero. The shared `ContactCTA` band (on `/approach` and
+`/about`) carries a distinct closing line as of the copy pass — "I turn fragmented data
+into systems that hold up after I've moved on." — a deliberate variant, not a
+contradiction or a typo.
