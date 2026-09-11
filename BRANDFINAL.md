@@ -8,7 +8,7 @@
 
 **Positioning tier:** Premium / boutique. Solo-expert-led, not agency-styled. Direct, defensible claims over ones that imply team scale that doesn't exist.
 
-**Location:** Remote-first, deliberately not tied to one place — works with clients across the UK and internationally. Not agency-styled around a single office/market.
+**Location:** Remote-first, deliberately not tied to one place — works with clients across the world. Not agency-styled around a single office/market.
 
 **Target personas:**
 - Burned buyers — vendor-skeptical directors who've been oversold before
