@@ -13,6 +13,10 @@
 // src/content/case-studies/life-sciences-customer-intelligence.md, no new specifics.
 // This is one sentence of proof, not a rundown — the other two case studies stay
 // exclusive to /work.
+//
+// Copy pass: rewritten per the user's supplied text — role/location merged into one
+// sentence (was two small separate lines), body tightened from 4 paragraphs to 3. Same
+// facts throughout, no new claims. Hyphens, not em-dashes, per the sitewide sweep.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ContactCTA from '../components/ContactCTA.astro';
@@ -21,8 +25,8 @@ import PixelRivets from '../components/PixelRivets.astro';
 ---
 
 <BaseLayout
-  title="About — Hoda"
-  description="I'm Hoda — a full-stack data consultant who's spent four-plus years contracting across the UK."
+  title="About - Hoda"
+  description="I'm Hoda - a full-stack data consultant who's spent four-plus years contracting across the UK."
 >
   <Header />
   <main class="about-page">
@@ -33,29 +37,27 @@ import PixelRivets from '../components/PixelRivets.astro';
       </div>
       <div class="intro-text">
         <h1>Hoda</h1>
-        <p class="role">I do full-stack data consulting under the name Xheia.</p>
-        <p class="location">Based remotely — working with clients across the UK and internationally.</p>
+        <p class="role">
+          I do full-stack data consulting under the name Xheia - based remotely,
+          working with clients across the UK and internationally.
+        </p>
       </div>
     </div>
 
     <p>
-      I've spent four-plus years contracting across the UK — moving between
-      industries, systems, and problems rather than staying inside one company or one
-      specialism.
-    </p>
-    <p>
-      That range is the point: life sciences, public sector, and fitness
-      organisations have all needed the same underlying thing — data cleaned,
-      consolidated, and turned into something a team can actually act on.
+      Four-plus years contracting across life sciences, public sector, and fitness
+      organisations. Different industries, same job every time: take data that's
+      scattered and unreliable and turn it into something a team can actually run the
+      business on.
     </p>
     <p>
       Most recently, that meant building a post-acquisition customer intelligence
-      pipeline spanning three acquisitions for a life sciences client, delivered as a
-      six-tab Power BI dashboard. <a href="/work">More case studies →</a>
+      pipeline across three acquisitions for a life sciences client - a six-tab Power
+      BI dashboard covering everything from ICP scoring to churn detection. <a href="/work">More case studies →</a>
     </p>
     <p>
-      That work is now extending into agentic AI systems — the newest expression of
-      the same full-lifecycle discipline, not a separate offering.
+      I'm now applying the same approach to AI agents and automation - same
+      discipline, newer tools.
     </p>
   </main>
   <ContactCTA />
@@ -103,15 +105,9 @@ import PixelRivets from '../components/PixelRivets.astro';
   }
 
   .role {
-    margin: 0 0 var(--space-1);
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
-  }
-
-  .location {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
   }
 
   .about-page p {
