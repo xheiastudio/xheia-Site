@@ -46,7 +46,7 @@ What I do, how I think about it, and how a project runs from first call to hando
 - Warehousing & BI — A single source of truth, and the reporting layer built on it.
 - AI agents & automation — The newest expression of the same full-lifecycle work - never a bolt-on.
 - Post-acquisition integration — Consolidating data from multiple systems after a merger or acquisition into one source you can actually act on.
-- Financial modelling & commercial analysis — Pay structures and compensation analysis that stands up in front of a board.
+- Financial modelling & commercial analysis — Financial analysis that stands up in front of a board.
 
 See the work → (/work)
 
