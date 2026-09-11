@@ -78,6 +78,62 @@ svg {
   }
 }
 
+/* SectionLoader (src/components/SectionLoader.astro) — the bar-fill half of
+   PillarBlock's original per-pillar "boot check" (its click-to-verify
+   <details>/<summary> version, now retired in favor of auto-loading), reused
+   wherever an item wants the same "verifying..." bar below its title, keyed off
+   the same .is-visible class above. Each instance carries its own inline
+   animation-delay (a `delay` prop, seconds) so several items in one section can
+   stagger like Hero's module-loading lines — inline delay always wins over this
+   base rule regardless of the shorthand below, same cascade behavior already relied
+   on throughout Hero.astro. steps(10, end), not a steps(1) snap — that exact
+   technique (steps(1) landing on a computed-delay boundary) caused a real "content
+   never becomes visible" bug fixed earlier in Hero.astro, so this deliberately avoids
+   it. The checkmark is NOT part of this component — matching the original, it's a
+   plain inline glyph prefixing the body paragraph text (see PillarBlock/Capabilities),
+   revealed together with that paragraph via .item-content below, timed to land right
+   as the bar finishes filling. */
+[data-reveal] .loader-bar-fill {
+  width: 0;
+}
+
+[data-reveal].is-visible .loader-bar-fill {
+  animation: section-loader-fill 0.5s steps(10, end) forwards;
+}
+
+@keyframes section-loader-fill {
+  to {
+    width: 100%;
+  }
+}
+
+[data-reveal] .section-content,
+[data-reveal] .item-content {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+[data-reveal] .section-content {
+  transition-delay: 0.8s;
+}
+
+[data-reveal].is-visible .section-content,
+[data-reveal].is-visible .item-content {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] .loader-bar-fill {
+    width: 100%;
+  }
+
+  [data-reveal] .section-content,
+  [data-reveal] .item-content {
+    opacity: 1;
+    transition: none;
+  }
+}
+
 /* Brief CRT "power-on" flicker on every page load/navigation — markup lives in
    BaseLayout.astro. Purely decorative overlay, inert (pointer-events: none),
    fades itself out and stays invisible at rest. */

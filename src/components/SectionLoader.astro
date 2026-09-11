@@ -1,0 +1,42 @@
+---
+// The bar half of PillarBlock's original per-pillar "boot check" — a bar that fills
+// left-to-right in the status accent color, on its own line below a title. This is
+// the exact `.check-bar`/`.check-bar-fill` visual PillarBlock had before (native
+// <details>/<summary>, played on click) — reused here as a standalone piece so
+// Capabilities can drop the same visual next to its own items. The checkmark is
+// deliberately NOT part of this component: in the original, it's a plain glyph
+// prefixing the body paragraph, not glued to the bar — see PillarBlock.astro /
+// Capabilities.astro for that half.
+//
+// Timing is driven by CSS keyed off the parent [data-reveal]'s `.is-visible` class
+// (see src/styles/global.css) — the same class BaseLayout.astro's IntersectionObserver
+// already adds once a section scrolls into view — plus an optional per-instance
+// `delay` (seconds) so multiple items inside one section can stagger, one after
+// another, like Hero's module-loading lines.
+interface Props {
+  delay?: number;
+}
+
+const { delay = 0 } = Astro.props;
+---
+
+<span class="loader-bar" aria-hidden="true">
+  <span class="loader-bar-fill" style={{ animationDelay: `${delay}s` }}></span>
+</span>
+
+<style>
+  .loader-bar {
+    display: block;
+    width: 100%;
+    max-width: 12rem;
+    height: 0.4rem;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .loader-bar-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent-status);
+  }
+</style>

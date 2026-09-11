@@ -3,13 +3,18 @@
 // redesign. Copy condensed directly from BRANDFINAL.md §5 — no new pillar language
 // invented (SPEC.md — PillarBlock).
 //
-// Redesigned as a diagnostic self-check (native <details>/<summary> again, for the same
-// keyboard/screen-reader/no-JS reasons as Capabilities' boot-menu) instead of bordered
-// icon tiles: each principle starts collapsed; opening it plays a brief "verifying..."
-// progress bar, then a checkmark and the body text land. Ties the interaction to the
-// pillar's own meaning — evidence over claims — rather than being decoration for its
-// own sake. Deliberately a different mechanic from Capabilities' menu, per the
-// "boxes under boxes" feedback: relocated sections each get a distinct interaction.
+// This section is the ORIGIN of the bar-fill-then-checkmark "boot check" visual — it
+// used to play per-pillar on click (native <details>/<summary>: indicator dot + title
+// in the summary row, then a bar on its own line below, then a ✓-prefixed body
+// paragraph once opened). Reworked to auto-load instead, staggered one pillar after
+// another as the section scrolls into view — same visual, same layout, just triggered
+// by scroll instead of a click. The bar is the shared `SectionLoader` component
+// (src/components/SectionLoader.astro); the checkmark stays what it always was, a
+// plain glyph prefixing the body text, not part of the bar.
+import SectionLoader from './SectionLoader.astro';
+
+const ITEM_STAGGER = 0.35;
+
 const pillars = [
   {
     title: 'Truth over theater',
@@ -30,28 +35,23 @@ const pillars = [
   <p class="eyebrow">// principles</p>
   <div class="checks">
     {
-      pillars.map((pillar) => (
-        <details class="check-item">
-          <summary>
-            <span class="check-indicator" aria-hidden="true" />
-            <span class="check-title">{pillar.title}</span>
-            <span class="check-action" aria-hidden="true">
-              run check →
-            </span>
-          </summary>
-          <div class="check-result">
-            <div class="check-bar" aria-hidden="true">
-              <span class="check-bar-fill" />
+      pillars.map((pillar, i) => {
+        const delay = i * ITEM_STAGGER;
+        return (
+          <div class="check-item">
+            <div class="check-head item-content" style={{ transitionDelay: `${delay}s` }}>
+              <span class="check-indicator" aria-hidden="true" />
+              <span class="check-title">{pillar.title}</span>
             </div>
-            <p class="check-body">
-              <span class="check-mark" aria-hidden="true">
-                ✓
-              </span>{' '}
-              {pillar.body}
-            </p>
+            <div class="check-result">
+              <SectionLoader delay={delay} />
+              <p class="check-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
+                <span class="check-mark" aria-hidden="true">✓</span> {pillar.body}
+              </p>
+            </div>
           </div>
-        </details>
-      ))
+        );
+      })
     }
   </div>
 </section>
@@ -59,16 +59,16 @@ const pillars = [
 <style>
   .pillar-block {
     width: min(100% - 2 * var(--space-4), var(--content-max-width));
-    margin: var(--space-8) auto;
-    padding: var(--space-8);
+    margin: var(--space-16) auto;
+    padding: var(--space-12);
     border: 1px solid var(--border);
     background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
@@ -76,125 +76,47 @@ const pillars = [
   .checks {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .check-item {
+    padding: var(--space-4) var(--space-5);
     border: 1px solid var(--border);
     background: var(--bg);
   }
 
-  .check-item summary {
+  .check-head {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    cursor: pointer;
-    list-style: none;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    line-height: 1.5;
-  }
-
-  .check-item summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .check-item summary::marker {
-    content: '';
-  }
-
-  .check-item summary:hover,
-  .check-item summary:focus-visible {
-    background: color-mix(in srgb, var(--text) 4%, transparent);
   }
 
   .check-indicator {
     flex-shrink: 0;
     width: 0.6rem;
     height: 0.6rem;
-    border: 1px solid var(--accent-primary);
     border-radius: 50%;
-  }
-
-  .check-item[open] .check-indicator {
     background: var(--accent-status);
-    border-color: var(--accent-status);
   }
 
-  .check-action {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-
-  .check-item[open] .check-action {
-    display: none;
+  .check-title {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    line-height: 1.6;
   }
 
   .check-result {
-    padding: 0 var(--space-4) var(--space-4);
-  }
-
-  .check-bar {
-    width: 100%;
-    max-width: 12rem;
-    height: 0.4rem;
-    border: 1px solid var(--border);
-    margin-bottom: var(--space-3);
-    overflow: hidden;
-  }
-
-  .check-bar-fill {
-    display: block;
-    height: 100%;
-    width: 0;
-  }
-
-  .check-item[open] .check-bar-fill {
-    animation: check-fill 0.5s steps(10, end) forwards;
-    background: var(--accent-status);
-  }
-
-  @keyframes check-fill {
-    to {
-      width: 100%;
-    }
+    margin-top: var(--space-3);
+    padding-left: calc(0.6rem + var(--space-3));
   }
 
   .check-body {
-    margin: 0;
+    margin: var(--space-3) 0 0;
     color: var(--text-secondary);
-    font-size: 0.9375rem;
-    opacity: 0;
-  }
-
-  .check-item[open] .check-body {
-    animation: check-reveal 0.01s steps(1) forwards;
-    animation-delay: 0.55s;
-  }
-
-  @keyframes check-reveal {
-    to {
-      opacity: 1;
-    }
+    font-size: 1.0625rem;
   }
 
   .check-mark {
     color: var(--accent-status);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .check-item[open] .check-bar-fill {
-      width: 100%;
-      animation: none;
-    }
-
-    .check-item[open] .check-body {
-      opacity: 1;
-      animation: none;
-    }
   }
 </style>

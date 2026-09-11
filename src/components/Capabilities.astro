@@ -3,12 +3,25 @@
 // grounded in BRANDFINAL §1 "What I do", no invented claims, no past-client language.
 // Links to /work for the actual proof.
 //
-// Redesigned as a boot-menu / select-screen (native <details>/<summary> — real keyboard
-// and screen-reader support for free, degrades to a plain expandable list without JS)
-// instead of three identical bordered tiles, per the "boxes under boxes" feedback: each
-// relocated section now gets its own distinct interaction rather than repeating one
-// card pattern. See BRANDFINAL.md's Visual Identity section.
+// Copy V2 pass: two new items (Post-acquisition integration / Financial modelling &
+// commercial analysis) — the first traces to the life-sciences case study's three
+// acquisitions, the second to the fitness case study's pay-structure/board work.
+//
+// Reworked from a click-to-expand boot-menu (native <details>/<summary>) to an
+// auto-loading one: each item now types itself in automatically, staggered one after
+// another — icon+title fade in, then a SectionLoader bar fills on its own line below
+// the title, then a ✓-prefixed body paragraph lands — same bar-below-title,
+// checkmark-before-body layout as PillarBlock's original per-pillar check (this is
+// where that visual came from; ported here rather than invented fresh), all keyed off
+// this section's own data-reveal .is-visible trigger (see src/styles/global.css), same
+// mechanism the site already uses sitewide, no new observer. Being first on the page,
+// it plays immediately on load with no scroll needed; the other /approach sections
+// play theirs as scrolled into view. Bigger, more dominant sizing throughout (called
+// out by name).
 import PixelIcon from './PixelIcon.astro';
+import SectionLoader from './SectionLoader.astro';
+
+const ITEM_STAGGER = 0.35;
 
 const sparklePixels: Array<[number, number]> = [
   [3, 0], [3, 1],
@@ -29,6 +42,26 @@ const chipPixels: Array<[number, number]> = [
   [3, 0], [3, 6], [0, 3], [6, 3],
 ];
 
+// Two converging lines meeting in one stem — multiple things becoming one.
+const mergePixels: Array<[number, number]> = [
+  [0, 0], [6, 0],
+  [1, 1], [5, 1],
+  [2, 2], [4, 2],
+  [3, 3], [3, 4], [3, 5],
+  [2, 6], [3, 6], [4, 6],
+];
+
+// A rising step-line with a small flag at the top — distinct from barsPixels' static bars.
+const chartPixels: Array<[number, number]> = [
+  [0, 6], [1, 6],
+  [1, 5], [2, 5],
+  [2, 4], [3, 4],
+  [3, 3], [4, 3],
+  [4, 2], [5, 2],
+  [5, 1], [6, 1],
+  [5, 0], [6, 0], [6, 2],
+];
+
 const capabilities = [
   {
     title: 'Cleansing & migration',
@@ -45,27 +78,43 @@ const capabilities = [
     body: 'The newest expression of the same full-lifecycle work - never a bolt-on.',
     icon: chipPixels,
   },
+  {
+    title: 'Post-acquisition integration',
+    body: 'Consolidating data from multiple systems after a merger or acquisition into one source you can actually act on.',
+    icon: mergePixels,
+  },
+  {
+    title: 'Financial modelling & commercial analysis',
+    body: 'Pay structures and compensation analysis that stands up in front of a board.',
+    icon: chartPixels,
+  },
 ];
 ---
 
 <section class="capabilities" data-reveal>
   <p class="eyebrow">// what I do</p>
   <div class="menu-frame">
-    <p class="menu-frame-label">select module</p>
+    <p class="menu-frame-label">loading modules...</p>
     <div class="menu">
       {
-        capabilities.map((c) => (
-          <details class="menu-item">
-            <summary>
-              <span class="selector" aria-hidden="true">
-                ▶
-              </span>
-              <PixelIcon pixels={c.icon} cols={7} rows={7} size={20} />
-              <span class="menu-title">{c.title}</span>
-            </summary>
-            <p class="menu-body">{c.body}</p>
-          </details>
-        ))
+        capabilities.map((c, i) => {
+          const delay = i * ITEM_STAGGER;
+          return (
+            <div class="menu-item">
+              <div class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
+                <span class="selector" aria-hidden="true">▶</span>
+                <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
+                <span class="menu-title">{c.title}</span>
+              </div>
+              <div class="menu-result">
+                <SectionLoader delay={delay} />
+                <p class="menu-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
+                  <span class="check-mark" aria-hidden="true">✓</span> {c.body}
+                </p>
+              </div>
+            </div>
+          );
+        })
       }
     </div>
   </div>
@@ -76,14 +125,14 @@ const capabilities = [
   .capabilities {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: var(--space-8) var(--space-4);
+    padding: var(--space-16) var(--space-4);
     border-top: 1px solid var(--border);
   }
 
   .eyebrow {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
@@ -94,16 +143,17 @@ const capabilities = [
 
   .menu-frame-label {
     margin: 0;
-    padding: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--border);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-secondary);
   }
 
   .menu-item {
+    padding: var(--space-6) var(--space-4);
     border-bottom: 1px solid var(--border);
   }
 
@@ -111,39 +161,15 @@ const capabilities = [
     border-bottom: none;
   }
 
-  .menu-item summary {
+  .menu-item-head {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .menu-item summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .menu-item summary::marker {
-    content: '';
-  }
-
-  .menu-item summary:hover,
-  .menu-item summary:focus-visible {
-    background: color-mix(in srgb, var(--text) 4%, transparent);
+    gap: var(--space-4);
   }
 
   .selector {
     color: var(--accent-primary);
-    opacity: 0;
-    transition: opacity 0.15s ease;
-    font-size: 0.75rem;
-  }
-
-  .menu-item[open] .selector,
-  .menu-item summary:hover .selector,
-  .menu-item summary:focus-visible .selector {
-    opacity: 1;
+    font-size: 0.875rem;
   }
 
   .menu-item :global(.pixel-icon) {
@@ -153,22 +179,30 @@ const capabilities = [
 
   .menu-title {
     font-family: var(--font-display);
-    font-size: 0.75rem;
-    line-height: 1.5;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .menu-result {
+    margin-top: var(--space-3);
+    padding-left: calc(1.5rem + 28px + var(--space-4) * 2);
   }
 
   .menu-body {
-    margin: 0;
-    padding: 0 var(--space-4) var(--space-4) calc(1.5rem + 20px + var(--space-3) * 2);
+    margin: var(--space-3) 0 0;
     color: var(--text-secondary);
-    font-size: 0.9375rem;
+    font-size: 1.0625rem;
+  }
+
+  .check-mark {
+    color: var(--accent-status);
   }
 
   .see-more {
     display: inline-block;
-    margin-top: var(--space-6);
+    margin-top: var(--space-8);
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: var(--accent-primary);
   }
 </style>
