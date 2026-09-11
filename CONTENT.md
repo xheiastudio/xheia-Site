@@ -24,7 +24,7 @@ Placeholders (things not yet filled in) are marked **[PLACEHOLDER]**.
 **File:** `src/components/Header.astro`
 
 - Wordmark: `xheia`
-- Nav links: `Work` · `Approach` · `About` · `Contact` (renamed from "Track Record" — see SPEC.md revision note)
+- Nav links: `Approach` · `Work` · `About` · `Contact` (Work renamed from "Track Record" — see SPEC.md revision note; Approach/Work order swapped in the nav-swap-and-copy-V2 pass)
 - CTA button (site-wide, same everywhere): **"Start a conversation"** → links to `/contact`
 
 ---
@@ -69,15 +69,22 @@ again with the tagline hidden meanwhile.
 ## What I do (`/approach`)
 
 **File:** `src/components/Capabilities.astro`
-Eyebrow: `// what I do`. Rendered as a boot-menu — click/tap an item to expand it.
+Eyebrow: `// what I do`. Rendered as a boot-menu — each item auto-loads staggered (bar
+fills, then a ✓-prefixed body paragraph lands), being first on the page it plays
+immediately on load with no scroll needed. Previously click/tap-to-expand; converted
+to auto-load in the nav-swap-and-copy-V2 pass.
 
 | Item | Body |
 |---|---|
 | Cleansing & migration | Fixing and moving data so it can actually be trusted downstream. |
 | Warehousing & BI | A single source of truth, and the reporting layer built on it. |
 | AI agents & automation | The newest expression of the same full-lifecycle work - never a bolt-on. |
+| Post-acquisition integration | Consolidating data from multiple systems after a merger or acquisition into one source you can actually act on. |
+| Financial modelling & commercial analysis | Pay structures and compensation analysis that stands up in front of a board. |
 
-(Renamed from "Agentic AI systems" in the copy pass.)
+(AI agents & automation renamed from "Agentic AI systems" in the copy pass. Last two
+items added in the copy V2 pass — traced to the life-sciences and fitness case studies
+respectively.)
 
 Link: "See the work →" → `/work`
 
@@ -86,7 +93,11 @@ Link: "See the work →" → `/work`
 ## Principles (`/approach`)
 
 **File:** `src/components/PillarBlock.astro`
-Eyebrow: `// principles`. Rendered as a diagnostic self-check — click/tap a principle to "run" it and reveal the body text.
+Eyebrow: `// principles`. Rendered as a diagnostic self-check — indicator dot + title,
+a bar fills on its own line below it, then a ✓-prefixed body paragraph lands. This is
+the ORIGIN of that bar-fill-then-checkmark visual; previously click/tap to "run" a
+principle, now auto-loads staggered as the section scrolls into view (nav-swap-and-
+copy-V2 pass) — same layout either way.
 
 | Title | Body |
 |---|---|
@@ -115,9 +126,9 @@ Heading: "How an engagement runs". Rendered as a level-path — three connected 
 ## Tools (`/approach`)
 
 **File:** `src/components/Tools.astro`
-Eyebrow: `// tools`. Real stack, grounded in `xheia-content-worksheet.md` — nothing invented. Rendered as a pixel-tag list (same visual style as case-study tags).
+Eyebrow: `// tools`. Real stack, grounded in `xheia-content-worksheet.md` — nothing invented. Rendered as a pixel-tag list (same visual style as case-study tags), fading in as a group on scroll — deliberately no per-item "boot check" bar (a flat tag list doesn't suit it).
 
-- Azure Synapse, Power BI, Power Automate, SharePoint, HubSpot, Apollo, Python, SQL, Microsoft Foundry, rapidfuzz, Claude Code
+- Microsoft data & AI stack (Azure, Power BI, Foundry) · Python · SQL · Power Automate · Claude Code (condensed from 11 individual tools to 5 grouped labels in the copy V2 pass — same real stack)
 - No caption (removed in the copy pass — the previous exact-match/fuzzy-matching explainer line didn't land, per direct feedback; just the tag list now)
 
 ---
@@ -185,22 +196,23 @@ Page title: "About - Hoda"
 Meta description: "I'm Hoda - a full-stack data consultant who's spent four-plus years contracting across the UK."
 
 - Name heading: **Hoda**
-- Role line (copy pass — merges the previous separate role + location lines into one sentence): "I do full-stack data consulting under the name Xheia - based remotely, working with clients across the UK and internationally."
+- Role line (copy V2 pass — location broadened from "across the UK and internationally" to "across the world"): "I do full-stack data consulting under the name Xheia - based remotely, working with clients across the world."
 - Photo: **[PLACEHOLDER]** — styled placeholder box, no image yet
 
-Narrative (first person; copy pass rewrote the body from 4 paragraphs to 3 — service-first,
-no biomedical framing, still no project-level detail beyond the one headline result):
+Narrative (first person; copy V2 pass, 3 paragraphs — service-first, no biomedical
+framing, no project-level detail — proof now lives exclusively on `/work`):
 
-> Four-plus years contracting across life sciences, public sector, and fitness organisations. Different industries, same job every time: take data that's scattered and unreliable and turn it into something a team can actually run the business on.
+> Four-plus years contracting in the UK, across different industries. Same job every time: take data that's scattered and unreliable and turn it into something a team can actually run the business on.
 >
-> Most recently, that meant building a post-acquisition customer intelligence pipeline across three acquisitions for a life sciences client - a six-tab Power BI dashboard covering everything from ICP scoring to churn detection. [More case studies →](/work)
+> What keeps me doing this: I like the actual problem-solving - messy data, no clear starting point, figuring it out anyway.
 >
 > I'm now applying the same approach to AI agents and automation - same discipline, newer tools.
 
-The headline-result paragraph was added per the proof-of-work research doc — About
-previously had zero concrete proof in it. Wording traces exactly to the life-sciences case
-study; the other two case studies stay exclusive to `/work`, per the standing "About is
-service-first, not a CV" decision.
+An earlier pass added a headline-result proof paragraph here (the post-acquisition
+dashboard result, with a `/work` link), per a proof-of-work research doc that flagged
+About as having zero concrete proof. The copy V2 pass removed it again, replacing it
+with the personal-motivation line above — concrete proof now lives exclusively on
+`/work`, per the standing "About is service-first, not a CV" decision.
 
 Ends with the Contact CTA band (see above).
 
