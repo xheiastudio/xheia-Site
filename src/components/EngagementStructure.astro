@@ -2,7 +2,13 @@
 // Three phases, in order: Discovery → Build → Handoff, relocated from Home to
 // /approach as part of the structural redesign. Phase descriptions stay tied to
 // BRANDFINAL §1's described work (ingestion, cleansing, warehousing, BI) and §5's
-// evidence/documentation themes — no new promises invented.
+// evidence/documentation themes — no new promises invented. Bodies rewritten in the
+// copy pass to first-person, more concrete language (see approach-copy-edits.md) — with
+// one correction: the supplied Discovery text named "pharma, public sector, retail, and
+// education," but BRANDFINAL.md §1 explicitly says retail/education must not be
+// asserted until real detail exists, and "pharma" doesn't match the established "life
+// sciences" term used everywhere else. Swapped in the three confirmed sectors instead
+// (life sciences, public sector, fitness) — same sentence, same voice, no invented claim.
 //
 // Redesigned as a level-path — nodes connected by a dashed line, game level-select map
 // style — instead of a three-column card row, per the "boxes under boxes" feedback:
@@ -20,15 +26,15 @@ import EngagementPhase from './EngagementPhase.astro';
 const phases = [
   {
     title: 'Discovery',
-    body: 'Understand the data, the systems, and what "trustworthy" actually needs to mean here.',
+    body: 'First, I get into your data and your systems and work out what "reliable" needs to mean for your business specifically. I\'ve worked across life sciences, public sector, and fitness without knowing the domain going in - so I don\'t assume I already understand your context, I ask until I do.',
   },
   {
     title: 'Build',
-    body: 'Ingestion, cleansing, warehousing, BI — the full-lifecycle work, done in the open.',
+    body: 'Ingestion, cleansing, warehousing, BI. You see it get built as it happens, not just a finished dashboard dropped on you at the end.',
   },
   {
     title: 'Handoff',
-    body: 'Delivered work, documented plainly — evidence you can check, not just a claim.',
+    body: 'You get the finished work, plus documentation good enough that someone else could pick it up without me in the room. That\'s not a nice-to-have - it\'s what I actually leave behind on every project.',
   },
 ];
 ---
