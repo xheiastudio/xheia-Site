@@ -80,7 +80,7 @@ to auto-load in the nav-swap-and-copy-V2 pass.
 | Warehousing & BI | A single source of truth, and the reporting layer built on it. |
 | AI agents & automation | The newest expression of the same full-lifecycle work - never a bolt-on. |
 | Post-acquisition integration | Consolidating data from multiple systems after a merger or acquisition into one source you can actually act on. |
-| Financial modelling & commercial analysis | Pay structures and compensation analysis that stands up in front of a board. |
+| Financial modelling & commercial analysis | Financial analysis that stands up in front of a board. |
 
 (AI agents & automation renamed from "Agentic AI systems" in the copy pass. Last two
 items added in the copy V2 pass — traced to the life-sciences and fitness case studies
@@ -197,7 +197,7 @@ Meta description: "I'm Hoda - a full-stack data consultant who's spent four-plus
 
 - Name heading: **Hoda**
 - Role line (copy V2 pass — location broadened from "across the UK and internationally" to "across the world"): "I do full-stack data consulting under the name Xheia - based remotely, working with clients across the world."
-- Photo: **[PLACEHOLDER]** — styled placeholder box, no image yet
+- Photo: real headshot (`src/assets/hoda-headshot.jpg`), sized big and deliberately the only photographic element on the site - it stands out precisely by breaking from the site's monochrome/pixel-art visual language, not by competing with it
 
 Narrative (first person; copy V2 pass, 3 paragraphs — service-first, no biomedical
 framing, no project-level detail — proof now lives exclusively on `/work`):
@@ -249,7 +249,7 @@ Page title: "Contact"
 - [ ] Personal LinkedIn URL → Footer
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)
-- [ ] Headshot image → `/about`
+- [x] ~~Headshot image~~ → real photo added to `/about`
 - [ ] Real business contact email → replaces `hoda.97@live.com` in `ContactForm.astro` before public launch
 - [ ] Retail/Education substance — still no real detail; narrative and case studies both skip these sectors until there is
 - [ ] Public-proof link (article/demo/repo) on `/work` — recommended by the research doc, blocked until something real exists to link
