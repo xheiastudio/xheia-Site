@@ -5,8 +5,7 @@
 // fitting: "the biomed story just doesn't fit at all") in favor of the real hook: years
 // of UK contracting across varied industries. Kept deliberately service-first per that
 // pass's decision — day-to-day project detail lives only in Work's case studies, not
-// here. Name resolved to Hoda (first name only, no surname, by choice). Headshot is
-// still a placeholder — see .headshot-placeholder below.
+// here. Name resolved to Hoda (first name only, no surname, by choice).
 //
 // Copy V2 pass: location line broadened to "across the world" (was "across the UK and
 // internationally"); sector list ("life sciences, public sector, and fitness
@@ -16,11 +15,19 @@
 // per this pass's explicit instruction, replaced with a personal-motivation line -
 // concrete proof now lives only on /work, not duplicated here. Hyphens, not
 // em-dashes, per the sitewide sweep.
+//
+// Real headshot replaces the placeholder box, sized big and deliberately the only
+// photographic (non-pixel-art) element on the site - a real photo reads as "stand
+// out" precisely because it breaks from the site's monochrome/pixel-art visual
+// language everywhere else, rather than trying to compete with it stylistically.
+// astro:assets <Image> handles optimization/responsive sizing from the source file.
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 import PixelRivets from '../components/PixelRivets.astro';
+import headshot from '../assets/hoda-headshot.jpg';
 ---
 
 <BaseLayout
@@ -30,9 +37,9 @@ import PixelRivets from '../components/PixelRivets.astro';
   <Header />
   <main class="about-page">
     <div class="intro-row">
-      <div class="headshot-placeholder" aria-hidden="true">
+      <div class="headshot">
         <PixelRivets inset="0.25rem" />
-        <span>[photo pending]</span>
+        <Image src={headshot} alt="Hoda" width={480} height={530} />
       </div>
       <div class="intro-text">
         <h1>Hoda</h1>
@@ -63,7 +70,7 @@ import PixelRivets from '../components/PixelRivets.astro';
 
 <style>
   .about-page {
-    max-width: 40rem;
+    max-width: 46rem;
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
   }
@@ -71,40 +78,35 @@ import PixelRivets from '../components/PixelRivets.astro';
   .intro-row {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    margin-bottom: var(--space-8);
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
   }
 
-  .headshot-placeholder {
+  .headshot {
     position: relative;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 7rem;
-    height: 7rem;
+    width: 15rem;
     border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
-    text-align: center;
+    line-height: 0;
   }
 
-  .headshot-placeholder span {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--text-secondary);
+  .headshot :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .intro-text h1 {
     font-family: var(--font-display);
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     line-height: 1.7;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-4);
   }
 
   .role {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.9375rem;
+    font-size: 1.0625rem;
   }
 
   .about-page p {
@@ -112,10 +114,14 @@ import PixelRivets from '../components/PixelRivets.astro';
     font-size: 1.0625rem;
   }
 
-  @media (max-width: 30rem) {
+  @media (max-width: 34rem) {
     .intro-row {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .headshot {
+      width: 12rem;
     }
   }
 </style>
