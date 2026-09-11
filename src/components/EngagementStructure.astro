@@ -12,10 +12,12 @@
 // path metaphor doesn't survive narrow viewports, so mobile falls back to a stacked
 // list (see EngagementPhase.astro's own responsive styles).
 //
-// Deliberately no PixelRivets/bordered-panel shell here — a path is a stretch of open
-// ground, not a boxed module. Reusing PillarBlock's bordered-box+rivets container would
-// have quietly recreated the exact "boxes under boxes" pattern this redesign exists to
-// fix (caught in review). Capabilities' lighter border-top divider is the closer match.
+// A plain bordered `.path-frame` wraps the level-path (no PixelRivets) - added per
+// direct feedback that this section and Tools read visually smaller than Capabilities/
+// PillarBlock, with no frame at all making the page feel inconsistent in scale while
+// scrolling. This isn't the same "boxes under boxes" repeat the original redesign
+// avoided (no rivets, no icon, still a distinct level-path inside) - just a matching
+// outer weight so every /approach section reads as one equally-sized module.
 //
 // Each node fades in staggered one after another as the section scrolls into view
 // (see EngagementPhase.astro), via this section's own data-reveal
@@ -46,13 +48,15 @@ const phases = [
   <p class="eyebrow">// how I work</p>
   <div class="section-content">
     <h2>How an engagement runs</h2>
-    <div class="level-path">
-      <div class="path-line" aria-hidden="true"></div>
-      {
-        phases.map((phase, i) => (
-          <EngagementPhase order={i + 1} title={phase.title} body={phase.body} delay={i * ITEM_STAGGER} />
-        ))
-      }
+    <div class="path-frame">
+      <div class="level-path">
+        <div class="path-line" aria-hidden="true"></div>
+        {
+          phases.map((phase, i) => (
+            <EngagementPhase order={i + 1} title={phase.title} body={phase.body} delay={i * ITEM_STAGGER} />
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
@@ -80,6 +84,11 @@ const phases = [
     margin-bottom: var(--space-8);
   }
 
+  .path-frame {
+    border: 1px solid var(--border);
+    padding: var(--space-12) var(--space-8);
+  }
+
   .level-path {
     position: relative;
     display: flex;
@@ -98,6 +107,10 @@ const phases = [
   }
 
   @media (max-width: 40rem) {
+    .path-frame {
+      padding: var(--space-8) var(--space-4);
+    }
+
     .level-path {
       flex-direction: column;
       gap: var(--space-6);

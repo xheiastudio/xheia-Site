@@ -9,6 +9,11 @@
 // as visual noise, not a meaningful "load" (unlike Capabilities/PillarBlock's named
 // modules). The tag list just fades in as a group on scroll (.section-content, see
 // src/styles/global.css), same as the rest of the site's data-reveal sections.
+//
+// Wrapped in a plain bordered `.tools-frame` (no rivets/icon) so this section carries
+// the same outer visual weight as Capabilities/PillarBlock/EngagementStructure - added
+// per direct feedback that an unframed section read as noticeably smaller than the
+// rest of the page.
 
 const tools = [
   'Microsoft data & AI stack (Azure, Power BI, Foundry)',
@@ -21,9 +26,11 @@ const tools = [
 
 <section class="tools" data-reveal>
   <p class="eyebrow">// tools</p>
-  <ul class="tags section-content">
-    {tools.map((tool) => <li>{tool}</li>)}
-  </ul>
+  <div class="tools-frame">
+    <ul class="tags section-content">
+      {tools.map((tool) => <li>{tool}</li>)}
+    </ul>
+  </div>
 </section>
 
 <style>
@@ -42,6 +49,11 @@ const tools = [
     color: var(--accent-primary);
   }
 
+  .tools-frame {
+    border: 1px solid var(--border);
+    padding: var(--space-12) var(--space-8);
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -57,5 +69,11 @@ const tools = [
     font-family: var(--font-mono);
     font-size: 0.875rem;
     color: var(--text-secondary);
+  }
+
+  @media (max-width: 40rem) {
+    .tools-frame {
+      padding: var(--space-8) var(--space-4);
+    }
   }
 </style>
