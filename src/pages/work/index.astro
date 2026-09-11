@@ -1,6 +1,11 @@
 ---
 // Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
-// Intro line condenses BRANDFINAL §1 "What I do" — no new claims invented.
+// Intro line (copy pass) leads with sector breadth instead of repeating Home's
+// lifecycle phrasing verbatim — no new claims invented, ties into the sectors strip
+// directly below it. A small "more case studies loading" note (copy pass) sits below
+// the real grid, reusing the existing .pending-caret blink already defined for the
+// empty-state branch below — same visual language, lighter treatment (no bordered box,
+// that's reserved for the true empty state).
 //
 // Handles two states so real case studies can be dropped into
 // src/content/case-studies/ later with no further code changes: empty (now — an honest
@@ -30,8 +35,8 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
   <Header />
   <main class="work-page">
     <p class="intro">
-      Full-lifecycle data work — cleansing, migration, warehousing, BI — and the
-      agentic systems built on top of it.
+      Real engagements across life sciences, public sector, and fitness - different
+      sectors, same underlying problem to solve.
     </p>
     {
       sectors.length > 0 && (
@@ -56,6 +61,9 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
           <div class="grid">
             {caseStudies.map(({ data }) => <CaseStudyCard {...data} />)}
           </div>
+          <p class="loading-more">
+            More case studies loading<span class="pending-caret" aria-hidden="true"></span>
+          </p>
         </>
       )
     }
@@ -137,5 +145,12 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: var(--space-4);
+  }
+
+  .loading-more {
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
   }
 </style>
