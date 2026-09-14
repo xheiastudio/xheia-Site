@@ -16,6 +16,19 @@
 // risk for its one lead-gen action (feedback.md: "confirm that a significant
 // action has completed"). With JS disabled, the form still submits via its native
 // POST exactly as before, just without the inline confirmation.
+//
+// Smoothness pass (explicit request - "drastic, no small changes," same treatment
+// as About): fields previously appeared all at once with zero motion, and every
+// interactive state (focus ring, button hover, the success/error swap) snapped
+// instantly with no transition. Reworked with real deceleration easing
+// (cubic-bezier(0.16,1,0.3,1), matching About) throughout: fields cascade in on
+// load, the submit button gets a tactile press state, and the form->confirmation
+// swap - the page's actual payoff moment per feedback.md's "confirm that a
+// significant action has completed" - is now a coordinated crossfade (the form
+// eases out, then the confirmation eases in with the same soft glow used on
+// About's photo) instead of an abrupt cut. The JS checks prefers-reduced-motion
+// directly (matchMedia) to skip the leave/enter choreography's timing entirely
+// when motion is reduced, rather than relying on CSS alone to hide it.
 ---
 
 <form
@@ -25,6 +38,7 @@
   data-netlify-honeypot="bot-field"
   class="contact-form"
   id="contact-form"
+  data-reveal
 >
   <input type="hidden" name="form-name" value="contact" />
   <p class="honeypot" aria-hidden="true">
@@ -34,24 +48,24 @@
     </label>
   </p>
 
-  <label>
+  <label class="item-content" style={{ transitionDelay: '0s' }}>
     <span class="prompt"><span class="glyph" aria-hidden="true">$</span> name</span>
     <input class="pixel-notch" type="text" name="name" placeholder="Your name" required />
   </label>
 
-  <label>
+  <label class="item-content" style={{ transitionDelay: '0.1s' }}>
     <span class="prompt"><span class="glyph" aria-hidden="true">$</span> email</span>
     <input class="pixel-notch" type="email" name="email" placeholder="name@company.com" required />
   </label>
 
-  <label>
+  <label class="item-content" style={{ transitionDelay: '0.2s' }}>
     <span class="prompt">
       <span class="glyph" aria-hidden="true">$</span> company <span class="optional">(optional)</span>
     </span>
     <input class="pixel-notch" type="text" name="company" placeholder="Where you work" />
   </label>
 
-  <label>
+  <label class="item-content" style={{ transitionDelay: '0.3s' }}>
     <span class="prompt"><span class="glyph" aria-hidden="true">$</span> message</span>
     <textarea
       class="pixel-notch"
@@ -62,7 +76,7 @@
     ></textarea>
   </label>
 
-  <button class="pixel-notch" type="submit">Send</button>
+  <button class="pixel-notch item-content" style={{ transitionDelay: '0.4s' }} type="submit">Send</button>
 </form>
 
 <p class="form-status" id="form-status" role="status" hidden>
@@ -77,6 +91,19 @@
 
 <script>
   import { typeText } from '../scripts/typewriter';
+
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const FORM_LEAVE_MS = 450;
+
+  const prefersReducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Two rAFs, not one: the first lets the browser commit the class removal /
+  // display change from this frame; only the second is guaranteed to happen
+  // after that paint, so the .is-visible transition reliably has a "from" state
+  // to animate away from instead of sometimes collapsing to a no-op.
+  const nextPaint = () =>
+    new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 
   document.addEventListener('astro:page-load', () => {
     const form = document.getElementById('contact-form');
@@ -107,11 +134,25 @@
         if (!res.ok) throw new Error('submit failed');
 
         const message = "Got it - I'll reply within a couple of business days.";
+
+        if (!prefersReducedMotion()) {
+          form.classList.add('is-leaving');
+          await wait(FORM_LEAVE_MS);
+        }
+
         form.hidden = true;
         status.hidden = false;
         status.className = 'form-status success';
         statusMark.textContent = '✓';
         announcer.textContent = message;
+
+        if (!prefersReducedMotion()) {
+          await nextPaint();
+          status.classList.add('is-visible');
+        } else {
+          status.classList.add('is-visible');
+        }
+
         typeText(statusText, message);
       } catch {
         button.disabled = false;
@@ -122,6 +163,11 @@
         statusMark.textContent = '';
         statusText.textContent = message;
         announcer.textContent = message;
+
+        if (!prefersReducedMotion()) {
+          await nextPaint();
+        }
+        status.classList.add('is-visible');
       }
     });
   });
@@ -133,10 +179,50 @@
     flex-direction: column;
     gap: var(--space-4);
     max-width: 32rem;
+    transition:
+      opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .contact-form[hidden] {
     display: none;
+  }
+
+  .contact-form.is-leaving {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+    pointer-events: none;
+  }
+
+  /* Smooth, coordinated field entrance - see the top comment block. Higher
+     specificity than the sitewide [data-reveal]/.item-content rules in
+     global.css (steps() timing), so this overrides them without touching that
+     shared file. */
+  .contact-form[data-reveal] .item-content {
+    transform: translateY(0.75rem);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .contact-form[data-reveal].is-visible .item-content {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-form {
+      transition: none;
+    }
+
+    .contact-form.is-leaving {
+      opacity: 1;
+      transform: none;
+    }
+
+    .contact-form[data-reveal] .item-content {
+      transform: none;
+      transition: none;
+    }
   }
 
   .honeypot,
@@ -182,6 +268,7 @@
     color: var(--text);
     font-family: var(--font-body);
     font-size: 1rem;
+    transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* clip-path (.pixel-notch) cuts two corners off each field, so an outward `outline`/
@@ -190,7 +277,15 @@
   input:focus-visible,
   textarea:focus-visible {
     outline: none;
+    border-color: var(--accent-primary);
     box-shadow: inset 0 0 0 2px var(--accent-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    input,
+    textarea {
+      transition: none;
+    }
   }
 
   textarea {
@@ -208,6 +303,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
+    transition:
+      opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   button[type='submit']:disabled {
@@ -220,6 +318,10 @@
     opacity: 0.85;
   }
 
+  button[type='submit']:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
   button[type='submit']:disabled:hover {
     opacity: 0.6;
   }
@@ -228,6 +330,16 @@
   button[type='submit']:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--on-accent-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button[type='submit'] {
+      transition: opacity 0.3s ease;
+    }
+
+    button[type='submit']:active:not(:disabled) {
+      transform: none;
+    }
   }
 
   .form-status {
@@ -239,18 +351,40 @@
     border: 1px solid var(--border);
     font-family: var(--font-mono);
     font-size: 0.9375rem;
+    opacity: 0;
+    transform: translateY(0.75rem);
+    box-shadow: 0 0 0 0 transparent;
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .form-status[hidden] {
     display: none;
   }
 
+  .form-status.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
   .form-status.success {
     color: var(--text);
   }
 
+  .form-status.success.is-visible {
+    box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+  }
+
   .form-status.error {
     color: var(--text-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .form-status {
+      transition: none;
+    }
   }
 
   .status-mark {
