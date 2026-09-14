@@ -33,6 +33,17 @@
 // Status line reuses Footer's exact pulsing-dot "$ status: ..." device (same
 // markup/animation, own scoped styles) rather than inventing a new indicator -
 // ties About back to the terminal register the rest of the site is built on.
+//
+// Body paragraphs were plain static text - no motion, no pixel/terminal vocabulary,
+// unlike every other section on the site. Now wrapped in the same sitewide
+// data-reveal/.item-content scroll-triggered stagger used throughout /approach, and
+// the two plain paragraphs (not the pull-quote, which already has its own Display-
+// font/border treatment) get the same `//` comment-glyph prefix as Hero's subhead -
+// real "terminal output" framing instead of a plain paragraph dump.
+//
+// Headshot is now a fixed-aspect-ratio crop (object-fit: cover), zoomed in enough to
+// cut the hair bun off the top of the frame, per direct request - was previously the
+// full uncropped source image at its native aspect ratio.
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -64,19 +75,23 @@ import headshot from '../assets/hoda-headshot.jpg';
       </div>
     </div>
 
-    <p>
-      Four-plus years contracting in the UK, across different industries. Same job
-      every time: take data that's scattered and unreliable and turn it into something
-      a team can actually run the business on.
-    </p>
-    <p class="pull-quote">
-      What keeps me doing this: I like the actual problem-solving - messy data, no
-      clear starting point, figuring it out anyway.
-    </p>
-    <p>
-      I'm now applying the same approach to AI agents and automation - same
-      discipline, newer tools.
-    </p>
+    <div class="story" data-reveal>
+      <p class="item-content" style={{ transitionDelay: '0s' }}>
+        <span class="comment-glyph" aria-hidden="true">//</span>
+        Four-plus years contracting in the UK, across different industries. Same job
+        every time: take data that's scattered and unreliable and turn it into
+        something a team can actually run the business on.
+      </p>
+      <p class="pull-quote item-content" style={{ transitionDelay: '0.35s' }}>
+        What keeps me doing this: I like the actual problem-solving - messy data, no
+        clear starting point, figuring it out anyway.
+      </p>
+      <p class="item-content" style={{ transitionDelay: '0.7s' }}>
+        <span class="comment-glyph" aria-hidden="true">//</span>
+        I'm now applying the same approach to AI agents and automation - same
+        discipline, newer tools.
+      </p>
+    </div>
   </main>
   <ContactCTA />
   <Footer />
@@ -125,13 +140,17 @@ import headshot from '../assets/hoda-headshot.jpg';
     position: relative;
     flex-shrink: 0;
     width: 19rem;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
     line-height: 0;
   }
 
   .headshot :global(img) {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 95%;
   }
 
   .intro-text h1 {
@@ -185,6 +204,22 @@ import headshot from '../assets/hoda-headshot.jpg';
   .about-page p {
     color: var(--text-secondary);
     font-size: 1.0625rem;
+  }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .story p {
+    margin: 0;
+  }
+
+  .comment-glyph {
+    margin-right: 0.4em;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
   }
 
   .about-page .pull-quote {
