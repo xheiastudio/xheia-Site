@@ -12,8 +12,10 @@
 // not AI-specific — same "not AI-first" framing decision as the home-finalization
 // pass, just newer wording. Operator line (also rewritten in the copy pass, to a
 // skills-summary framing rather than the years-contracting fact — same "Hoda -"
-// lead-in and (more) link to /about kept) still points at the same real bio /about
-// tells in full.
+// lead-in and link to /about kept) still points at the same real bio /about tells
+// in full. Link text is "(more about me)", not a bare "(more)" — writing.md warns
+// against context-free link labels, which matter most for screen-reader users
+// navigating by a links list where several unrelated "more"s become indistinguishable.
 //
 // Single-frame terminal: everything (boot log, headline, subhead, CTA) lives inside ONE
 // left-aligned `.terminal-body`, not a separately bordered/tinted box nested inside the
@@ -138,7 +140,7 @@ const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'system ready')];
 clock += BEAT;
 const operatorCommand = typeLine('$', 'operator --info');
 const operatorResponseText =
-  'Hoda - multidisciplinary across BI, automation and data strategy. (more)';
+  'Hoda - multidisciplinary across BI, automation and data strategy. (more about me)';
 const operatorResponse = blockLine(operatorResponseText);
 const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.04;
 
@@ -200,7 +202,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
         >
           <span class="prompt-glyph">&gt;</span>{' '}
           Hoda - multidisciplinary across BI, automation and data strategy. (<a
-            href="/about">more</a
+            href="/about">more about me</a
           >)<span
             class="caret"
             style={{ animationDelay: `${finalCaretDelay}s` }}

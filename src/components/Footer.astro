@@ -49,7 +49,10 @@ const socialLinks = [
     margin: 0 auto;
     padding: calc(var(--space-16) + var(--space-8)) var(--space-4) var(--space-12);
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    /* typography.md's macOS translation: 13pt default / 10pt minimum (~17px/~13px).
+       This was 0.8125rem (13px), right at that minimum with no margin - bumped for
+       a real one. */
+    font-size: 0.875rem;
     color: var(--text-secondary);
   }
 
@@ -72,7 +75,7 @@ const socialLinks = [
 
   .credit {
     margin: 0;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
   }
 

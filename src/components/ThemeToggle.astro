@@ -54,6 +54,7 @@ const moonPixels: Array<[number, number]> = [
 
 <style>
   .theme-toggle {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -65,7 +66,7 @@ const moonPixels: Array<[number, number]> = [
     background: transparent;
     color: var(--text);
     cursor: pointer;
-    transition: border-color 0.15s ease;
+    transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .theme-toggle:hover,
@@ -73,22 +74,55 @@ const moonPixels: Array<[number, number]> = [
     border-color: var(--accent-primary);
   }
 
+  /* Same fix already applied to every text link this session - border-color alone
+     isn't a visible keyboard-focus indicator. */
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  /* Both icons stacked and crossfaded (opacity + a slight scale/rotate) instead of a
+     hard display:none/block swap - the one remaining instant toggle in the header
+     next to everything else's smooth transitions. Absolutely positioned so neither
+     one participates in layout while hidden. */
   .icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 1rem;
     height: 1rem;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-90deg);
+    opacity: 0;
+    transition:
+      opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Dark mode (default): show the sun (click to go light). */
-  .icon-moon {
-    display: none;
+  .icon-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
   }
 
   /* Light mode: show the moon (click to go dark). */
   :global(html[data-theme='light']) .icon-sun {
-    display: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
   }
 
   :global(html[data-theme='light']) .icon-moon {
-    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle {
+      transition: none;
+    }
+
+    .icon {
+      transition: none;
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
   }
 </style>
