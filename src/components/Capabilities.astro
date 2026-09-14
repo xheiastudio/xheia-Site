@@ -157,10 +157,13 @@ const capabilities = [
     color: var(--accent-primary);
   }
 
+  /* typography.md's macOS translation: 13pt default / 10pt minimum (~17px/~13px).
+     This was 0.75rem (12px), under that minimum - same fix already applied to
+     Footer's credit line. */
   .menu-frame-label {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-secondary);
@@ -226,7 +229,9 @@ const capabilities = [
     font-family: var(--font-mono);
     font-size: 1rem;
     color: var(--accent-primary);
-    transition: opacity 0.15s ease;
+    /* Was plain ease - found on a full sweep matching this to the site's
+       established cubic-bezier(0.16,1,0.3,1) curve used everywhere else. */
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .see-more:hover,

@@ -72,10 +72,13 @@ const tools = [
     color: var(--accent-primary);
   }
 
+  /* typography.md's macOS translation: 13pt default / 10pt minimum (~17px/~13px).
+     This was 0.75rem (12px), under that minimum - same fix as Footer's credit
+     line and Capabilities' equivalent label. */
   .frame-label {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-secondary);

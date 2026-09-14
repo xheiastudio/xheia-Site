@@ -3,12 +3,24 @@
 // routes). Not on Home — Hero carries its own CTA there, with the primary approved
 // tagline (BRANDFINAL.md — Tagline). This band's line is a distinct closing line
 // (copy pass), not a duplicate of Home's tagline.
+//
+// Found on a full sweep: this was the only section-level component on /approach (or
+// /about) with zero data-reveal/motion at all - it just sat there statically while
+// every other section on the page fades in. It's also the page's actual conversion
+// point, the same role Home's CTA plays - so it gets the same ambient glow treatment
+// (the sitewide "materials" signature already used on Home's CTA, About's photo,
+// Contact's confirmation) instead of just a plain fade, tying this page's closing
+// moment to that same visual language rather than leaving it as an afterthought.
 import CTAButton from './CTAButton.astro';
 ---
 
-<section class="contact-cta">
-  <p>I turn fragmented data into systems that hold up after I've moved on.</p>
-  <CTAButton />
+<section class="contact-cta" data-reveal>
+  <p class="item-content" style={{ transitionDelay: '0s' }}>
+    I turn fragmented data into systems that hold up after I've moved on.
+  </p>
+  <div class="cta-wrap item-content" style={{ transitionDelay: '0.2s' }}>
+    <CTAButton />
+  </div>
 </section>
 
 <style>
@@ -26,5 +38,35 @@ import CTAButton from './CTAButton.astro';
     margin: 0;
     font-family: var(--font-mono);
     font-size: 1.125rem;
+  }
+
+  .cta-wrap {
+    display: inline-block;
+  }
+
+  /* Same glow recipe as Home's CTA - marks this as the page's actual conversion
+     point instead of the button just appearing like any other faded-in element.
+     Keyed off the shared [data-reveal].is-visible class (global.css) rather than a
+     bespoke mechanism, so it fires at the same moment the paragraph above it fades
+     in, staggered by its own transitionDelay. */
+  [data-reveal].is-visible .cta-wrap {
+    animation: cta-glow-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  @keyframes cta-glow-in {
+    from {
+      box-shadow: 0 0 0 0 transparent;
+    }
+    to {
+      box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal].is-visible .cta-wrap {
+      animation: none;
+      box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+    }
   }
 </style>

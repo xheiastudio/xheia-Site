@@ -52,10 +52,12 @@ const { order, title, body, delay } = Astro.props;
     font-family: var(--font-display);
     font-size: 1.5rem;
     color: var(--accent-primary);
+    /* Was plain ease on all three properties - found on a full sweep matching this
+       to the site's established cubic-bezier(0.16,1,0.3,1) curve. */
     transition:
-      background-color 0.15s ease,
-      color 0.15s ease,
-      border-color 0.15s ease;
+      background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .node:hover .node-marker {

@@ -37,13 +37,24 @@ import Footer from '../../components/Footer.astro';
     padding: var(--space-8) var(--space-4) 0;
   }
 
+  /* This h1 was styled to look exactly like a body paragraph (font-body, 17px,
+     --text-secondary) - a deliberate choice from an earlier accessibility pass,
+     whose only goal was promoting a <p> to a real heading without changing its
+     appearance. That's correct for accessibility, but it leaves this page with no
+     visible hierarchy at all: Home's headline is now the page's one commanding
+     statement, and this page's own top heading reads as identical-weight body
+     text. Given real presence - mono (matching every h2/h3 on this page and
+     Home's own headline register), heavier weight, larger size, full --text
+     color - without going as big as Home's hero headline, since this is a content
+     page introducing four dense sections below it, not a single-focus landing
+     moment. */
   .intro {
-    max-width: 32rem;
+    max-width: 34rem;
     margin: 0 0 var(--space-8);
-    color: var(--text-secondary);
-    font-size: 1.0625rem;
-    font-family: var(--font-body);
-    font-weight: 400;
-    line-height: 1.5;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 1.8vw + 1.1rem, 1.875rem);
+    line-height: 1.4;
   }
 </style>
