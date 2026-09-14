@@ -16,7 +16,6 @@ import { caseStudySlug } from '../../content.config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import PixelRivets from '../../components/PixelRivets.astro';
 import TypedText from '../../components/TypedText.astro';
 import CTAButton from '../../components/CTAButton.astro';
 
@@ -53,7 +52,6 @@ const outcomeStage = stage(outcome);
   <main class="session-log" id="main-content">
     <p class="log-header"><span class="glyph" aria-hidden="true">$</span> work --show {slug}</p>
     <div class="log-panel">
-      <PixelRivets inset="0.3rem" />
       <h1 class="client">{client}</h1>
       <p class="meta"><span class="meta-label">sector</span> {sector}</p>
 
