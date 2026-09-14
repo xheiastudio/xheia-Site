@@ -1,0 +1,76 @@
+---
+// Astro's static-build convention: this file becomes dist/404.html, served
+// automatically by Netlify on any unmatched route - no redirect config needed.
+// Didn't exist before this pass (Apple HIG design-improvement pass) - every other
+// wrong-turn moment on the web gets a generic host page; this one gets the same
+// terminal register as the rest of the site (mono type, $/> prompt glyphs, a
+// staggered typed reveal via src/components/TypedText.astro), not Hero.astro's own
+// exclusive bezel/scanlines/caret.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TypedText from '../components/TypedText.astro';
+---
+
+<BaseLayout title="Page not found" description="That page doesn't exist.">
+  <Header />
+  <main class="not-found" id="main-content">
+    <p class="prompt-line">
+      <span class="glyph" aria-hidden="true">$</span> locate --page <span id="not-found-path">this page</span>
+    </p>
+    <TypedText as="h1" text="404: no route matches that path." delay={0.3} />
+    <TypedText as="p" text="Try the nav above, or head back home." delay={1.4} />
+    <a class="home-link" href="/">&gt; cd /</a>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  // This file is a static, pre-built HTML page (dist/404.html) served by the host
+  // for any unmatched route — Astro.url.pathname at build time is fixed to /404,
+  // not whatever path the visitor actually typed. window.location.pathname, read
+  // here at runtime, reflects the real address bar URL instead.
+  document.addEventListener('astro:page-load', () => {
+    const el = document.getElementById('not-found-path');
+    if (el) el.textContent = window.location.pathname;
+  });
+</script>
+
+<style>
+  .not-found {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-4);
+  }
+
+  .prompt-line {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .glyph {
+    color: var(--accent-primary);
+  }
+
+  .not-found :global(h1) {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .not-found :global(p) {
+    margin: 0 0 var(--space-8);
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+
+  .home-link {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--accent-primary);
+  }
+</style>
