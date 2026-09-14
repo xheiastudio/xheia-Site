@@ -30,20 +30,24 @@
 // same generic sitewide data-reveal mechanism; this is About's one distinct
 // signature moment (Apple HIG design-improvement pass).
 //
-// Status line reuses Footer's exact pulsing-dot "$ status: ..." device (same
-// markup/animation, own scoped styles) rather than inventing a new indicator -
-// ties About back to the terminal register the rest of the site is built on.
-//
-// Body paragraphs were plain static text - no motion, no pixel/terminal vocabulary,
-// unlike every other section on the site. Now wrapped in the same sitewide
-// data-reveal/.item-content scroll-triggered stagger used throughout /approach, and
-// the two plain paragraphs (not the pull-quote, which already has its own Display-
-// font/border treatment) get the same `//` comment-glyph prefix as Hero's subhead -
-// real "terminal output" framing instead of a plain paragraph dump.
-//
 // Headshot is now a fixed-aspect-ratio crop (object-fit: cover), zoomed in enough to
 // cut the hair bun off the top of the frame, per direct request - was previously the
 // full uncropped source image at its native aspect ratio.
+//
+// Structural redesign (direct feedback that the page was "just static text, no apple
+// efficiency and no pixel dna" - every other page has its own distinct signature
+// interaction, About never did): the three-paragraph prose dump is replaced with a
+// system-profile readout - a labeled fact table (focus/experience/stack/availability)
+// in the terminal register, framed with PillarBlock's exact one-box recipe. This is
+// About's answer to "distinct interaction per section" (BRANDFINAL §4): Home has the
+// boot sequence, Contact has the terminal form, /approach has boot-menu/diagnostic/
+// level-path - About gets a profile readout. Facts are drawn straight from
+// BRANDFINAL §1 (experience, focus) and Tools.astro (stack) - nothing invented. The
+// availability row reuses Footer's exact pulsing-dot device instead of the page
+// having its own separate status line - one canonical "$ status" location instead of
+// two saying the same thing. The pull-quote and closing line keep their own voice
+// (why the work, what's next) around the structured facts, rather than the page
+// being either "all prose" or "all data."
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -68,25 +72,44 @@ import headshot from '../assets/hoda-headshot.jpg';
           I do full-stack data consulting under the name Xheia - based remotely,
           working with clients across the world.
         </p>
-        <p class="status-line">
-          <span class="status-dot" aria-hidden="true"></span>
-          $ status: available for new work
-        </p>
       </div>
     </div>
 
     <div class="story" data-reveal>
-      <p class="item-content" style={{ transitionDelay: '0s' }}>
+      <p class="lede item-content" style={{ transitionDelay: '0s' }}>
         <span class="comment-glyph" aria-hidden="true">//</span>
         Four-plus years contracting in the UK, across different industries. Same job
         every time: take data that's scattered and unreliable and turn it into
         something a team can actually run the business on.
       </p>
-      <p class="pull-quote item-content" style={{ transitionDelay: '0.35s' }}>
+
+      <dl class="readout">
+        <div class="readout-row item-content" style={{ transitionDelay: '0.15s' }}>
+          <dt>focus</dt>
+          <dd>data quality &rarr; agentic AI</dd>
+        </div>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
+          <dt>experience</dt>
+          <dd>4+ years, UK contracting</dd>
+        </div>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
+          <dt>stack</dt>
+          <dd>Azure &middot; Power BI &middot; Python &middot; SQL &middot; Power Automate</dd>
+        </div>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.6s' }}>
+          <dt>availability</dt>
+          <dd>
+            <span class="status-dot" aria-hidden="true"></span>
+            available for new work
+          </dd>
+        </div>
+      </dl>
+
+      <p class="pull-quote item-content" style={{ transitionDelay: '0.8s' }}>
         What keeps me doing this: I like the actual problem-solving - messy data, no
         clear starting point, figuring it out anyway.
       </p>
-      <p class="item-content" style={{ transitionDelay: '0.7s' }}>
+      <p class="item-content" style={{ transitionDelay: '0.95s' }}>
         <span class="comment-glyph" aria-hidden="true">//</span>
         I'm now applying the same approach to AI agents and automation - same
         discipline, newer tools.
@@ -167,17 +190,68 @@ import headshot from '../assets/hoda-headshot.jpg';
     font-size: 1.1875rem;
   }
 
-  .status-line {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin: var(--space-4) 0 0;
+  .about-page p {
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .story p {
+    margin: 0;
+  }
+
+  .comment-glyph {
+    margin-right: 0.4em;
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
     color: var(--text-secondary);
   }
 
+  /* System-profile readout - PillarBlock's exact one-box recipe, applied to a
+     labeled fact table instead of prose (About's own distinct interaction). */
+  .readout {
+    margin: 0;
+    width: min(100% - 2 * var(--space-4), 34rem);
+    padding: var(--space-8) var(--space-8);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .readout-row {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--space-4);
+    align-items: baseline;
+  }
+
+  .readout-row dt {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-primary);
+  }
+
+  .readout-row dd {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text);
+  }
+
   .status-dot {
+    flex-shrink: 0;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
@@ -201,29 +275,15 @@ import headshot from '../assets/hoda-headshot.jpg';
     }
   }
 
-  .about-page p {
-    color: var(--text-secondary);
-    font-size: 1.0625rem;
-  }
-
-  .story {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-  }
-
-  .story p {
-    margin: 0;
-  }
-
-  .comment-glyph {
-    margin-right: 0.4em;
-    font-family: var(--font-mono);
-    color: var(--text-secondary);
+  @media (max-width: 28rem) {
+    .readout-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
   }
 
   .about-page .pull-quote {
-    margin: var(--space-8) 0;
+    margin: 0;
     padding-left: var(--space-6);
     border-left: 3px solid var(--accent-primary);
     color: var(--text);
