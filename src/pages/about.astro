@@ -29,6 +29,10 @@
 // how long the image takes. Every other /approach-style section fades in via the
 // same generic sitewide data-reveal mechanism; this is About's one distinct
 // signature moment (Apple HIG design-improvement pass).
+//
+// Status line reuses Footer's exact pulsing-dot "$ status: ..." device (same
+// markup/animation, own scoped styles) rather than inventing a new indicator -
+// ties About back to the terminal register the rest of the site is built on.
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -52,6 +56,10 @@ import headshot from '../assets/hoda-headshot.jpg';
         <p class="role" id="about-role">
           I do full-stack data consulting under the name Xheia - based remotely,
           working with clients across the world.
+        </p>
+        <p class="status-line">
+          <span class="status-dot" aria-hidden="true"></span>
+          $ status: available for new work
         </p>
       </div>
     </div>
@@ -138,6 +146,40 @@ import headshot from '../assets/hoda-headshot.jpg';
     margin: 0;
     color: var(--text-secondary);
     font-size: 1.1875rem;
+  }
+
+  .status-line {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent-status);
+    animation: about-status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes about-status-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot {
+      animation: none;
+    }
   }
 
   .about-page p {
