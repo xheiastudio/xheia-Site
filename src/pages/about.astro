@@ -21,6 +21,12 @@
 // out" precisely because it breaks from the site's monochrome/pixel-art visual
 // language everywhere else, rather than trying to compete with it stylistically.
 // astro:assets <Image> handles optimization/responsive sizing from the source file.
+//
+// Name/role type in (src/scripts/typewriter.ts) once the headshot has actually
+// loaded, rather than on a fixed delay - a genuine trigger instead of a guess at
+// how long the image takes. Every other /approach-style section fades in via the
+// same generic sitewide data-reveal mechanism; this is About's one distinct
+// signature moment (Apple HIG design-improvement pass).
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -42,8 +48,8 @@ import headshot from '../assets/hoda-headshot.jpg';
         <Image src={headshot} alt="Hoda" width={480} height={530} />
       </div>
       <div class="intro-text">
-        <h1>Hoda</h1>
-        <p class="role">
+        <h1 id="about-name">Hoda</h1>
+        <p class="role" id="about-role">
           I do full-stack data consulting under the name Xheia - based remotely,
           working with clients across the world.
         </p>
@@ -67,6 +73,31 @@ import headshot from '../assets/hoda-headshot.jpg';
   <ContactCTA />
   <Footer />
 </BaseLayout>
+
+<script>
+  import { typeSequence } from '../scripts/typewriter';
+
+  document.addEventListener('astro:page-load', () => {
+    const img = document.querySelector('.headshot img');
+    const nameEl = document.getElementById('about-name');
+    const roleEl = document.getElementById('about-role');
+    if (!(img instanceof HTMLImageElement) || !nameEl || !roleEl) return;
+
+    const start = () => {
+      // Capture the real, server-rendered text before clearing anything, so both
+      // lines' full content is known upfront and neither flashes its stale text
+      // while waiting for its own turn in the sequence.
+      const items = [nameEl, roleEl].map((el) => ({ el, text: el.textContent ?? '' }));
+      items.forEach(({ el }) => {
+        el.textContent = '';
+      });
+      typeSequence(items);
+    };
+
+    if (img.complete) start();
+    else img.addEventListener('load', start, { once: true });
+  });
+</script>
 
 <style>
   .about-page {
