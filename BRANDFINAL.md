@@ -99,8 +99,8 @@ Mark on the left, wordmark and tagline carrying the copy, faint scanline texture
 
 ## 5. Messaging Pillars
 
-**Truth over theater**
-Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater. This is the pillar that speaks directly to burned buyers.
+**Truth over theatre**
+Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theatre. This is the pillar that speaks directly to burned buyers.
 
 **Clarity is engineered, not promised**
 Full-lifecycle discipline — ingestion, cleansing, warehousing, BI — is what makes anything built on top of the data actually trustworthy. Clean systems are built, not claimed.

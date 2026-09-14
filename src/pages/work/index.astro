@@ -2,10 +2,12 @@
 // Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
 // Intro line (copy pass) leads with sector breadth instead of repeating Home's
 // lifecycle phrasing verbatim — no new claims invented, ties into the sectors strip
-// directly below it. A small "more case studies loading" note (copy pass) sits below
-// the real grid, reusing the existing .pending-caret blink already defined for the
-// empty-state branch below — same visual language, lighter treatment (no bordered box,
-// that's reserved for the true empty state).
+// directly below it. A small static note sits below the real grid ("More engagements
+// are added here as they wrap up.") — deliberately NOT using the blinking-caret
+// .pending-caret device here (Apple HIG design-improvement pass): a blinking cursor
+// under three already-finished cards read as a stuck/broken loader, not an
+// intentional "more coming" cue. The empty-state branch below keeps its caret —
+// there, the section genuinely has nothing yet, so "in progress" is accurate.
 //
 // Handles two states so real case studies can be dropped into
 // src/content/case-studies/ later with no further code changes: empty (now — an honest
@@ -62,9 +64,7 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
           <div class="grid">
             {caseStudies.map(({ id, data }) => <CaseStudyCard slug={caseStudySlug(id)} {...data} />)}
           </div>
-          <p class="loading-more">
-            More case studies loading<span class="pending-caret" aria-hidden="true"></span>
-          </p>
+          <p class="loading-more">More engagements are added here as they wrap up.</p>
         </>
       )
     }

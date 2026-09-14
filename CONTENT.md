@@ -101,7 +101,7 @@ copy-V2 pass) — same layout either way.
 
 | Title | Body |
 |---|---|
-| Truth over theater | Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theater. |
+| Truth over theatre | Every claim on this site is backed by delivered work, described plainly. No hype, no vendor theatre. |
 | Clarity is engineered, not promised | Full-lifecycle discipline - ingestion, cleansing, warehousing, BI - is what makes anything built on top of the data actually trustworthy. |
 | Built to survive scrutiny | Security-conscious, evidence-based, documented - not a pitch that only holds up in the room it was delivered in. |
 
