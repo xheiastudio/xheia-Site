@@ -18,7 +18,7 @@ import CTAButton from './CTAButton.astro';
 <header class="site-header" id="site-header">
   <div class="site-header-inner">
     <a href="/" class="logo" aria-label="Xheia home">
-      <PixelMark size={56} />
+      <PixelMark size={56} decorative />
       <span class="wordmark">xheia</span>
     </a>
 
@@ -142,6 +142,10 @@ import CTAButton from './CTAButton.astro';
     text-decoration: none;
     padding-bottom: 0.25rem;
     border-radius: var(--radius);
+    /* Found on a full sweep: color had no transition at all (instant snap) while
+       the underline below eased - two halves of one hover state moving at
+       different speeds/curves. Both now match the site's established easing. */
+    transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   nav a::after {
@@ -154,7 +158,7 @@ import CTAButton from './CTAButton.astro';
     background: var(--accent-primary);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.15s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   nav a:hover,

@@ -4,9 +4,16 @@
 // Aperture blue via --mark-pupil. See src/styles/tokens.css.
 interface Props {
   size?: number;
+  // Set true when an ancestor already carries the accessible name (e.g. Header's
+  // logo link has its own aria-label="Xheia home") - otherwise this mark's own
+  // role="img"/aria-label nests a second accessible name inside the first, which
+  // some assistive tech exposes as a redundant extra stop (found on a full sweep,
+  // via accessibility.md's Lens 1). Footer's static (non-link) usage and the Hero
+  // watermark (already aria-hidden via its own wrapper) are unaffected either way.
+  decorative?: boolean;
 }
 
-const { size = 28 } = Astro.props;
+const { size = 28, decorative = false } = Astro.props;
 
 // 11x7 pixel grid: a hollow diamond/lens outline with a plus-shaped five-block pupil.
 const outline: Array<[number, number]> = [
@@ -31,8 +38,9 @@ const pupil: Array<[number, number]> = [
   viewBox="0 0 11 7"
   width={size}
   height={(size * 7) / 11}
-  role="img"
-  aria-label="Xheia"
+  role={decorative ? undefined : 'img'}
+  aria-label={decorative ? undefined : 'Xheia'}
+  aria-hidden={decorative ? 'true' : undefined}
 >
   {outline.map(([x, y]) => <rect class="outline" x={x} y={y} width="1" height="1" />)}
   <g class="pupil-group">
