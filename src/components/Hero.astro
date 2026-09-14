@@ -307,27 +307,28 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      (upper-left/center, behind the headline) so the two don't compete. Opacity
      values are per-theme and were tuned by sampling actual rendered pixels, not
      guessed - see the light-mode override below for why the same number can't work
-     in both modes. */
-  /* Fixed-rem positioning (34rem wide, right:-9rem) only cleared the text column
-     above ~1536px logical viewport width - below that, which is most real windowed
-     browser use (confirmed by direct report at a real, moderate window size), the
-     mark's own bounding box geometrically overlapped terminal-body's right edge.
-     terminal-body's right edge tracks (viewport/2 + 368px) regardless of viewport
-     width (it's a fixed 46rem column centered in a capped, centered bezel) - a fixed
-     rem-based mark position can't stay clear of a boundary that moves with the
-     viewport. Both size and offset are viewport-width-relative instead, so
-     clearance holds (verified by direct measurement, not eyeballed) from ~1024px
-     through ultra-wide screens, growing naturally as the window widens. */
-  /* top, not bottom: .hero's height is min(100vh - 5rem), which on any normal
-     screen is much taller than the actual centered content block - a bottom-
-     anchored offset pinned the mark to the bottom of that whole flex section,
-     putting it below the fold on ordinary viewport heights (confirmed by direct
-     measurement: at a 1300px-tall viewport, the mark's top edge sat at y=1273,
-     nearly entirely off-screen). Anchoring from the top at a percentage of hero's
-     own height keeps it near the content regardless of how tall the viewport is. */
+     in both modes.
+
+     Position was wrong twice before landing here, both confirmed by direct
+     measurement, not assumption: (1) fixed-rem sizing/offset (34rem wide,
+     right:-9rem) only cleared terminal-body's text column above ~1536px logical
+     viewport width - below that, which is most real windowed browser use, the
+     mark's own bounding box geometrically overlapped the text (terminal-body's
+     right edge tracks viewport/2 + 368px, which a fixed-rem position can't track).
+     Fixed by making width/right viewport-width-relative (clamp + vw), verified
+     clear from 1024px through ultra-wide. (2) `bottom: -9rem` was measured from
+     .hero's own bottom edge, but .hero's height is min(100vh - 5rem) - far taller
+     than the visible content - so the mark sat below the fold on any normal
+     screen (measured: top edge at y=1273 in a 1300px-tall viewport). Direct
+     feedback preferred the original bottom-right corner-hugging feel, just raised
+     - so `bottom` stays (not `top`, which read as floating rather than
+     corner-anchored), but in `vh` instead of `rem`: `vh` scales with viewport
+     height the same way .hero's own min-height does, so the mark stays a
+     consistent, visible distance from the corner regardless of screen height,
+     the same way the vw-based horizontal fix scales with viewport width. */
   .mark-watermark {
     position: absolute;
-    top: 58%;
+    bottom: 6vh;
     right: -7vw;
     z-index: 0;
     opacity: 0.07;
