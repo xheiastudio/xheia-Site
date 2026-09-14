@@ -55,6 +55,24 @@
 // all on first load, a real bug fixed alongside making this reveal smoother/more
 // deliberate per live feedback). Keep new multi-line content on `.line-reveal`, not
 // `.typed` — standing rule.
+//
+// Smoothness pass (explicit request - "drastic," same treatment already applied to
+// About/Contact): the character-by-character `.typed` boot text and the caret blink
+// are NOT touched here — that steps()-timed typing IS Home's actual identity (the
+// literal thing CLAUDE.md protects as Hero-exclusive), not a gap to smooth over. What
+// WAS a gap: the bezel itself had zero arrival motion (it just appeared, fully
+// formed, with typing starting instantly inside it), the status LED sat static while
+// every other "system operational" dot on the site pulses, and the CTA snapped into
+// view with no distinction from a plain text line. Added: a brief "power-on" for the
+// bezel (fade + scale + a glow that flashes brighter then settles, cubic-bezier
+// (0.16,1,0.3,1) - the same curve `.line-reveal` below already used, so this isn't a
+// new register, just extending one that already existed here), a pulsing LED matching
+// Footer/About/Contact's status-dot convention, a smooth hover on the operator line's
+// "(more)" link, and the same ambient glow used on About's photo / Contact's
+// confirmation now marking the CTA as it arrives - the page's actual conversion
+// point. The bezel entrance replays on every visit to Home (like About's photo does
+// on every visit to About) - only the boot-skip class is about not re-typing the same
+// text you've already read, which is unrelated to whether the frame itself fades in.
 import PixelRivets from './PixelRivets.astro';
 import CTAButton from './CTAButton.astro';
 
@@ -311,7 +329,42 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     max-width: var(--content-max-width);
     border: 3px solid var(--border);
     background: var(--bg);
-    box-shadow: inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent);
+    opacity: 0;
+    transform: scale(0.98);
+    animation: bezel-power-on 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes bezel-power-on {
+    0% {
+      opacity: 0;
+      transform: scale(0.98);
+      box-shadow:
+        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
+        0 0 0 0 transparent;
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow:
+        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
+        0 0 4rem -0.5rem color-mix(in srgb, var(--accent-status) 40%, transparent);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow:
+        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
+        0 0 1.5rem -0.5rem color-mix(in srgb, var(--accent-status) 15%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bezel {
+      opacity: 1;
+      transform: none;
+      animation: none;
+      box-shadow: inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent);
+    }
   }
 
   .bezel-chrome {
@@ -330,6 +383,23 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     height: 0.5rem;
     border-radius: 50%;
     background: var(--accent-status);
+    animation: led-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes led-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .led {
+      animation: none;
+    }
   }
 
   .chrome-buttons {
@@ -440,6 +510,20 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     white-space: normal;
   }
 
+  .operator-line a {
+    color: var(--accent-primary);
+    text-underline-offset: 0.15em;
+    text-decoration-color: color-mix(in srgb, var(--accent-primary) 35%, transparent);
+    transition:
+      text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .operator-line a:hover,
+  .operator-line a:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
   .prompt-glyph {
     color: var(--accent-primary);
   }
@@ -454,7 +538,15 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     vertical-align: bottom;
     width: 0;
     animation-name: type-reveal;
-    animation-fill-mode: forwards;
+    /* `both`, not just `forwards`: the final width is set inline (it's computed
+       per-line from character count), which beats this class's `width: 0` in the
+       cascade whenever the animation isn't actively controlling the property -
+       i.e. during its own delay. Without `backwards`, every line sat fully
+       visible from the start, then snapped invisible and re-grew the instant its
+       delay elapsed - a real flash-then-regrow glitch, the opposite of smooth,
+       found while verifying this pass. `both` makes the first keyframe (width: 0)
+       apply for the whole delay, so lines stay properly hidden until their turn. */
+    animation-fill-mode: both;
   }
 
   @keyframes type-reveal {
@@ -598,6 +690,46 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .cta-wrap {
     margin: var(--space-6) 0 0;
+  }
+
+  /* The CTA is Home's actual conversion point - marking its arrival with the same
+     ambient glow used on About's photo / Contact's confirmation ties this page's
+     signature moment to the same visual language, instead of the button just
+     appearing like any other line of text. Overrides only animation-name (not the
+     shared .line-reveal rule's duration/delay/timing-function), so it still respects
+     the inline animation-delay set on this element and stays in sync with the rest
+     of the reveal sequence. */
+  .cta-wrap.line-reveal {
+    animation-name: cta-reveal-in;
+  }
+
+  @keyframes cta-reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.6em);
+      box-shadow: 0 0 0 0 transparent;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 40%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-wrap.line-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  .bezel.boot-skip .cta-wrap.line-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 40%, transparent);
   }
 
   /* Bigger than the site's default CTAButton size - the tagline's own "so what,
