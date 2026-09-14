@@ -12,11 +12,14 @@
 // full field or cut off mid-thought on a page visitors scan specifically for the
 // Outcome.
 //
-// `featured` (the /work grid's first card, "bolder structurally" round) spans the
-// full grid width with a larger, Display-font client heading - real editorial
-// hierarchy instead of three identical boxes. No ranking implied beyond order.
-import PixelRivets from './PixelRivets.astro';
-
+// `featured` (the /work list's first entry) gets a larger Display-font client
+// heading - real editorial hierarchy through typography alone.
+//
+// Rebuilt from a bordered/riveted "card" into a plain editorial list entry
+// ("pixelated but Apple" pass, direct feedback that boxes-within-boxes read as
+// dense rather than premium regardless of size): no border box, no PixelRivets, no
+// hover jitter/scan sweep - just a thin top rule and generous whitespace doing the
+// separating. Tags are plain text, not individually bordered pills.
 interface Props {
   slug: string;
   client: string;
@@ -30,8 +33,7 @@ interface Props {
 const { slug, client, problem, approach, outcome, tags, featured = false } = Astro.props;
 ---
 
-<article class:list={['case-study-card', 'pixel-jitter-hover', { featured }]}>
-  <PixelRivets inset="0.3rem" />
+<article class:list={['case-study-entry', { featured }]}>
   <h3 class="client">{client}</h3>
   <p class="field">
     <span class="label">Problem</span>
@@ -45,83 +47,34 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
     <span class="label">Outcome</span>
     {outcome}
   </p>
-  <ul class="tags">
-    {tags.map((tag) => <li>{tag}</li>)}
-  </ul>
+  <p class="tags">{tags.join(' · ')}</p>
   <a class="detail-link" href={`/work/${slug}`}>Open the full session log →</a>
 </article>
 
 <style>
-  .case-study-card {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-6);
-    border: 1px solid var(--border);
-    transition: border-color 0.15s ease;
+  .case-study-entry {
+    padding: var(--space-8) 0;
+    border-top: 1px solid var(--border);
   }
 
-  .case-study-card:hover {
-    border-color: var(--accent-primary);
-    animation: pixel-jitter 0.3s steps(4);
-  }
-
-  /* A diagnostic-scan sweep on hover, reinforcing the same "boot check" metaphor
-     used elsewhere on the site (Apple HIG design-improvement pass) - additive to
-     the border-color/jitter hover above, not a replacement. */
-  .case-study-card::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--accent-primary);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .case-study-card:hover::after {
-    animation: card-scan-sweep 0.6s ease-in-out;
-  }
-
-  @keyframes card-scan-sweep {
-    0% {
-      top: 0;
-      opacity: 1;
-    }
-    100% {
-      top: 100%;
-      opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .case-study-card:hover::after {
-      animation: none;
-    }
+  .case-study-entry:first-child {
+    border-top: none;
+    padding-top: 0;
   }
 
   .client {
-    margin: 0;
+    margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
-    font-size: 0.9375rem;
+    font-size: 1.0625rem;
     font-weight: 500;
     line-height: 1.5;
     color: var(--text);
   }
 
-  .featured {
-    padding: var(--space-8);
-  }
-
   .featured .client {
-    margin-bottom: var(--space-2);
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-size: clamp(1.375rem, 3.2vw, 2rem);
     line-height: 1.6;
   }
 
@@ -130,14 +83,14 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
   }
 
   .field {
-    margin: 0;
+    margin: 0 0 var(--space-4);
     font-size: 0.9375rem;
     color: var(--text-secondary);
   }
 
   .label {
     display: block;
-    margin-bottom: 0.125rem;
+    margin-bottom: var(--space-1);
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     text-transform: uppercase;
@@ -146,25 +99,14 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
   }
 
   .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: var(--space-2) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .tags li {
-    padding: 0.125rem var(--space-2);
-    border: 1px solid var(--border);
+    margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
   }
 
   .detail-link {
     display: inline-block;
-    margin-top: var(--space-2);
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--accent-primary);

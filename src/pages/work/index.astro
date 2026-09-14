@@ -1,9 +1,11 @@
 ---
-// Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
-// The first case study is featured full-width with a bigger CaseStudyCard treatment
-// (Apple HIG design-improvement pass, "bolder structurally" round) - real visual
-// hierarchy instead of three identical boxes; order is whatever getCollection
-// returns, no editorial ranking implied beyond "shown first."
+// Header, intro line, list of CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
+// The first case study is featured with a bigger Display-font heading (Apple HIG
+// design-improvement pass) - real visual hierarchy through typography, not box size;
+// order is whatever getCollection returns, no editorial ranking implied beyond "shown
+// first." Rebuilt from a multi-column card grid into a single-column editorial list
+// ("pixelated but Apple" pass) - entries are separated by whitespace and a thin rule,
+// not individual bordered boxes.
 // Intro line (copy pass) leads with sector breadth instead of repeating Home's
 // lifecycle phrasing verbatim — no new claims invented, ties into the sectors strip
 // directly below it. A small static note sits below the real grid ("More engagements
@@ -29,7 +31,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import CaseStudyCard from '../../components/CaseStudyCard.astro';
-import PixelRivets from '../../components/PixelRivets.astro';
 
 const caseStudies = await getCollection('caseStudies');
 
@@ -55,7 +56,6 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     {
       caseStudies.length === 0 ? (
         <p class="pending">
-          <PixelRivets inset="0.3rem" />
           Case studies are added here as real engagements are finalized for
           publication.<span class="pending-caret" aria-hidden="true"></span>
         </p>
@@ -65,7 +65,7 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
             Client details are withheld by agreement; the work and outcomes below are
             real.
           </p>
-          <div class="grid">
+          <div class="entries">
             {caseStudies.map(({ id, data }, i) => (
               <CaseStudyCard slug={caseStudySlug(id)} featured={i === 0} {...data} />
             ))}
@@ -111,9 +111,6 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
   }
 
   .pending {
-    position: relative;
-    padding: var(--space-6);
-    border: 1px solid var(--border);
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.9375rem;
@@ -153,14 +150,8 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     color: var(--text-secondary);
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    gap: var(--space-4);
-  }
-
-  .grid > :global(.featured) {
-    grid-column: 1 / -1;
+  .entries {
+    max-width: 42rem;
   }
 
   .loading-more {

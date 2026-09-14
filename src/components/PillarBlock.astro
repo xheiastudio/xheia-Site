@@ -11,6 +11,11 @@
 // by scroll instead of a click. The bar is the shared `SectionLoader` component
 // (src/components/SectionLoader.astro); the checkmark stays what it always was, a
 // plain glyph prefixing the body text, not part of the bar.
+//
+// Individual per-pillar boxes (border + tinted background) removed - "pixelated but
+// Apple" pass: the outer .pillar-block frame is the section's one box; boxing each
+// pillar again inside it was boxes-within-boxes, the exact density this pass exists
+// to cut. Whitespace (a bigger .checks gap) does the separating instead.
 import SectionLoader from './SectionLoader.astro';
 import SectionNumber from './SectionNumber.astro';
 
@@ -89,13 +94,7 @@ const pillars = [
   .checks {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
-  }
-
-  .check-item {
-    padding: var(--space-6);
-    border: 1px solid var(--border);
-    background: var(--bg);
+    gap: var(--space-8);
   }
 
   .check-head {

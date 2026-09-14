@@ -34,7 +34,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
-import PixelRivets from '../components/PixelRivets.astro';
 import headshot from '../assets/hoda-headshot.jpg';
 ---
 
@@ -46,7 +45,6 @@ import headshot from '../assets/hoda-headshot.jpg';
   <main class="about-page" id="main-content">
     <div class="intro-row">
       <div class="headshot">
-        <PixelRivets inset="0.25rem" />
         <Image src={headshot} alt="Hoda" width={480} height={530} />
       </div>
       <div class="intro-text">
@@ -119,7 +117,6 @@ import headshot from '../assets/hoda-headshot.jpg';
     position: relative;
     flex-shrink: 0;
     width: 19rem;
-    border: 1px solid var(--border);
     line-height: 0;
   }
 
