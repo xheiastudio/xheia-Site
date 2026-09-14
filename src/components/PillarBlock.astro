@@ -174,12 +174,15 @@ const pillars = [
     }
   }
 
+  /* font-mono, not font-display: see Capabilities.astro's equivalent comment - full
+     redesign pass, matching Home's headline (100% IBM Plex Mono) instead of mixing
+     in the pixel font on real item titles. */
   .check-title {
     margin: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    line-height: 1.5;
     transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 

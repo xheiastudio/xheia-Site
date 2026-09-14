@@ -72,11 +72,14 @@ const { order, title, body, delay } = Astro.props;
     gap: var(--space-2);
   }
 
+  /* font-mono, not font-display: see Capabilities.astro's equivalent comment - full
+     redesign pass, matching Home's headline. .node-marker's numeral above keeps the
+     display font (a "numeral," the one sanctioned use left). */
   .node h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.25rem;
-    line-height: 1.6;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.1875rem;
+    line-height: 1.5;
     margin: 0;
   }
 

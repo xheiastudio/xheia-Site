@@ -89,10 +89,14 @@ const phases = [
     color: var(--accent-primary-text);
   }
 
+  /* font-mono, not font-display: see Capabilities.astro's equivalent comment - full
+     redesign pass, matching Home's headline. This is the section's own real
+     sentence-heading, not a short label/numeral - the clearest case for mono. */
   h2 {
-    font-family: var(--font-display);
+    font-family: var(--font-mono);
+    font-weight: 500;
     font-size: 1.25rem;
-    line-height: 1.7;
+    line-height: 1.5;
     margin-bottom: var(--space-8);
   }
 

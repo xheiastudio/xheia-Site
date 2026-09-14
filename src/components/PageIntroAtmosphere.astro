@@ -14,7 +14,7 @@ interface Props {
   markSize?: number;
 }
 
-const { markSize = 320 } = Astro.props;
+const { markSize = 512 } = Astro.props;
 ---
 
 <div class="intro-atmosphere">
@@ -27,16 +27,25 @@ const { markSize = 320 } = Astro.props;
 </div>
 
 <style>
+  /* min-height + vertical centering, not a thin top banner: full-redesign-pass
+     finding - even with matching type/glow, a ~350px band read as a fundamentally
+     smaller "moment" than Hero's near-full-viewport height, which is a big part of
+     why the two pages didn't feel like the same design at a glance. This isn't
+     Hero's full height (this page still has four sections below it, unlike Home),
+     but it's a real, deliberate arrival space now rather than a compressed strip. */
   .intro-atmosphere {
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 60vh;
+    padding: var(--space-8) 0;
   }
 
-  /* Same two-blob recipe as Hero's ambient glow, re-tuned for a much shorter box:
-     Hero's %-based ellipse sizes are proportional to its own near-viewport-height
-     container, so porting them verbatim into a box roughly a quarter that tall would
-     read as a flattened smear rather than a soft glow - larger vertical radii
-     compensate for the shallower aspect ratio. */
+  /* Same two-blob recipe as Hero's ambient glow. At this larger scale the
+     container's aspect ratio is close enough to Hero's own that its ellipse
+     proportions carry over directly instead of needing the flattened-box
+     compensation the previous, much shorter version required. */
   .intro-atmosphere::before {
     content: '';
     position: absolute;
@@ -45,12 +54,12 @@ const { markSize = 320 } = Astro.props;
     pointer-events: none;
     background:
       radial-gradient(
-        45% 70% at 22% 45%,
+        30% 44% at 30% 40%,
         color-mix(in srgb, var(--accent-primary) 16%, transparent),
         transparent 100%
       ),
       radial-gradient(
-        38% 62% at 78% 70%,
+        24% 36% at 74% 70%,
         color-mix(in srgb, var(--accent-status) 10%, transparent),
         transparent 100%
       );
@@ -65,40 +74,41 @@ const { markSize = 320 } = Astro.props;
   :global(html[data-theme='light']) .intro-atmosphere::before {
     background:
       radial-gradient(
-        50% 78% at 20% 55%,
+        34% 50% at 28% 48%,
         color-mix(in srgb, var(--accent-primary) 25%, transparent),
         transparent 100%
       ),
       radial-gradient(
-        40% 64% at 80% 78%,
+        28% 42% at 76% 76%,
         color-mix(in srgb, var(--text) 6%, transparent),
         transparent 100%
       );
   }
 
-  /* Monumental-mark-watermark recipe, scaled down from Hero's 34rem/size=640 - this
-     zone is roughly a quarter of Hero's height, so the mark is sized proportionally
-     rather than reused at Hero's literal scale. overflow:hidden on the parent makes
-     bleeding into the header above or the content below structurally impossible, not
-     just positionally unlikely - same guarantee Hero's .hero relies on. */
+  /* Monumental-mark-watermark recipe, now scaled much closer to Hero's own 34rem -
+     the container is real Hero-like scale now, so the mark reads at a matching
+     scale too rather than looking lost in the larger space. overflow:hidden on the
+     parent makes bleeding into the header above or the content below structurally
+     impossible, not just positionally unlikely - same guarantee Hero's .hero
+     relies on. */
   .intro-atmosphere-mark {
     position: absolute;
     z-index: 0;
-    bottom: -1.5rem;
-    right: -3.5rem;
+    bottom: -6vh;
+    right: -7rem;
     opacity: 0.07;
     pointer-events: none;
   }
 
   .intro-atmosphere-mark :global(svg) {
     display: block;
-    width: 14rem;
+    width: 28rem;
     height: auto;
   }
 
   @media (max-width: 40rem) {
     .intro-atmosphere-mark :global(svg) {
-      width: 8rem;
+      width: 16rem;
     }
   }
 
@@ -110,8 +120,15 @@ const { markSize = 320 } = Astro.props;
     opacity: 0.05;
   }
 
+  /* .intro-atmosphere itself is full-bleed (no width constraint) so the glow/mark
+     reach the actual viewport edges, matching Hero's own .hero/.bezel split - only
+     the CONTENT gets the same width: min(100% - 2*space-4, content-max-width)
+     column every other /approach section already uses, so the headline's left edge
+     lines up with everything below it. */
   .intro-atmosphere-content {
     position: relative;
     z-index: 1;
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: 0 auto;
   }
 </style>

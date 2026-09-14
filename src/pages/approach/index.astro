@@ -17,47 +17,51 @@ import Footer from '../../components/Footer.astro';
 
 <BaseLayout title="Approach" description="What I do, how I think about it, and how a project runs from first call to handover.">
   <Header />
-  <main class="approach-page" id="main-content">
+  <main id="main-content">
     <PageIntroAtmosphere>
       <h1 class="intro">
         What I do, how I think about it, and how a project runs from first call to
         handover.
       </h1>
     </PageIntroAtmosphere>
-    <Capabilities />
-    <PillarBlock />
-    <EngagementStructure />
-    <Tools />
+    <div class="approach-page">
+      <Capabilities />
+      <PillarBlock />
+      <EngagementStructure />
+      <Tools />
+    </div>
   </main>
   <ContactCTA />
   <Footer />
 </BaseLayout>
 
 <style>
+  /* Only the content BELOW the intro is width-constrained here - the intro itself
+     (PageIntroAtmosphere) is now full-bleed, matching Hero's actual structure
+     (Home/index.astro's <main> has no width constraint at all; Hero's own .bezel
+     self-constrains internally). Full-redesign-pass finding: with this class
+     wrapping everything, the glow/mark were boxed inside the 1152px content
+     column with visible flat margins at wide viewports, while Home's genuinely
+     reaches the screen edges - a real, visible "different background" difference,
+     not just a matter of matching intensity. */
   .approach-page {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) 0;
   }
 
-  .approach-page :global(.intro-atmosphere) {
-    padding: var(--space-8) 0 var(--space-6);
-  }
-
-  /* Real headline presence - mono (matching every h2/h3 on this page and Home's own
-     headline register), a confident size/weight jump from the previous body-adjacent
-     styling, sitting inside PageIntroAtmosphere's glow the way Home's headline sits
-     inside Hero's. Deliberately short of Home's own clamp(2.25rem,3.4vw+1.1rem,3.75rem)
-     - a real sibling, not a match, since this page introduces four sections below it
-     rather than being a single-focus landing moment. */
+  /* Exact match to Home's headline (.headline, Hero.astro) - same font, weight,
+     clamp, line-height, letter-spacing. Direct feedback that a "sibling, not a
+     match" (previously a smaller clamp/lighter weight) still read as visually
+     different pages; this removes that gap entirely rather than narrowing it. */
   .intro {
-    max-width: 38rem;
-    margin: 0 0 var(--space-2);
+    max-width: 46rem;
+    margin: 0;
     color: var(--text);
     font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: clamp(1.875rem, 2.6vw + 1.1rem, 3rem);
-    line-height: 1.2;
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
     letter-spacing: -0.01em;
   }
 </style>

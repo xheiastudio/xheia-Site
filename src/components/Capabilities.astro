@@ -252,12 +252,20 @@ const capabilities = [
     flex-shrink: 0;
   }
 
+  /* font-mono, not font-display: full redesign pass - Home's headline is 100% IBM
+     Plex Mono (BRANDFINAL's Type System note: the pixel font no longer covers
+     Home's Hero headline at all), so a pixel-font item title here read as a
+     genuinely different typeface next to Home rather than the same design system.
+     SectionNumber's big numerals keep the display font - that's the one remaining,
+     deliberate "signature" use of it, matching how BRANDFINAL actually scopes the
+     tier ("numerals," not "titles"). Weight bumped to 500 (mono's own presence at
+     this size needs more than 400 to read with equivalent confidence). */
   .menu-title {
     margin: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    line-height: 1.5;
     transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
