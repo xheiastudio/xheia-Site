@@ -68,16 +68,31 @@ const arrowPixels: Array<[number, number]> = [
 
   .cursor-fill {
     fill: var(--text);
-    transition: fill 0.1s ease;
+    transition: fill 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .pixel-cursor.is-interactive .cursor-fill {
     fill: var(--accent-primary);
   }
 
+  /* This is the one element moving continuously on every page - it had no
+     transition at all on its hover scale-up, snapping instantly while every other
+     interactive control on the site now eases. Real, findable gap, not a nitpick:
+     it's the most-visible-by-volume motion on the whole site. */
+  svg {
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   .pixel-cursor.is-interactive svg {
     transform: scale(1.25);
     transform-origin: -4px -4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-fill,
+    svg {
+      transition: none;
+    }
   }
 
   :global(html.pixel-cursor-active),

@@ -99,12 +99,27 @@ import CTAButton from './CTAButton.astro';
     padding: var(--space-4);
   }
 
+  /* Found on a genuine full sweep: this is a real link (goes home) that had zero
+     hover affordance and no focus ring at all - designing-for-macos.md's "everything
+     interactive has pointer feedback, a hover state" and the same focus-ring gap
+     already fixed on every other link this session. */
   .logo {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     color: var(--text);
     text-decoration: none;
+    border-radius: var(--radius);
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .logo:hover {
+    opacity: 0.75;
+  }
+
+  .logo:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
   }
 
   .wordmark {

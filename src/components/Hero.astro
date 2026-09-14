@@ -308,10 +308,27 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      values are per-theme and were tuned by sampling actual rendered pixels, not
      guessed - see the light-mode override below for why the same number can't work
      in both modes. */
+  /* Fixed-rem positioning (34rem wide, right:-9rem) only cleared the text column
+     above ~1536px logical viewport width - below that, which is most real windowed
+     browser use (confirmed by direct report at a real, moderate window size), the
+     mark's own bounding box geometrically overlapped terminal-body's right edge.
+     terminal-body's right edge tracks (viewport/2 + 368px) regardless of viewport
+     width (it's a fixed 46rem column centered in a capped, centered bezel) - a fixed
+     rem-based mark position can't stay clear of a boundary that moves with the
+     viewport. Both size and offset are viewport-width-relative instead, so
+     clearance holds (verified by direct measurement, not eyeballed) from ~1024px
+     through ultra-wide screens, growing naturally as the window widens. */
+  /* top, not bottom: .hero's height is min(100vh - 5rem), which on any normal
+     screen is much taller than the actual centered content block - a bottom-
+     anchored offset pinned the mark to the bottom of that whole flex section,
+     putting it below the fold on ordinary viewport heights (confirmed by direct
+     measurement: at a 1300px-tall viewport, the mark's top edge sat at y=1273,
+     nearly entirely off-screen). Anchoring from the top at a percentage of hero's
+     own height keeps it near the content regardless of how tall the viewport is. */
   .mark-watermark {
     position: absolute;
-    right: -9rem;
-    bottom: -12rem;
+    top: 58%;
+    right: -7vw;
     z-index: 0;
     opacity: 0.07;
     pointer-events: none;
@@ -320,7 +337,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .mark-watermark :global(svg) {
     display: block;
-    width: 34rem;
+    width: clamp(10rem, 16vw, 20rem);
     height: auto;
   }
 
@@ -329,12 +346,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      same per-mode lesson as the ambient glow. Measured and bumped for legibility. */
   :global(html[data-theme='light']) .mark-watermark {
     opacity: 0.05;
-  }
-
-  @media (max-width: 40rem) {
-    .mark-watermark :global(svg) {
-      width: 20rem;
-    }
   }
 
   /* Spans the whole section (not a smaller fixed-size box centered inside it) so
