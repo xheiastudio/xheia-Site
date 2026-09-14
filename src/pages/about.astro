@@ -45,9 +45,25 @@
 // BRANDFINAL §1 (experience, focus) and Tools.astro (stack) - nothing invented. The
 // availability row reuses Footer's exact pulsing-dot device instead of the page
 // having its own separate status line - one canonical "$ status" location instead of
-// two saying the same thing. The pull-quote and closing line keep their own voice
-// (why the work, what's next) around the structured facts, rather than the page
-// being either "all prose" or "all data."
+// two saying the same thing.
+//
+// Round two, direct feedback: the two prose paragraphs (origin story, AI pivot) just
+// restated the readout's EXPERIENCE and FOCUS rows in sentence form - literal
+// duplication, not two different things. Cut both entirely rather than trying to
+// reword around the overlap. The page is now three distinct beats, nothing repeated:
+// masthead (who), readout (the facts), pull-quote (why it matters to me) - fewer
+// words, no filler.
+//
+// The photo itself was "just sitting there" - static from first paint, no motion,
+// the one place on the page doing nothing. It now resolves into focus on load: a
+// steps()-timed blur/grayscale clear plus a top-down clip-path wipe (same
+// "materializing pixel-by-pixel" idea as the sitewide [data-reveal] steps() easing,
+// applied to a photo instead of a fade), with a small mono "operator.jpg" filename
+// tag + loading bar underneath - the site's boot-check bar vocabulary applied to the
+// one non-pixel-art element on the page. Pure CSS animation (autoplays on paint, no
+// JS/class toggle) so a no-JS visitor still sees the photo resolve normally rather
+// than getting stuck in a blurred, JS-dependent state - and it's disabled outright
+// under prefers-reduced-motion, image visible immediately.
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -63,8 +79,14 @@ import headshot from '../assets/hoda-headshot.jpg';
   <Header />
   <main class="about-page" id="main-content">
     <div class="intro-row">
-      <div class="headshot">
-        <Image src={headshot} alt="Hoda" width={480} height={530} />
+      <div class="photo-frame">
+        <div class="headshot">
+          <Image src={headshot} alt="Hoda" width={480} height={530} />
+        </div>
+        <p class="photo-caption">
+          <span class="photo-bar" aria-hidden="true"><span class="photo-bar-fill"></span></span>
+          operator.jpg
+        </p>
       </div>
       <div class="intro-text">
         <h1 id="about-name">Hoda</h1>
@@ -76,27 +98,20 @@ import headshot from '../assets/hoda-headshot.jpg';
     </div>
 
     <div class="story" data-reveal>
-      <p class="lede item-content" style={{ transitionDelay: '0s' }}>
-        <span class="comment-glyph" aria-hidden="true">//</span>
-        Four-plus years contracting in the UK, across different industries. Same job
-        every time: take data that's scattered and unreliable and turn it into
-        something a team can actually run the business on.
-      </p>
-
       <dl class="readout">
-        <div class="readout-row item-content" style={{ transitionDelay: '0.15s' }}>
+        <div class="readout-row item-content" style={{ transitionDelay: '0s' }}>
           <dt>focus</dt>
           <dd>data quality &rarr; agentic AI</dd>
         </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.15s' }}>
           <dt>experience</dt>
           <dd>4+ years, UK contracting</dd>
         </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
           <dt>stack</dt>
           <dd>Azure &middot; Power BI &middot; Python &middot; SQL &middot; Power Automate</dd>
         </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.6s' }}>
+        <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
           <dt>availability</dt>
           <dd>
             <span class="status-dot" aria-hidden="true"></span>
@@ -105,14 +120,9 @@ import headshot from '../assets/hoda-headshot.jpg';
         </div>
       </dl>
 
-      <p class="pull-quote item-content" style={{ transitionDelay: '0.8s' }}>
+      <p class="pull-quote item-content" style={{ transitionDelay: '0.65s' }}>
         What keeps me doing this: I like the actual problem-solving - messy data, no
         clear starting point, figuring it out anyway.
-      </p>
-      <p class="item-content" style={{ transitionDelay: '0.95s' }}>
-        <span class="comment-glyph" aria-hidden="true">//</span>
-        I'm now applying the same approach to AI agents and automation - same
-        discipline, newer tools.
       </p>
     </div>
   </main>
@@ -159,9 +169,15 @@ import headshot from '../assets/hoda-headshot.jpg';
     margin-bottom: var(--space-12);
   }
 
+  .photo-frame {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
   .headshot {
     position: relative;
-    flex-shrink: 0;
     width: 19rem;
     aspect-ratio: 1 / 1;
     overflow: hidden;
@@ -174,6 +190,64 @@ import headshot from '../assets/hoda-headshot.jpg';
     height: 100%;
     object-fit: cover;
     object-position: center 95%;
+    animation: photo-resolve 1.1s steps(8, end) forwards;
+  }
+
+  @keyframes photo-resolve {
+    from {
+      filter: blur(20px) grayscale(1);
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      filter: blur(0) grayscale(0);
+      clip-path: inset(0 0 0% 0);
+    }
+  }
+
+  .photo-caption {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .photo-bar {
+    display: block;
+    width: 3.5rem;
+    height: 0.35rem;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .photo-bar-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent-status);
+    animation: photo-bar-fill 1.1s steps(8, end) forwards;
+  }
+
+  @keyframes photo-bar-fill {
+    to {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .headshot :global(img) {
+      animation: none;
+      filter: none;
+      clip-path: none;
+    }
+
+    .photo-bar-fill {
+      animation: none;
+      width: 100%;
+    }
   }
 
   .intro-text h1 {
