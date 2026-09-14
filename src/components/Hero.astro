@@ -689,6 +689,10 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   }
 
   .cta-wrap {
+    /* Shrink to the button's own size, not the full terminal width - otherwise the
+       glow below renders as a wide bar spanning the whole row instead of a soft
+       halo hugging the button. */
+    display: inline-block;
     margin: var(--space-6) 0 0;
   }
 
@@ -712,7 +716,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     to {
       opacity: 1;
       transform: translateY(0);
-      box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 40%, transparent);
+      box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
     }
   }
 
@@ -729,7 +733,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     animation: none;
     opacity: 1;
     transform: none;
-    box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 40%, transparent);
+    box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
   }
 
   /* Bigger than the site's default CTAButton size - the tagline's own "so what,
