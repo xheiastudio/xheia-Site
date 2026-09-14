@@ -204,5 +204,16 @@ const capabilities = [
     font-family: var(--font-mono);
     font-size: 1rem;
     color: var(--accent-primary);
+    transition: opacity 0.15s ease;
+  }
+
+  .see-more:hover,
+  .see-more:focus-visible {
+    opacity: 0.7;
+  }
+
+  .see-more:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 0.2em;
   }
 </style>
