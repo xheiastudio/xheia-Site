@@ -84,12 +84,20 @@ const socialLinks = [
   nav a {
     color: var(--text-secondary);
     text-decoration: none;
+    border-radius: var(--radius);
     transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   nav a:hover,
   nav a:focus-visible {
     color: var(--accent-primary);
+  }
+
+  /* Color alone isn't a visible keyboard-focus indicator (accessibility.md - WCAG
+     2.4.7 Focus Visible) - a muted-gray-to-blue shift is easy to miss entirely. */
+  nav a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
   }
 
   .flavor-line {

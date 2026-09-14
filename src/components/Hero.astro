@@ -367,11 +367,19 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .operator-line a {
     color: var(--accent-primary);
+    border-radius: var(--radius);
     text-underline-offset: 0.15em;
     text-decoration-color: color-mix(in srgb, var(--accent-primary) 35%, transparent);
     transition:
       text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
       color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Underline-opacity alone isn't a visible keyboard-focus indicator - same fix as
+     Header/Footer's nav links. */
+  .operator-line a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 
   .operator-line a:hover,

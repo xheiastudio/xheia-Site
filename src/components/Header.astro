@@ -76,6 +76,19 @@ import CTAButton from './CTAButton.astro';
     border-bottom-color: var(--border);
   }
 
+  /* accessibility.md's Lens 1 calls this out by name alongside reduced motion:
+     "Reduced motion, reduced transparency, and increased contrast all have an
+     answer." A blurred, semi-transparent bar over arbitrary scrolled content is
+     exactly the kind of translucency this setting exists to opt out of - nav text
+     legibility shouldn't depend on what happens to be scrolling underneath it. */
+  @media (prefers-reduced-transparency: reduce) {
+    .site-header,
+    .site-header.is-scrolled {
+      background: var(--bg);
+      backdrop-filter: none;
+    }
+  }
+
   .site-header-inner {
     display: flex;
     align-items: center;
@@ -113,6 +126,7 @@ import CTAButton from './CTAButton.astro';
     font-size: 1.0625rem;
     text-decoration: none;
     padding-bottom: 0.25rem;
+    border-radius: var(--radius);
   }
 
   nav a::after {
@@ -136,6 +150,15 @@ import CTAButton from './CTAButton.astro';
   nav a:hover::after,
   nav a:focus-visible::after {
     transform: scaleX(1);
+  }
+
+  /* Color/underline alone isn't a visible keyboard-focus indicator (accessibility.md
+     - WCAG 2.4.7 Focus Visible) - CTAButton already gets a real ring, these links
+     didn't. Outline, not the inset box-shadow trick used on the notched CTA button,
+     since these have no clip-path corners to protect against. */
+  nav a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
   }
 
   .actions {
