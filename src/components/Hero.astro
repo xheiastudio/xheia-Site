@@ -309,27 +309,20 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      guessed - see the light-mode override below for why the same number can't work
      in both modes.
 
-     Position was wrong twice before landing here, both confirmed by direct
-     measurement, not assumption: (1) fixed-rem sizing/offset (34rem wide,
-     right:-9rem) only cleared terminal-body's text column above ~1536px logical
-     viewport width - below that, which is most real windowed browser use, the
-     mark's own bounding box geometrically overlapped the text (terminal-body's
-     right edge tracks viewport/2 + 368px, which a fixed-rem position can't track).
-     Fixed by making width/right viewport-width-relative (clamp + vw), verified
-     clear from 1024px through ultra-wide. (2) `bottom: -9rem` was measured from
-     .hero's own bottom edge, but .hero's height is min(100vh - 5rem) - far taller
-     than the visible content - so the mark sat below the fold on any normal
-     screen (measured: top edge at y=1273 in a 1300px-tall viewport). Direct
-     feedback preferred the original bottom-right corner-hugging feel, just raised
-     - so `bottom` stays (not `top`, which read as floating rather than
-     corner-anchored), but in `vh` instead of `rem`: `vh` scales with viewport
-     height the same way .hero's own min-height does, so the mark stays a
-     consistent, visible distance from the corner regardless of screen height,
-     the same way the vw-based horizontal fix scales with viewport width. */
+     Size and horizontal position are back to the original values (34rem, right:
+     -9rem) - direct feedback preferred that look specifically over an intervening
+     vw/clamp-based resize. The one real problem was vertical: `bottom: -12rem` was
+     measured from .hero's own bottom edge, but .hero's height is min(100vh - 5rem)
+     - far taller than the visible content - so the mark sat below the fold on
+     ordinary screens without scrolling. Fixed by raising it in `vh` rather than
+     `rem`: `vh` scales with viewport height the same way .hero's own min-height
+     does, so it stays a consistent, visible distance from the corner regardless of
+     screen height, without changing the size/horizontal position that already
+     looked right. */
   .mark-watermark {
     position: absolute;
-    bottom: 6vh;
-    right: -7vw;
+    bottom: 8vh;
+    right: -9rem;
     z-index: 0;
     opacity: 0.07;
     pointer-events: none;
@@ -338,8 +331,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .mark-watermark :global(svg) {
     display: block;
-    width: clamp(10rem, 16vw, 20rem);
+    width: 34rem;
     height: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .mark-watermark :global(svg) {
+      width: 20rem;
+    }
   }
 
   /* Ink outline at low opacity over Paper reads as a faint gray smudge rather than a
