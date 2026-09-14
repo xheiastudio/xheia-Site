@@ -2,32 +2,81 @@
 // Xheia (mark+wordmark) — Approach — Work — About — Contact — theme toggle —
 // one CTA. No dropdowns, no secondary items (SPEC.md — Nav). This is the everyday logo
 // lockup, no CRT bezel.
+//
+// Sticky + scroll-aware (Apple-sleekness pass): was a static header that scrolled
+// away with the page - the single most recognizable "premium nav" pattern (apple.com
+// included) is a floating header that stays put and picks up a subtle blur/hairline
+// only once you've actually scrolled past the top, staying invisible-as-a-box at
+// rest. `astro:page-load`-guarded scroll listener (same guard pattern as
+// ThemeToggle/PixelCursor) toggles `.is-scrolled`; CSS does the rest with the site's
+// established smooth easing.
 import PixelMark from './PixelMark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import CTAButton from './CTAButton.astro';
 ---
 
-<header class="site-header">
-  <a href="/" class="logo" aria-label="Xheia home">
-    <PixelMark size={56} />
-    <span class="wordmark">xheia</span>
-  </a>
+<header class="site-header" id="site-header">
+  <div class="site-header-inner">
+    <a href="/" class="logo" aria-label="Xheia home">
+      <PixelMark size={56} />
+      <span class="wordmark">xheia</span>
+    </a>
 
-  <nav aria-label="Primary">
-    <a href="/approach">Approach</a>
-    <a href="/work">Work</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-  </nav>
+    <nav aria-label="Primary">
+      <a href="/approach">Approach</a>
+      <a href="/work">Work</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
 
-  <div class="actions">
-    <ThemeToggle />
-    <CTAButton />
+    <div class="actions">
+      <ThemeToggle />
+      <CTAButton />
+    </div>
   </div>
 </header>
 
+<script>
+  if (!(window as any).__xheiaHeaderScrollBound) {
+    (window as any).__xheiaHeaderScrollBound = true;
+    document.addEventListener('astro:page-load', () => {
+      const header = document.getElementById('site-header');
+      if (!header) return;
+
+      const sync = () => {
+        header.classList.toggle('is-scrolled', window.scrollY > 8);
+      };
+      sync();
+      window.addEventListener('scroll', sync, { passive: true });
+    });
+  }
+</script>
+
 <style>
+  /* Full-bleed sticky bar (background/blur/border need to span the whole viewport
+     width to properly mask content scrolling underneath) with the actual nav row
+     centered at --content-max-width inside it, same split every other page uses
+     between an outer full-width section and an inner constrained column. */
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    backdrop-filter: blur(0);
+    border-bottom: 1px solid transparent;
+    transition:
+      background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .site-header.is-scrolled {
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom-color: var(--border);
+  }
+
+  .site-header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -96,7 +145,7 @@ import CTAButton from './CTAButton.astro';
   }
 
   @media (max-width: 40rem) {
-    .site-header {
+    .site-header-inner {
       flex-wrap: wrap;
     }
 
