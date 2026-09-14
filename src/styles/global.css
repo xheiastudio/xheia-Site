@@ -248,3 +248,35 @@ svg {
     animation: none !important;
   }
 }
+
+/* Cursor appended by src/scripts/typewriter.ts while a JS-driven character-by-
+   character reveal is in progress (Contact's confirmation, About's name/role,
+   404, case-study detail pages). Deliberately its own class, not Hero.astro's
+   .caret — same "blinking rectangle" idea, a separate implementation, since
+   Hero's own terminal components are exclusive to Hero per CLAUDE.md. */
+.type-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.15em;
+  background: var(--accent-status);
+  vertical-align: text-bottom;
+  animation: type-cursor-blink 1s steps(1) infinite;
+}
+
+@keyframes type-cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .type-cursor {
+    display: none;
+  }
+}

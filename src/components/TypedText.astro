@@ -1,0 +1,33 @@
+---
+// Declarative wrapper around src/scripts/typewriter.ts for text/timing known at
+// build time (404, case-study detail pages). Renders the real text server-side so
+// a no-JS or pre-JS visitor always sees the actual sentence immediately; the
+// script only clears and retypes it once motion isn't reduced. Runtime-only
+// consumers (Contact's confirmation, About's post-image-load reveal) call
+// typeText()/typeSequence() directly instead of using this component.
+interface Props {
+  text: string;
+  as?: 'span' | 'p' | 'h1' | 'h2' | 'h3';
+  /** seconds before this instance starts typing */
+  delay?: number;
+  /** characters per second */
+  cps?: number;
+}
+
+const { text, as: Tag = 'span', delay = 0, cps }: Props = Astro.props;
+---
+
+<Tag class="type-target" data-type-text={text} data-type-delay={delay} data-type-cps={cps ?? ''}>{text}</Tag>
+
+<script>
+  import { typeText } from '../scripts/typewriter';
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-type-text]').forEach((el) => {
+      const text = el.dataset.typeText ?? '';
+      const delayMs = Number(el.dataset.typeDelay ?? 0) * 1000;
+      const cps = el.dataset.typeCps ? Number(el.dataset.typeCps) : undefined;
+      setTimeout(() => typeText(el, text, { cps }), delayMs);
+    });
+  });
+</script>
