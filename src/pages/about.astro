@@ -63,7 +63,7 @@ import headshot from '../assets/hoda-headshot.jpg';
       every time: take data that's scattered and unreliable and turn it into something
       a team can actually run the business on.
     </p>
-    <p>
+    <p class="pull-quote">
       What keeps me doing this: I like the actual problem-solving - messy data, no
       clear starting point, figuring it out anyway.
     </p>
@@ -146,6 +146,17 @@ import headshot from '../assets/hoda-headshot.jpg';
   .about-page p {
     color: var(--text-secondary);
     font-size: 1.0625rem;
+  }
+
+  .about-page .pull-quote {
+    margin: var(--space-8) 0;
+    padding-left: var(--space-6);
+    border-left: 3px solid var(--accent-primary);
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+    line-height: 1.7;
   }
 
   @media (max-width: 34rem) {
