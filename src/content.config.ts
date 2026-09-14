@@ -15,3 +15,11 @@ const caseStudies = defineCollection({
 });
 
 export const collections = { caseStudies };
+
+// The glob loader's entry.id is the file path relative to `base`, minus extension —
+// it does NOT strip the case-studies/ subdirectory (e.g. "case-studies/foo"), so
+// every consumer that turns an entry into a /work/<slug> URL needs this same strip.
+// Centralized here so the regex can't drift out of sync between callers.
+export function caseStudySlug(id: string): string {
+  return id.replace(/^case-studies\//, '');
+}

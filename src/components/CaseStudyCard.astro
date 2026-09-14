@@ -1,11 +1,20 @@
 ---
 // Always full detail — client/sector, problem, approach, outcome, tags[] (SPEC.md —
 // CaseStudyCard). Used only on /work now that Capabilities replaced ProofStrip's
-// condensed usage on Home. No dead links: /work/[slug] doesn't exist yet, so
-// this renders as a static summary, not a link.
+// condensed usage on Home.
+//
+// Now links to /work/[slug] (Apple HIG design-improvement pass), which presents
+// the SAME three fields as a slower, more deliberate "session log" reveal - not
+// more content, since none exists beyond these 1-2 sentences per field. Link text
+// says "Open the full session log," never "Read more"/"Learn more," so it never
+// implies additional material. All three fields stay in full on the card itself -
+// each is already one sentence, so a trimmed "preview" would either duplicate the
+// full field or cut off mid-thought on a page visitors scan specifically for the
+// Outcome.
 import PixelRivets from './PixelRivets.astro';
 
 interface Props {
+  slug: string;
   client: string;
   problem: string;
   approach: string;
@@ -13,7 +22,7 @@ interface Props {
   tags: string[];
 }
 
-const { client, problem, approach, outcome, tags } = Astro.props;
+const { slug, client, problem, approach, outcome, tags } = Astro.props;
 ---
 
 <article class="case-study-card pixel-jitter-hover">
@@ -34,6 +43,7 @@ const { client, problem, approach, outcome, tags } = Astro.props;
   <ul class="tags">
     {tags.map((tag) => <li>{tag}</li>)}
   </ul>
+  <a class="detail-link" href={`/work/${slug}`}>Open the full session log →</a>
 </article>
 
 <style>
@@ -92,5 +102,24 @@ const { client, problem, approach, outcome, tags } = Astro.props;
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     color: var(--text-secondary);
+  }
+
+  .detail-link {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--accent-primary);
+    transition: opacity 0.15s ease;
+  }
+
+  .detail-link:hover,
+  .detail-link:focus-visible {
+    opacity: 0.7;
+  }
+
+  .detail-link:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 0.2em;
   }
 </style>

@@ -23,10 +23,22 @@ const { text, as: Tag = 'span', delay = 0, cps }: Props = Astro.props;
   import { typeText } from '../scripts/typewriter';
 
   document.addEventListener('astro:page-load', () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     document.querySelectorAll<HTMLElement>('[data-type-text]').forEach((el) => {
       const text = el.dataset.typeText ?? '';
-      const delayMs = Number(el.dataset.typeDelay ?? 0) * 1000;
+      if (reduced) {
+        // Already the real server-rendered text — nothing to do, and no reason to
+        // impose the staggered delay below when motion (and the sense of "wait")
+        // is meant to be minimized, not just un-animated.
+        return;
+      }
       const cps = el.dataset.typeCps ? Number(el.dataset.typeCps) : undefined;
+      const delayMs = Number(el.dataset.typeDelay ?? 0) * 1000;
+      // Clear immediately (not just once the delay above elapses) so a staggered
+      // later field never flashes its full real text before being wiped and
+      // retyped — only this element's own delay controls when typing *starts*.
+      el.textContent = '';
       setTimeout(() => typeText(el, text, { cps }), delayMs);
     });
   });

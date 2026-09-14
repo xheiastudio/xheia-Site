@@ -18,6 +18,7 @@
 // tag by convention — see src/content/case-studies/*.md) rather than hardcoded, so
 // it stays in sync automatically as entries are added or removed.
 import { getCollection } from 'astro:content';
+import { caseStudySlug } from '../../content.config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -59,7 +60,7 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
             real.
           </p>
           <div class="grid">
-            {caseStudies.map(({ data }) => <CaseStudyCard {...data} />)}
+            {caseStudies.map(({ id, data }) => <CaseStudyCard slug={caseStudySlug(id)} {...data} />)}
           </div>
           <p class="loading-more">
             More case studies loading<span class="pending-caret" aria-hidden="true"></span>

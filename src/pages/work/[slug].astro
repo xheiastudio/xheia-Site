@@ -1,0 +1,185 @@
+---
+// Case-study "session log" detail page (Apple HIG design-improvement pass). Presents
+// the SAME problem/approach/outcome facts already on the CaseStudyCard - each field
+// is genuinely just 1-2 sentences, nothing more exists. The value here is a slower,
+// more deliberate reading of those same real facts, not manufactured length -
+// framing (copy, link text) must never imply more content exists than it does.
+//
+// Timing technique mirrors Hero.astro's typeLine()/blockLine() clock accumulator
+// (stagger each field a beat after the last), independently reimplemented here -
+// not imported from Hero.astro, whose own .bezel/.scanlines/.caret stay exclusive
+// to Hero per CLAUDE.md. The actual character-by-character reveal is TypedText
+// (src/components/TypedText.astro / src/scripts/typewriter.ts), a separate
+// mechanism from Hero's build-time CSS technique.
+import { getCollection } from 'astro:content';
+import { caseStudySlug } from '../../content.config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PixelRivets from '../../components/PixelRivets.astro';
+import TypedText from '../../components/TypedText.astro';
+import CTAButton from '../../components/CTAButton.astro';
+
+export async function getStaticPaths() {
+  const caseStudies = await getCollection('caseStudies');
+  return caseStudies.map((entry) => ({
+    params: { slug: caseStudySlug(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { client, problem, approach, outcome, tags } = entry.data;
+const sector = tags.at(-1)!.replace(/^./, (c) => c.toUpperCase());
+const slug = caseStudySlug(entry.id);
+
+// Same staggering technique as Hero's clock accumulator, reimplemented for this
+// page only - each field starts a beat after the previous one finishes typing.
+const CPS = 55;
+const GAP = 0.35;
+let clock = 0;
+function stage(text: string) {
+  const delay = clock;
+  clock += text.length / CPS + GAP;
+  return { text, delay };
+}
+const problemStage = stage(problem);
+const approachStage = stage(approach);
+const outcomeStage = stage(outcome);
+---
+
+<BaseLayout title={`Work — ${client}`} description={`${client}: ${problem}`}>
+  <Header />
+  <main class="session-log" id="main-content">
+    <p class="log-header"><span class="glyph" aria-hidden="true">$</span> work --show {slug}</p>
+    <div class="log-panel">
+      <PixelRivets inset="0.3rem" />
+      <h1 class="client">{client}</h1>
+      <p class="meta"><span class="meta-label">sector</span> {sector}</p>
+
+      <div class="field">
+        <span class="field-label">Problem</span>
+        <TypedText as="p" text={problemStage.text} delay={problemStage.delay} />
+      </div>
+      <div class="field">
+        <span class="field-label">Approach</span>
+        <TypedText as="p" text={approachStage.text} delay={approachStage.delay} />
+      </div>
+      <div class="field">
+        <span class="field-label">Outcome</span>
+        <TypedText as="p" text={outcomeStage.text} delay={outcomeStage.delay} />
+      </div>
+
+      <ul class="tags">
+        {tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    </div>
+
+    <div class="actions">
+      <a class="back-link" href="/work">&larr; back to work</a>
+      <CTAButton />
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .session-log {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-16);
+  }
+
+  .log-header {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .glyph {
+    color: var(--accent-primary);
+  }
+
+  .log-panel {
+    position: relative;
+    max-width: 40rem;
+    padding: var(--space-8);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+  }
+
+  .client {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+
+  .meta {
+    margin: 0 0 var(--space-8);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .meta-label {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
+  }
+
+  .field {
+    margin: 0 0 var(--space-6);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary);
+  }
+
+  .field :global(p) {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags li {
+    padding: 0.125rem var(--space-2);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    max-width: 40rem;
+  }
+
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--accent-primary);
+  }
+</style>
