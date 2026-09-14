@@ -13,6 +13,19 @@
 import PixelMark from './PixelMark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import CTAButton from './CTAButton.astro';
+
+// Current-page indicator (navigation-structure lens: "current location is always
+// visible") - costs nothing to add here and benefits every page once visited, even
+// though it renders inert on Home itself (Home has no corresponding nav item - the
+// logo is how you get here, not a nav link - so nothing is ever marked current on
+// this page specifically, correctly).
+const currentPath = Astro.url.pathname;
+const navLinks = [
+  { href: '/approach', label: 'Approach' },
+  { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
 ---
 
 <header class="site-header" id="site-header">
@@ -23,10 +36,16 @@ import CTAButton from './CTAButton.astro';
     </a>
 
     <nav aria-label="Primary">
-      <a href="/approach">Approach</a>
-      <a href="/work">Work</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact</a>
+      {
+        navLinks.map((link) => {
+          const isCurrent = currentPath.startsWith(link.href);
+          return (
+            <a href={link.href} aria-current={isCurrent ? 'page' : undefined} class:list={{ 'is-current': isCurrent }}>
+              {link.label}
+            </a>
+          );
+        })
+      }
     </nav>
 
     <div class="actions">
@@ -70,9 +89,12 @@ import CTAButton from './CTAButton.astro';
       border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* blur(12px) was below Liquid Glass's own translation table for the "regular"
+     variant over text-heavy content (20-40px) - too thin to read as glass, more
+     like a faint smudge. Bumped into that range. */
   .site-header.is-scrolled {
     background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(24px);
     border-bottom-color: var(--border);
   }
 
@@ -86,6 +108,22 @@ import CTAButton from './CTAButton.astro';
     .site-header.is-scrolled {
       background: var(--bg);
       backdrop-filter: none;
+    }
+  }
+
+  /* Liquid Glass's own review checklist names this directly: "Increase Contrast
+     gets stronger fills and borders." Nothing on the site handled this setting at
+     all before this pass (grep-confirmed). The header's hairline border and
+     translucent fill are exactly the kind of subtle boundary this setting exists
+     to reinforce - a solid border and fully opaque background replace the
+     translucent glass effect entirely, since "increased contrast" and "blurred
+     see-through bar" are in real tension with each other. */
+  @media (prefers-contrast: more) {
+    .site-header,
+    .site-header.is-scrolled {
+      background: var(--bg);
+      backdrop-filter: none;
+      border-bottom-color: var(--border);
     }
   }
 
@@ -171,6 +209,17 @@ import CTAButton from './CTAButton.astro';
     transform: scaleX(1);
   }
 
+  /* Navigation-structure lens: "current location is always visible." A persistent
+     underline (not just on hover) plus the accent color, keyed off aria-current
+     rather than a route-matching class the browser doesn't already know about. */
+  nav a.is-current {
+    color: var(--accent-primary);
+  }
+
+  nav a.is-current::after {
+    transform: scaleX(1);
+  }
+
   /* Color/underline alone isn't a visible keyboard-focus indicator (accessibility.md
      - WCAG 2.4.7 Focus Visible) - CTAButton already gets a real ring, these links
      didn't. Outline, not the inset box-shadow trick used on the notched CTA button,
@@ -186,13 +235,22 @@ import CTAButton from './CTAButton.astro';
     gap: var(--space-4);
   }
 
+  /* `order: 3` here (removed) only ever changed visual position - it never touches
+     DOM/tab order, which is what keyboard navigation and VoiceOver's rotor
+     actually follow. That mismatch sent focus from the logo down to nav (visually
+     the *third* row) and then back up to the toggle/CTA (visually the *second*
+     row) - a real WCAG 2.4.3 Focus Order violation, found on a full sweep using
+     the skill's VoiceOver-navigation lens. Fixed by not reordering at all: nav
+     simply wraps to its own full-width row in its natural DOM position (still
+     between the logo and actions, same as source order), so visual order and tab
+     order are identical at every breakpoint - logo, then nav, then actions, top
+     to bottom, matching how it already reads on desktop. */
   @media (max-width: 40rem) {
     .site-header-inner {
       flex-wrap: wrap;
     }
 
     nav {
-      order: 3;
       width: 100%;
       justify-content: center;
       gap: var(--space-4);

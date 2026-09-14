@@ -27,7 +27,22 @@ const { class: className } = Astro.props;
     white-space: nowrap;
     transition:
       background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-      color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* buttons.md: "Always include a press state for a custom button. Without a press
+     state, a button can feel unresponsive." This had hover/focus but nothing for
+     :active - on a touch device (no hover at all) tapping gave zero feedback
+     before the page navigated away. */
+  .cta-button:active {
+    transform: scale(0.96);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-button:active {
+      transform: none;
+    }
   }
 
   .cta-button::before {
