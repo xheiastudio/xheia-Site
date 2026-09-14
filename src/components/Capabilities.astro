@@ -18,6 +18,14 @@
 // it plays immediately on load with no scroll needed; the other /approach sections
 // play theirs as scrolled into view. Bigger, more dominant sizing throughout (called
 // out by name).
+//
+// Outer frame now matches PillarBlock's exact recipe (inset panel, tinted background,
+// generous padding) instead of a plain top-divider + separate inner box - direct
+// feedback that Principles' smoothness (one frame, items separated by whitespace, no
+// per-item dividers) should be the standard every /approach section matches, not just
+// Principles itself. "loading modules..." stays as Capabilities' own distinguishing
+// label (its boot-menu personality, per SPEC.md's "distinct interaction per section"
+// rule) but without its own sub-box.
 import PixelIcon from './PixelIcon.astro';
 import SectionLoader from './SectionLoader.astro';
 import SectionNumber from './SectionNumber.astro';
@@ -97,40 +105,39 @@ const capabilities = [
     <SectionNumber number="01" />
     <h2 class="eyebrow">// what I do</h2>
   </div>
-  <div class="menu-frame">
-    <p class="menu-frame-label">loading modules...</p>
-    <div class="menu">
-      {
-        capabilities.map((c, i) => {
-          const delay = i * ITEM_STAGGER;
-          return (
-            <div class="menu-item">
-              <div class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
-                <span class="selector" aria-hidden="true">▶</span>
-                <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
-                <h3 class="menu-title">{c.title}</h3>
-              </div>
-              <div class="menu-result">
-                <SectionLoader delay={delay} />
-                <p class="menu-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
-                  <span class="check-mark" aria-hidden="true">✓</span> {c.body}
-                </p>
-              </div>
+  <p class="menu-frame-label">loading modules...</p>
+  <div class="menu">
+    {
+      capabilities.map((c, i) => {
+        const delay = i * ITEM_STAGGER;
+        return (
+          <div class="menu-item">
+            <div class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
+              <span class="selector" aria-hidden="true">▶</span>
+              <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
+              <h3 class="menu-title">{c.title}</h3>
             </div>
-          );
-        })
-      }
-    </div>
+            <div class="menu-result">
+              <SectionLoader delay={delay} />
+              <p class="menu-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
+                <span class="check-mark" aria-hidden="true">✓</span> {c.body}
+              </p>
+            </div>
+          </div>
+        );
+      })
+    }
   </div>
   <a href="/work" class="see-more">See the work →</a>
 </section>
 
 <style>
   .capabilities {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--space-16) var(--space-4);
-    border-top: 1px solid var(--border);
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-16) auto;
+    padding: var(--space-12);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
   .section-head {
@@ -150,14 +157,8 @@ const capabilities = [
     color: var(--accent-primary);
   }
 
-  .menu-frame {
-    border: 1px solid var(--border);
-  }
-
   .menu-frame-label {
-    margin: 0;
-    padding: var(--space-3) var(--space-8);
-    border-bottom: 1px solid var(--border);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -165,13 +166,10 @@ const capabilities = [
     color: var(--text-secondary);
   }
 
-  .menu-item {
-    padding: var(--space-6) var(--space-8);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .menu-item:last-child {
-    border-bottom: none;
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
   }
 
   .menu-item-head {

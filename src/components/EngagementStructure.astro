@@ -12,12 +12,11 @@
 // path metaphor doesn't survive narrow viewports, so mobile falls back to a stacked
 // list (see EngagementPhase.astro's own responsive styles).
 //
-// A plain bordered `.path-frame` wraps the level-path (no PixelRivets) - added per
-// direct feedback that this section and Tools read visually smaller than Capabilities/
-// PillarBlock, with no frame at all making the page feel inconsistent in scale while
-// scrolling. This isn't the same "boxes under boxes" repeat the original redesign
-// avoided (no rivets, no icon, still a distinct level-path inside) - just a matching
-// outer weight so every /approach section reads as one equally-sized module.
+// The section itself is now the one frame (PillarBlock's exact recipe: inset panel,
+// tinted background, generous padding) instead of a separate inner `.path-frame` box
+// - direct feedback that every /approach section should match Principles' "one frame,
+// nothing nested inside it" smoothness. No PixelRivets, no icon - still a distinct
+// level-path, just without a redundant second box around it.
 //
 // Each node fades in staggered one after another as the section scrolls into view
 // (see EngagementPhase.astro), via this section's own data-reveal
@@ -52,25 +51,24 @@ const phases = [
   </div>
   <div class="section-content">
     <h2>How an engagement runs</h2>
-    <div class="path-frame">
-      <div class="level-path">
-        <div class="path-line" aria-hidden="true"></div>
-        {
-          phases.map((phase, i) => (
-            <EngagementPhase order={i + 1} title={phase.title} body={phase.body} delay={i * ITEM_STAGGER} />
-          ))
-        }
-      </div>
+    <div class="level-path">
+      <div class="path-line" aria-hidden="true"></div>
+      {
+        phases.map((phase, i) => (
+          <EngagementPhase order={i + 1} title={phase.title} body={phase.body} delay={i * ITEM_STAGGER} />
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
   .engagement-structure {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--space-16) var(--space-4);
-    border-top: 1px solid var(--border);
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-16) auto;
+    padding: var(--space-12);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
   .section-head {
@@ -95,11 +93,6 @@ const phases = [
     margin-bottom: var(--space-8);
   }
 
-  .path-frame {
-    border: 1px solid var(--border);
-    padding: var(--space-12) var(--space-8);
-  }
-
   .level-path {
     position: relative;
     display: flex;
@@ -118,10 +111,6 @@ const phases = [
   }
 
   @media (max-width: 40rem) {
-    .path-frame {
-      padding: var(--space-8) var(--space-4);
-    }
-
     .level-path {
       flex-direction: column;
       gap: var(--space-6);

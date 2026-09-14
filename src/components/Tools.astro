@@ -12,6 +12,11 @@
 // SectionLoader/typed reveal — a flat list of short labels doesn't carry enough
 // meaning per item to justify a "boot check," unlike Capabilities/PillarBlock's named
 // modules; the whole manifest still fades in as a group on scroll (.section-content).
+//
+// The section itself is now the one frame (PillarBlock's exact recipe) instead of a
+// separate inner `.tools-frame` box, and rows are separated by whitespace, not
+// per-row dividers - matching Principles' smoothness, direct feedback that every
+// /approach section should read as the same "family."
 import SectionNumber from './SectionNumber.astro';
 
 const tools = [
@@ -28,27 +33,26 @@ const tools = [
     <SectionNumber number="04" />
     <h2 class="eyebrow">// tools</h2>
   </div>
-  <div class="tools-frame">
-    <p class="frame-label">stack manifest</p>
-    <ol class="manifest section-content">
-      {
-        tools.map((tool, i) => (
-          <li class="manifest-row">
-            <span class="row-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <span class="row-name">{tool}</span>
-          </li>
-        ))
-      }
-    </ol>
-  </div>
+  <p class="frame-label">stack manifest</p>
+  <ol class="manifest section-content">
+    {
+      tools.map((tool, i) => (
+        <li class="manifest-row">
+          <span class="row-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="row-name">{tool}</span>
+        </li>
+      ))
+    }
+  </ol>
 </section>
 
 <style>
   .tools {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--space-16) var(--space-4);
-    border-top: 1px solid var(--border);
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-16) auto;
+    padding: var(--space-12);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
   .section-head {
@@ -68,14 +72,8 @@ const tools = [
     color: var(--accent-primary);
   }
 
-  .tools-frame {
-    border: 1px solid var(--border);
-  }
-
   .frame-label {
-    margin: 0;
-    padding: var(--space-3) var(--space-6);
-    border-bottom: 1px solid var(--border);
+    margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -87,18 +85,15 @@ const tools = [
     margin: 0;
     padding: 0;
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
   }
 
   .manifest-row {
     display: flex;
     align-items: baseline;
     gap: var(--space-6);
-    padding: var(--space-4) var(--space-6);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .manifest-row:last-child {
-    border-bottom: none;
   }
 
   .row-index {
@@ -119,7 +114,6 @@ const tools = [
   @media (max-width: 40rem) {
     .manifest-row {
       gap: var(--space-4);
-      padding: var(--space-4);
     }
 
     .row-name {
