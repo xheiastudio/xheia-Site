@@ -270,7 +270,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .screen {
     position: relative;
-    padding: var(--space-16) var(--space-8) var(--space-16);
+    padding: var(--space-16) var(--space-8);
   }
 
   .terminal-body {
@@ -279,11 +279,16 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     text-align: left;
   }
 
+  /* Deliberately small and quiet - a system-readout preamble, not body text. The
+     headline below is the one thing on this page meant to command attention;
+     everything above it should read as a quick status check you glance past, not
+     compete with it for weight (Apple HIG "one strong idea per screen" logic). */
   .boot-line {
     position: relative;
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--space-1);
     font-family: var(--font-mono);
-    font-size: 1.125rem;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
     white-space: nowrap;
   }
 
@@ -432,20 +437,26 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     }
   }
 
+  /* The one thing on this page meant to command attention - a real scale jump from
+     the quiet readout above it, not an incremental bump. Tight line-height and a
+     touch of negative tracking at this size, the way a confident display headline
+     reads rather than a stretched-out paragraph. */
   .headline {
     position: relative;
-    margin: var(--space-6) 0 0;
+    margin: var(--space-12) 0 0;
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: clamp(1.625rem, 2.4vw + 1.3rem, 2.875rem);
-    line-height: 1.4;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     color: var(--text);
     white-space: normal;
   }
 
   .subhead {
     position: relative;
-    margin: var(--space-4) 0 0;
+    margin: var(--space-6) 0 0;
+    max-width: 34rem;
     font-family: var(--font-mono);
     font-size: 1.125rem;
     line-height: 1.6;
@@ -458,7 +469,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
        glow below renders as a wide bar spanning the whole row instead of a soft
        halo hugging the button. */
     display: inline-block;
-    margin: var(--space-6) 0 0;
+    margin: var(--space-8) 0 0;
   }
 
   /* The CTA is Home's actual conversion point - marking its arrival with the same
