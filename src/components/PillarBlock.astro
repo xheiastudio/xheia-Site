@@ -66,12 +66,12 @@ const pillars = [
 </section>
 
 <style>
+  /* No border/tinted background - see Capabilities.astro's equivalent comment: Home's
+     whitespace-only framing overrides the earlier "one frame per section" standard. */
   .pillar-block {
     width: min(100% - 2 * var(--space-4), var(--content-max-width));
-    margin: var(--space-16) auto;
-    padding: var(--space-12);
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
+    margin: var(--space-20) auto;
+    padding: 0;
   }
 
   .section-head {

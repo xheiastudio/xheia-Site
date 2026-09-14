@@ -132,12 +132,16 @@ const capabilities = [
 </section>
 
 <style>
+  /* No border/tinted background - direct feedback overriding the earlier "one frame
+     per section" standard: Home's identity is whitespace framing, no borders anywhere
+     (the stripped-terminal pass removed Hero's own bezel border for the same reason).
+     --space-20 (the widest step on the scale, added for this) is now the only thing
+     separating sections, since the box's own padding no longer contributes any
+     visual gap - same move as Footer's "divider became whitespace" fix, one level up. */
   .capabilities {
     width: min(100% - 2 * var(--space-4), var(--content-max-width));
-    margin: var(--space-16) auto;
-    padding: var(--space-12);
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
+    margin: var(--space-20) auto;
+    padding: 0;
   }
 
   .section-head {

@@ -1,0 +1,117 @@
+---
+// Non-Hero implementation of CLAUDE.md's "Ambient glow recipe" / "Monumental-mark-
+// watermark recipe" - the same two ingredients that make Home's Hero feel lit and
+// premium, reused wherever another page's own intro needs the same treatment (first
+// consumer: /approach; /work has the same plain-intro shape and is a near-certain
+// second). Hero itself stays untouched - its version is entangled with boot-sequence
+// timing and isn't worth disturbing to share code with a much simpler case.
+//
+// Purely decorative and content-agnostic: renders a glow + a bleeding-corner PixelMark
+// behind whatever is slotted in, and has no opinion on that content's own layout.
+import PixelMark from './PixelMark.astro';
+
+interface Props {
+  markSize?: number;
+}
+
+const { markSize = 320 } = Astro.props;
+---
+
+<div class="intro-atmosphere">
+  <div class="intro-atmosphere-mark" aria-hidden="true">
+    <PixelMark size={markSize} decorative />
+  </div>
+  <div class="intro-atmosphere-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .intro-atmosphere {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Same two-blob recipe as Hero's ambient glow, re-tuned for a much shorter box:
+     Hero's %-based ellipse sizes are proportional to its own near-viewport-height
+     container, so porting them verbatim into a box roughly a quarter that tall would
+     read as a flattened smear rather than a soft glow - larger vertical radii
+     compensate for the shallower aspect ratio. */
+  .intro-atmosphere::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        45% 70% at 22% 45%,
+        color-mix(in srgb, var(--accent-primary) 16%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        38% 62% at 78% 70%,
+        color-mix(in srgb, var(--accent-status) 10%, transparent),
+        transparent 100%
+      );
+  }
+
+  /* Light mode needs a materially bolder primary blob, not just a brightness shift -
+     the same Weber-Fechner lesson from Hero's glow (a percentage shift that reads as
+     an obvious glow near black is nearly imperceptible near white). Coral/accent-status
+     is dropped here too (it saturates too visibly against Paper); --text at low opacity
+     stands in as the second "shadow" point of depth, same substitution Hero's own
+     light-mode override already makes. */
+  :global(html[data-theme='light']) .intro-atmosphere::before {
+    background:
+      radial-gradient(
+        50% 78% at 20% 55%,
+        color-mix(in srgb, var(--accent-primary) 25%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        40% 64% at 80% 78%,
+        color-mix(in srgb, var(--text) 6%, transparent),
+        transparent 100%
+      );
+  }
+
+  /* Monumental-mark-watermark recipe, scaled down from Hero's 34rem/size=640 - this
+     zone is roughly a quarter of Hero's height, so the mark is sized proportionally
+     rather than reused at Hero's literal scale. overflow:hidden on the parent makes
+     bleeding into the header above or the content below structurally impossible, not
+     just positionally unlikely - same guarantee Hero's .hero relies on. */
+  .intro-atmosphere-mark {
+    position: absolute;
+    z-index: 0;
+    bottom: -1.5rem;
+    right: -3.5rem;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .intro-atmosphere-mark :global(svg) {
+    display: block;
+    width: 14rem;
+    height: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .intro-atmosphere-mark :global(svg) {
+      width: 8rem;
+    }
+  }
+
+  /* Ink outline at low opacity over Paper reads as a faint gray smudge rather than a
+     recognizable shape at the same alpha that works for Signal green over Ink - same
+     per-mode lesson as Hero's mark, re-verified at this smaller render size rather than
+     assumed to carry over. */
+  :global(html[data-theme='light']) .intro-atmosphere-mark {
+    opacity: 0.05;
+  }
+
+  .intro-atmosphere-content {
+    position: relative;
+    z-index: 1;
+  }
+</style>
