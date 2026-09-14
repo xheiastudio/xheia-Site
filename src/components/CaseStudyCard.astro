@@ -52,13 +52,16 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
 </article>
 
 <style>
+  /* No border-top divider - full redesign pass, matching the "zero borders
+     anywhere" standard already applied to every /approach section. More
+     vertical padding (space-8 -> space-12) compensates for the lost visual
+     separation, same move as Footer's original "divider became whitespace"
+     fix. */
   .case-study-entry {
-    padding: var(--space-8) 0;
-    border-top: 1px solid var(--border);
+    padding: var(--space-12) 0;
   }
 
   .case-study-entry:first-child {
-    border-top: none;
     padding-top: 0;
   }
 
@@ -71,11 +74,15 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
     color: var(--text);
   }
 
+  /* font-mono, not font-display: full redesign pass - Home's headline is 100%
+     IBM Plex Mono, so a pixel-font client name here read as a genuinely
+     different typeface. Weight bumped to 700 for the same "featured" presence
+     the pixel font carried at this size. */
   .featured .client {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-mono);
+    font-weight: 700;
     font-size: clamp(1.375rem, 3.2vw, 2rem);
-    line-height: 1.6;
+    line-height: 1.2;
   }
 
   .featured .field {
@@ -88,14 +95,17 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
     color: var(--text-secondary);
   }
 
+  /* --accent-primary-text, not --accent-primary (4.22:1 vs Ink in dark mode,
+     below 4.5:1); size bumped 11px -> 13px, both the same fixes already
+     applied everywhere else this session. */
   .label {
     display: block;
     margin-bottom: var(--space-1);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .tags {
@@ -109,17 +119,25 @@ const { slug, client, problem, approach, outcome, tags, featured = false } = Ast
     display: inline-block;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
-    color: var(--accent-primary);
-    transition: opacity 0.15s ease;
+    color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Was opacity: 0.7 - the same bug found and fixed on Capabilities' "See the
+     work" link: dimming this already-adjusted text color toward the page
+     background drops it back below 4.5:1 on the exact state meant to confirm
+     interactivity. Underline reveal keeps full, already-verified contrast in
+     every state. */
   .detail-link:hover,
   .detail-link:focus-visible {
-    opacity: 0.7;
+    text-decoration-color: currentColor;
   }
 
   .detail-link:focus-visible {
-    outline: 2px solid var(--accent-primary);
+    outline: 2px solid var(--accent-primary-text);
     outline-offset: 0.2em;
   }
 </style>

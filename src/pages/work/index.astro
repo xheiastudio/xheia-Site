@@ -29,8 +29,10 @@ import { getCollection } from 'astro:content';
 import { caseStudySlug } from '../../content.config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
+import PageIntroAtmosphere from '../../components/PageIntroAtmosphere.astro';
 import Footer from '../../components/Footer.astro';
 import CaseStudyCard from '../../components/CaseStudyCard.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
 
 const caseStudies = await getCollection('caseStudies');
 
@@ -41,68 +43,87 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
 
 <BaseLayout title="Work" description="Full-lifecycle data work, delivered.">
   <Header />
-  <main class="work-page" id="main-content">
-    <h1 class="intro">
-      Real engagements across life sciences, public sector, and fitness - different
-      sectors, same underlying problem to solve.
-    </h1>
-    {
-      sectors.length > 0 && (
-        <h2 class="eyebrow">
-          // sectors <span class="sectors">{sectors.join(' · ')}</span>
-        </h2>
-      )
-    }
-    {
-      caseStudies.length === 0 ? (
-        <p class="pending">
-          Case studies are added here as real engagements are finalized for
-          publication.<span class="pending-caret" aria-hidden="true"></span>
-        </p>
-      ) : (
-        <>
-          <p class="disclaimer">
-            Client details are withheld by agreement; the work and outcomes below are
-            real.
+  <main id="main-content">
+    <PageIntroAtmosphere>
+      <h1 class="intro">
+        Real engagements across life sciences, public sector, and fitness - different
+        sectors, same underlying problem to solve.
+      </h1>
+    </PageIntroAtmosphere>
+    <div class="work-page">
+      {
+        sectors.length > 0 && (
+          <h2 class="eyebrow">
+            // sectors <span class="sectors">{sectors.join(' · ')}</span>
+          </h2>
+        )
+      }
+      {
+        caseStudies.length === 0 ? (
+          <p class="pending">
+            Case studies are added here as real engagements are finalized for
+            publication.<span class="pending-caret" aria-hidden="true"></span>
           </p>
-          <div class="entries">
-            {caseStudies.map(({ id, data }, i) => (
-              <CaseStudyCard slug={caseStudySlug(id)} featured={i === 0} {...data} />
-            ))}
-          </div>
-          <p class="loading-more">More engagements are added here as they wrap up.</p>
-        </>
-      )
-    }
+        ) : (
+          <>
+            <p class="disclaimer">
+              Client details are withheld by agreement; the work and outcomes below are
+              real.
+            </p>
+            <div class="entries">
+              {caseStudies.map(({ id, data }, i) => (
+                <CaseStudyCard slug={caseStudySlug(id)} featured={i === 0} {...data} />
+              ))}
+            </div>
+            <p class="loading-more">More engagements are added here as they wrap up.</p>
+          </>
+        )
+      }
+    </div>
   </main>
+  <ContactCTA />
   <Footer />
 </BaseLayout>
 
 <style>
+  /* Only the content BELOW the intro is width-constrained - the intro itself
+     (PageIntroAtmosphere) is full-bleed, matching Home's actual structure and
+     the same fix already applied to /approach: <main> here carries no width
+     constraint, so the glow/mark reach the real viewport edges instead of
+     being boxed inside this column. */
   .work-page {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
   }
 
+  /* Exact match to Home's headline (.headline, Hero.astro) - same font, weight,
+     clamp, line-height, letter-spacing, same fix already proven on /approach.
+     This was previously styled as a plain body paragraph (font-body, text-
+     secondary, weight 400) - not a heading at all. */
   .intro {
-    max-width: 32rem;
-    margin: 0 0 var(--space-8);
-    color: var(--text-secondary);
-    font-size: 1.0625rem;
-    font-family: var(--font-body);
-    font-weight: 400;
-    line-height: 1.5;
+    max-width: 46rem;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
   }
 
+  /* --accent-primary-text, not --accent-primary: full-audit finding already
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. Size bumped 12px -> 13px, the same
+     translated-minimum fix already applied everywhere else. */
   .eyebrow {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
     font-weight: 400;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     line-height: 1.5;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .eyebrow .sectors {

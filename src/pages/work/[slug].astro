@@ -68,9 +68,7 @@ const outcomeStage = stage(outcome);
         <TypedText as="p" text={outcomeStage.text} delay={outcomeStage.delay} />
       </div>
 
-      <ul class="tags">
-        {tags.map((tag) => <li>{tag}</li>)}
-      </ul>
+      <p class="tags">{tags.join(' · ')}</p>
     </div>
 
     <div class="actions">
@@ -95,24 +93,29 @@ const outcomeStage = stage(outcome);
     color: var(--text-secondary);
   }
 
+  /* --accent-primary-text, not --accent-primary: full-audit finding already
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. */
   .glyph {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
+  /* No border/tinted background - full redesign pass, matching the "zero
+     borders anywhere" standard already applied to every /approach section
+     and CaseStudyCard's entries. */
   .log-panel {
     position: relative;
     max-width: 40rem;
-    padding: var(--space-8);
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
+  /* font-mono, not font-display: same fix as CaseStudyCard's featured client
+     heading - Home's headline is 100% IBM Plex Mono. */
   .client {
     margin: 0 0 var(--space-3);
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-mono);
+    font-weight: 700;
     font-size: 1.125rem;
-    line-height: 1.7;
+    line-height: 1.4;
   }
 
   .meta {
@@ -125,21 +128,23 @@ const outcomeStage = stage(outcome);
   .meta-label {
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .field {
     margin: 0 0 var(--space-6);
   }
 
+  /* --accent-primary-text (see .glyph above); size bumped 12px -> 13px, the
+     same translated-minimum fix already applied everywhere else. */
   .field-label {
     display: block;
     margin-bottom: var(--space-2);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .field :global(p) {
@@ -148,20 +153,14 @@ const outcomeStage = stage(outcome);
     font-size: 1.0625rem;
   }
 
+  /* Plain text, not bordered pills - matches CaseStudyCard's existing tag
+     style exactly (same data, one consistent treatment instead of two; the
+     bordered-pill version was the same box-per-element pattern removed
+     everywhere else). */
   .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .tags li {
-    padding: 0.125rem var(--space-2);
-    border: 1px solid var(--border);
+    margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
   }
 
@@ -178,6 +177,6 @@ const outcomeStage = stage(outcome);
   .back-link {
     font-family: var(--font-mono);
     font-size: 0.9375rem;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 </style>
