@@ -58,6 +58,15 @@ import Footer from '../components/Footer.astro';
     align-items: start;
   }
 
+  /* The intro column is narrow relative to the form (1fr vs 1.2fr), and the
+     display font renders wide - "conversation" was filling the column's full
+     width with zero margin before the grid gap, reading as if it were crowding
+     into the form. This forces a small reserve so the heading never touches the
+     column edge, regardless of exact viewport width. */
+  .contact-intro {
+    padding-right: var(--space-6);
+  }
+
   /* Smooth, coordinated entrance - see the top comment block. Higher specificity
      than the sitewide [data-reveal]/.item-content rules in global.css (steps()
      timing), so this overrides them without touching that shared file. */
@@ -88,7 +97,13 @@ import Footer from '../components/Footer.astro';
   .contact-intro h1 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    /* This heading lives in a narrow column next to the form (1fr of a 1fr/1.2fr
+       grid), not full page width like About's - the display font renders at
+       roughly 1em per character, so the old clamp's 2.5rem ceiling needed ~480px
+       for "conversation" alone, more than the ~430px column had, and the word
+       (unbreakable, can't wrap mid-word) ran straight into the form regardless of
+       padding. Capped lower so it always fits with real margin to spare. */
+    font-size: clamp(1.5rem, 3vw, 1.75rem);
     line-height: 1.15;
     margin: 0 0 var(--space-4);
   }
