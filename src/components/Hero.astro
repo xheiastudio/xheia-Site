@@ -283,16 +283,22 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      going meaningfully bolder on the blue (25%) so the tint itself is what
      registers, not a brightness delta - this is closer to how Apple's own light-
      mode marketing pages actually look (a visible soft blue/lavender wash), not a
-     token gesture at "some atmosphere." Coral still dropped entirely (see below). */
+     token gesture at "some atmosphere." Coral still dropped entirely (see below).
+     Peak position measured and moved off the boot-line readout text specifically:
+     at 36% vertical it sat almost exactly under that small quiet text, and
+     --text-secondary's 5.37:1 (measured against flat Paper) dropped to 4.59:1
+     against the tinted area behind it - real but too close to the 4.5:1 minimum to
+     leave alone. Shifted down toward the headline instead (which sits on --text at
+     full strength, nowhere near its own contrast floor regardless of tint). */
   :global(html[data-theme='light']) .hero::before {
     background:
       radial-gradient(
-        34% 50% at 30% 36%,
+        34% 50% at 28% 54%,
         color-mix(in srgb, var(--accent-primary) 25%, transparent),
         transparent 100%
       ),
       radial-gradient(
-        28% 42% at 72% 70%,
+        28% 42% at 74% 78%,
         color-mix(in srgb, var(--text) 6%, transparent),
         transparent 100%
       );
