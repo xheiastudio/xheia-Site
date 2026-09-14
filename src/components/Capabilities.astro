@@ -198,6 +198,15 @@ const capabilities = [
     color: var(--accent-status);
   }
 
+  /* Flare coral (light mode's --accent-status) is 2.04:1 on Paper as text — fails
+     WCAG's 4.5:1 minimum (Apple HIG design-review pass). Coral stays for the
+     decorative bar fill (not text, no minimum applies the same way); the glyph
+     itself switches to --text (Ink, 17:1 on Paper) in light mode only. Dark mode's
+     Signal green checkmark (12.9:1) is unaffected. */
+  :global(html[data-theme='light']) .check-mark {
+    color: var(--text);
+  }
+
   .see-more {
     display: inline-block;
     margin-top: var(--space-8);

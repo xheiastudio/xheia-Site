@@ -52,10 +52,24 @@
    same blue collapsed two distinct roles (links/CTAs vs. status/terminal-accent) into
    one color, reading as flat "just white and blue." BRANDFINAL.md's own light-mode
    guidance already calls for "Coral for occasional secondary emphasis" — this was an
-   unimplemented gap, not a new design decision. */
+   unimplemented gap, not a new design decision.
+
+   --text-secondary and --accent-primary are ALSO overridden here, for a genuine
+   accessibility gap (Apple HIG design-review pass, WCAG contrast against Paper,
+   computed from these exact hex values): Mist (#9A9A93) on Paper is 2.48:1 and
+   Aperture blue (#3E6BF0) on Paper is 4.04:1 — both fail the 4.5:1 minimum for text
+   under 18pt. Neither BRANDFINAL primitive hex is changed; these are light-mode-only
+   deepened variants of the SAME hue (a 40%/15% mix toward Ink), the same kind of
+   per-mode tonal adjustment Ink/Paper already model, not a new brand color. Signal
+   green isn't included here since it's already banned from light mode entirely, and
+   PixelMark's pupil intentionally keeps referencing --color-aperture directly
+   (BRANDFINAL: "pupil stays Aperture blue in both modes") rather than this token, so
+   it's unaffected by the deepened light-mode text/link shade below. */
 [data-theme="light"] {
   --bg: var(--color-paper);
   --text: var(--color-ink);
+  --text-secondary: #62625f; /* Mist deepened ~40% toward Ink — 5.37:1 on Paper */
+  --accent-primary: #375dce; /* Aperture blue deepened ~15% toward Ink — 5.09:1 on Paper */
   --accent-status: var(--color-flare);
   --mark-outline: var(--color-ink);
 }

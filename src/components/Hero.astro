@@ -413,6 +413,15 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     animation: fade-in 0.15s ease-out forwards;
   }
 
+  /* Flare coral (light mode's --accent-status) is 2.04:1 on Paper as text — fails
+     WCAG's 4.5:1 minimum (Apple HIG design-review pass), same issue as PillarBlock/
+     Capabilities' checkmark. Progress bars stay coral (decorative fill, not text);
+     "OK" switches to --text (Ink) in light mode only. Dark mode's Signal green
+     (12.9:1) is unaffected. */
+  :global(html[data-theme='light']) .module-status {
+    color: var(--text);
+  }
+
   @keyframes fade-in {
     to {
       opacity: 1;
