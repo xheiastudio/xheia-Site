@@ -1,20 +1,17 @@
 ---
 // Small dedicated tools section on /approach, per the real-content pass — grounded
-// directly in xheia-content-worksheet.md's confirmed stack, nothing invented. Reuses
-// CaseStudyCard's existing pixel-tag visual pattern (.tags li) for consistency rather
-// than introducing a new tag style. Copy V2 pass condensed the 11 individual tools
-// into grouped tags (still the same real stack, just fewer/grouped labels).
+// directly in xheia-content-worksheet.md's confirmed stack, nothing invented. Copy V2
+// pass condensed the 11 individual tools into grouped tags (still the same real
+// stack, just fewer/grouped labels).
 //
-// Deliberately no SectionLoader here — a boot-check bar next to a flat tag list read
-// as visual noise, not a meaningful "load" (unlike Capabilities/PillarBlock's named
-// modules). The tag list just fades in as a group on scroll (.section-content, see
-// src/styles/global.css), same as the rest of the site's data-reveal sections.
-//
-// Wrapped in a plain bordered `.tools-frame` (no rivets/icon) so this section carries
-// the same outer visual weight as Capabilities/PillarBlock/EngagementStructure - added
-// per direct feedback that an unframed section read as noticeably smaller than the
-// rest of the page.
-
+// Rebuilt from a flat pixel-tag list into a real "stack manifest" (Apple HIG design-
+// improvement pass — the user directly called out that incremental CSS nudges here
+// weren't a real transformation): each tool is its own numbered row, mono-spaced
+// like a terminal `ls` listing, tying into the same numbering motif as /approach's
+// section numerals instead of just being five identical pills. Deliberately no
+// SectionLoader/typed reveal — a flat list of short labels doesn't carry enough
+// meaning per item to justify a "boot check," unlike Capabilities/PillarBlock's named
+// modules; the whole manifest still fades in as a group on scroll (.section-content).
 import SectionNumber from './SectionNumber.astro';
 
 const tools = [
@@ -32,9 +29,17 @@ const tools = [
     <h2 class="eyebrow">// tools</h2>
   </div>
   <div class="tools-frame">
-    <ul class="tags section-content">
-      {tools.map((tool) => <li>{tool}</li>)}
-    </ul>
+    <p class="frame-label">stack manifest</p>
+    <ol class="manifest section-content">
+      {
+        tools.map((tool, i) => (
+          <li class="manifest-row">
+            <span class="row-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="row-name">{tool}</span>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
 
@@ -65,29 +70,60 @@ const tools = [
 
   .tools-frame {
     border: 1px solid var(--border);
-    padding: var(--space-12) var(--space-8);
   }
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
+  .frame-label {
+    margin: 0;
+    padding: var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+
+  .manifest {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .tags li {
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--border);
+  .manifest-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-6);
+    padding: var(--space-5) var(--space-6);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .manifest-row:last-child {
+    border-bottom: none;
+  }
+
+  .row-index {
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.125rem;
+    color: var(--accent-primary);
+  }
+
+  .row-name {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+    font-size: 1.1875rem;
+    font-weight: 500;
+    color: var(--text);
   }
 
   @media (max-width: 40rem) {
-    .tools-frame {
-      padding: var(--space-8) var(--space-4);
+    .manifest-row {
+      gap: var(--space-4);
+      padding: var(--space-4);
+    }
+
+    .row-name {
+      font-size: 1.0625rem;
     }
   }
 </style>
