@@ -225,30 +225,6 @@ svg {
   }
 }
 
-/* Shared pixel-panel hover jitter — a blocky 1-2px snap instead of a smooth transform,
-   used by Capabilities tiles, EngagementPhase, and CaseStudyCard. */
-@keyframes pixel-jitter {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(1px, -1px);
-  }
-  50% {
-    transform: translate(-1px, 0);
-  }
-  75% {
-    transform: translate(1px, 1px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pixel-jitter-hover:hover {
-    animation: none !important;
-  }
-}
-
 /* Cursor appended by src/scripts/typewriter.ts while a JS-driven character-by-
    character reveal is in progress (Contact's confirmation, About's name/role,
    404, case-study detail pages). Deliberately its own class, not Hero.astro's
