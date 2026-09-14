@@ -272,26 +272,28 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     z-index: 0;
   }
 
-  /* Coral (light mode's --accent-status) reads far more saturated against Paper
-     than Signal green does against Ink at the same mix percentage - the first fix
-     here (turning both stops down equally) overcorrected into invisible, reading
-     as "just a white page" - light mode has much less room to create atmosphere
-     with brightness than dark mode does, so a weak copy of the same trick just
-     disappears. Real fix: drop coral entirely rather than dilute it, keep the blue
-     highlight at a genuinely visible strength, and use a soft warm-gray shadow
-     (mixed from --text, not a second accent color) for the second point of depth -
-     light-mode depth reads as shadow, not a second light source, the same way
-     paper has texture from shading, not colored light. */
+  /* Measured, not eyeballed, after two rounds that still read as "just a white
+     page": sampled actual rendered pixels at the glow's peak vs. plain background.
+     The previous version (14%/5%) moved the peak to a LOWER luminance than the
+     background (~220 vs ~240) - i.e. it was rendering as a faint shadow, not a
+     light source, because color-mix toward a saturated blue or toward --text both
+     necessarily darken a near-white base. Human contrast sensitivity is far lower
+     near white than near black (Weber-Fechner) - the same percentage shift that
+     reads as an obvious glow on Ink is nearly imperceptible on Paper. Fixed by
+     going meaningfully bolder on the blue (25%) so the tint itself is what
+     registers, not a brightness delta - this is closer to how Apple's own light-
+     mode marketing pages actually look (a visible soft blue/lavender wash), not a
+     token gesture at "some atmosphere." Coral still dropped entirely (see below). */
   :global(html[data-theme='light']) .hero::before {
     background:
       radial-gradient(
-        28% 42% at 32% 38%,
-        color-mix(in srgb, var(--accent-primary) 14%, transparent),
+        34% 50% at 30% 36%,
+        color-mix(in srgb, var(--accent-primary) 25%, transparent),
         transparent 100%
       ),
       radial-gradient(
-        24% 36% at 72% 70%,
-        color-mix(in srgb, var(--text) 5%, transparent),
+        28% 42% at 72% 70%,
+        color-mix(in srgb, var(--text) 6%, transparent),
         transparent 100%
       );
   }
