@@ -3,14 +3,16 @@
 // redesign. Copy condensed directly from BRANDFINAL.md §5 — no new pillar language
 // invented (SPEC.md — PillarBlock).
 //
-// This section is the ORIGIN of the bar-fill-then-checkmark "boot check" visual — it
-// used to play per-pillar on click (native <details>/<summary>: indicator dot + title
-// in the summary row, then a bar on its own line below, then a ✓-prefixed body
-// paragraph once opened). Reworked to auto-load instead, staggered one pillar after
-// another as the section scrolls into view — same visual, same layout, just triggered
-// by scroll instead of a click. The bar is the shared `SectionLoader` component
-// (src/components/SectionLoader.astro); the checkmark stays what it always was, a
-// plain glyph prefixing the body text, not part of the bar.
+// This section is the ORIGIN of the bar-fill-then-checkmark "boot check" visual, and
+// (full-redesign pass) is back to its original click-to-expand form: native
+// <details>/<summary>, closed by default - indicator dot + ▶ selector + title in the
+// summary row, then a bar, then a ✓-prefixed body paragraph once opened. An
+// intervening pass had reworked this into everything auto-revealing on scroll;
+// reverted per direct feedback that the page read as "loads of writing" with no real
+// design applied to it - apple-design's layout.md names progressive disclosure as
+// the fix for exactly this ("don't obscure [content] by crowding it with nonessential
+// details"). See Capabilities.astro's matching comment and
+// src/scripts/disclosure.ts for the shared smooth-height enhancement.
 //
 // Individual per-pillar boxes (border + tinted background) removed - "pixelated but
 // Apple" pass: the outer .pillar-block frame is the section's one box; boxing each
@@ -47,23 +49,32 @@ const pillars = [
       pillars.map((pillar, i) => {
         const delay = i * ITEM_STAGGER;
         return (
-          <div class="check-item">
-            <div class="check-head item-content" style={{ transitionDelay: `${delay}s` }}>
+          <details class="check-item">
+            <summary class="check-head item-content" style={{ transitionDelay: `${delay}s` }}>
               <span class="check-indicator" aria-hidden="true" />
+              <span class="selector" aria-hidden="true">▶</span>
               <h3 class="check-title">{pillar.title}</h3>
-            </div>
+            </summary>
             <div class="check-result">
-              <SectionLoader delay={delay} />
-              <p class="check-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
+              <SectionLoader />
+              <p class="check-body">
                 <span class="check-mark" aria-hidden="true">✓</span> {pillar.body}
               </p>
             </div>
-          </div>
+          </details>
         );
       })
     }
   </div>
 </section>
+
+<script>
+  import { initDisclosure } from '../scripts/disclosure';
+
+  document.addEventListener('astro:page-load', () => {
+    initDisclosure('.pillar-block .check-item', '.check-result');
+  });
+</script>
 
 <style>
   /* No border/tinted background - see Capabilities.astro's equivalent comment: Home's
@@ -100,10 +111,38 @@ const pillars = [
     gap: var(--space-8);
   }
 
+  /* Each item is a real <details> now - no default marker (the ▶ selector glyph
+     does that job by rotating, same as Capabilities). */
+  .check-item {
+    list-style: none;
+  }
+
+  .check-item summary {
+    list-style: none;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+
+  .check-item summary::-webkit-details-marker {
+    display: none;
+  }
+
   .check-head {
     display: flex;
     align-items: flex-start;
     gap: var(--space-3);
+  }
+
+  /* summary is now the real interactive control - real hover/focus affordance,
+     matching every other control on the site (and Capabilities' equivalent). */
+  .check-item summary:hover .check-title,
+  .check-item summary:focus-visible .check-title {
+    color: var(--accent-primary-text);
+  }
+
+  .check-item summary:focus-visible {
+    outline: 2px solid var(--accent-primary-text);
+    outline-offset: 3px;
   }
 
   .check-indicator {
@@ -115,17 +154,58 @@ const pillars = [
     background: var(--accent-status);
   }
 
+  /* Rotates to point down when open - same "item marker that doubles as an expand
+     affordance" as Capabilities' selector. */
+  .selector {
+    display: inline-block;
+    margin-top: 0.05em;
+    color: var(--accent-primary-text);
+    font-size: 0.875rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .check-item[open] .selector {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .selector {
+      transition: none;
+    }
+  }
+
   .check-title {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 0.9375rem;
     line-height: 1.6;
+    transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .check-result {
     margin-top: var(--space-4);
-    padding-left: calc(0.6rem + var(--space-3));
+    padding-left: calc(0.6rem + var(--space-3) * 2 + 1rem);
+    overflow: hidden;
+  }
+
+  /* This section's bars now play per-item on open, not once for everyone when the
+     section scrolls into view - see Capabilities.astro's matching comment for why
+     this specificity reliably overrides global.css's scroll-triggered default. */
+  [data-reveal].is-visible .check-item .loader-bar-fill {
+    width: 0;
+    animation: none;
+  }
+
+  .check-item[open] .loader-bar-fill {
+    animation: section-loader-fill 0.5s steps(10, end) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .check-item[open] .loader-bar-fill {
+      width: 100%;
+      animation: none;
+    }
   }
 
   .check-body {

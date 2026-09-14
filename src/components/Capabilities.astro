@@ -7,17 +7,20 @@
 // commercial analysis) — the first traces to the life-sciences case study's three
 // acquisitions, the second to the fitness case study's pay-structure/board work.
 //
-// Reworked from a click-to-expand boot-menu (native <details>/<summary>) to an
-// auto-loading one: each item now types itself in automatically, staggered one after
-// another — icon+title fade in, then a SectionLoader bar fills on its own line below
-// the title, then a ✓-prefixed body paragraph lands — same bar-below-title,
-// checkmark-before-body layout as PillarBlock's original per-pillar check (this is
-// where that visual came from; ported here rather than invented fresh), all keyed off
-// this section's own data-reveal .is-visible trigger (see src/styles/global.css), same
-// mechanism the site already uses sitewide, no new observer. Being first on the page,
-// it plays immediately on load with no scroll needed; the other /approach sections
-// play theirs as scrolled into view. Bigger, more dominant sizing throughout (called
-// out by name).
+// Click-to-expand disclosure (full-redesign pass, reverted back from an intervening
+// "auto-loading" version): an earlier pass reworked this from native <details>/
+// <summary> into everything auto-revealing on scroll. Direct feedback that the page
+// read as "loads of writing" with no real design applied - the apple-design skill's
+// own layout.md names this exact fix: "Take advantage of progressive disclosure to
+// help people discover content that's currently hidden" and "don't obscure [content]
+// by crowding it with nonessential details." Each item is now a real <details>,
+// closed by default - the page shows five short title lines, not five paragraphs,
+// until you actually open one. Opening plays the same SectionLoader-bar-then-
+// checkmark-body sequence as before, just triggered by the toggle instead of a
+// shared scroll clock (see the CSS below and src/scripts/disclosure.ts for the
+// smooth-height enhancement). <details>/<summary> gives real keyboard/screen-reader
+// semantics for free - a tab stop, Enter/Space activation, exposed expanded state -
+// no custom ARIA needed.
 //
 // Outer frame now matches PillarBlock's exact recipe (inset panel, tinted background,
 // generous padding) instead of a plain top-divider + separate inner box - direct
@@ -111,25 +114,33 @@ const capabilities = [
       capabilities.map((c, i) => {
         const delay = i * ITEM_STAGGER;
         return (
-          <div class="menu-item">
-            <div class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
+          <details class="menu-item">
+            <summary class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
               <span class="selector" aria-hidden="true">▶</span>
               <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
               <h3 class="menu-title">{c.title}</h3>
-            </div>
+            </summary>
             <div class="menu-result">
-              <SectionLoader delay={delay} />
-              <p class="menu-body item-content" style={{ transitionDelay: `${delay + 0.5}s` }}>
+              <SectionLoader />
+              <p class="menu-body">
                 <span class="check-mark" aria-hidden="true">✓</span> {c.body}
               </p>
             </div>
-          </div>
+          </details>
         );
       })
     }
   </div>
   <a href="/work" class="see-more">See the work →</a>
 </section>
+
+<script>
+  import { initDisclosure } from '../scripts/disclosure';
+
+  document.addEventListener('astro:page-load', () => {
+    initDisclosure('.capabilities .menu-item', '.menu-result');
+  });
+</script>
 
 <style>
   /* No border/tinted background - direct feedback overriding the earlier "one frame
@@ -182,15 +193,58 @@ const capabilities = [
     gap: var(--space-8);
   }
 
+  /* Each item is a real <details> now - no default marker (a triangle would fight
+     with the existing ▶ selector glyph, which now does that job by rotating). */
+  .menu-item {
+    list-style: none;
+  }
+
+  .menu-item summary {
+    list-style: none;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+
+  .menu-item summary::-webkit-details-marker {
+    display: none;
+  }
+
   .menu-item-head {
     display: flex;
     align-items: center;
     gap: var(--space-4);
   }
 
+  /* summary is now the real interactive control (it wasn't clickable before this
+     pass) - real hover/focus affordance, matching every other control on the site. */
+  .menu-item summary:hover .menu-title,
+  .menu-item summary:focus-visible .menu-title {
+    color: var(--accent-primary-text);
+  }
+
+  .menu-item summary:focus-visible {
+    outline: 2px solid var(--accent-primary-text);
+    outline-offset: 3px;
+  }
+
+  /* Rotates to point down when open - the same glyph doubling as both "this is
+     item N" (its original role) and "this expands" (its new one), rather than
+     adding a second icon. */
   .selector {
+    display: inline-block;
     color: var(--accent-primary-text);
     font-size: 0.875rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu-item[open] .selector {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .selector {
+      transition: none;
+    }
   }
 
   .menu-item :global(.pixel-icon) {
@@ -204,11 +258,34 @@ const capabilities = [
     font-weight: 400;
     font-size: 0.9375rem;
     line-height: 1.6;
+    transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .menu-result {
     margin-top: var(--space-3);
     padding-left: calc(1.5rem + 28px + var(--space-4) * 2);
+    overflow: hidden;
+  }
+
+  /* This section's bars now play per-item on open (native <details> toggle), not
+     once for everyone the moment the section scrolls into view - override
+     global.css's scroll-triggered default (Astro's scoped styles already win over
+     it, [data-reveal].is-visible here just matches its specificity exactly so the
+     override is unambiguous). */
+  [data-reveal].is-visible .menu-item .loader-bar-fill {
+    width: 0;
+    animation: none;
+  }
+
+  .menu-item[open] .loader-bar-fill {
+    animation: section-loader-fill 0.5s steps(10, end) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-item[open] .loader-bar-fill {
+      width: 100%;
+      animation: none;
+    }
   }
 
   .menu-body {
