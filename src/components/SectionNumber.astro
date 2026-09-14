@@ -1,0 +1,26 @@
+---
+// Large structural section numeral for /approach (Apple HIG design-improvement
+// pass, "bolder, structurally" round) - the Display font is explicitly sanctioned
+// sitewide for "section headings and numerals" (BRANDFINAL §4 Type System), so this
+// is a bigger, more deliberate use of an already-approved tool, not a new one.
+// Purely a structural/visual anchor - aria-hidden, the section's own eyebrow still
+// carries the real label for assistive tech.
+interface Props {
+  number: string;
+}
+
+const { number }: Props = Astro.props;
+---
+
+<span class="section-number" aria-hidden="true">{number}</span>
+
+<style>
+  .section-number {
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    color: var(--accent-primary);
+  }
+</style>

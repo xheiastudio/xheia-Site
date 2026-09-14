@@ -11,6 +11,10 @@
 // each is already one sentence, so a trimmed "preview" would either duplicate the
 // full field or cut off mid-thought on a page visitors scan specifically for the
 // Outcome.
+//
+// `featured` (the /work grid's first card, "bolder structurally" round) spans the
+// full grid width with a larger, Display-font client heading - real editorial
+// hierarchy instead of three identical boxes. No ranking implied beyond order.
 import PixelRivets from './PixelRivets.astro';
 
 interface Props {
@@ -20,12 +24,13 @@ interface Props {
   approach: string;
   outcome: string;
   tags: string[];
+  featured?: boolean;
 }
 
-const { slug, client, problem, approach, outcome, tags } = Astro.props;
+const { slug, client, problem, approach, outcome, tags, featured = false } = Astro.props;
 ---
 
-<article class="case-study-card pixel-jitter-hover">
+<article class:list={['case-study-card', 'pixel-jitter-hover', { featured }]}>
   <PixelRivets inset="0.3rem" />
   <h3 class="client">{client}</h3>
   <p class="field">
@@ -106,6 +111,22 @@ const { slug, client, problem, approach, outcome, tags } = Astro.props;
     font-weight: 500;
     line-height: 1.5;
     color: var(--text);
+  }
+
+  .featured {
+    padding: var(--space-8);
+  }
+
+  .featured .client {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: 1.6;
+  }
+
+  .featured .field {
+    font-size: 1.0625rem;
   }
 
   .field {

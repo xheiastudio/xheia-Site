@@ -20,6 +20,7 @@
 // out by name).
 import PixelIcon from './PixelIcon.astro';
 import SectionLoader from './SectionLoader.astro';
+import SectionNumber from './SectionNumber.astro';
 
 const ITEM_STAGGER = 0.35;
 
@@ -92,7 +93,10 @@ const capabilities = [
 ---
 
 <section class="capabilities" data-reveal>
-  <h2 class="eyebrow">// what I do</h2>
+  <div class="section-head">
+    <SectionNumber number="01" />
+    <h2 class="eyebrow">// what I do</h2>
+  </div>
   <div class="menu-frame">
     <p class="menu-frame-label">loading modules...</p>
     <div class="menu">
@@ -129,8 +133,15 @@ const capabilities = [
     border-top: 1px solid var(--border);
   }
 
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
   .eyebrow {
-    margin: 0 0 var(--space-6);
+    margin: 0;
     font-family: var(--font-mono);
     font-weight: 400;
     font-size: 0.875rem;

@@ -25,6 +25,7 @@
 // PillarBlock: a boot-check bar next to short step labels (Discovery/Build/Handoff)
 // read as visual noise rather than a meaningful "load."
 import EngagementPhase from './EngagementPhase.astro';
+import SectionNumber from './SectionNumber.astro';
 
 const ITEM_STAGGER = 0.35;
 
@@ -45,7 +46,10 @@ const phases = [
 ---
 
 <section class="engagement-structure" data-reveal>
-  <p class="eyebrow">// how I work</p>
+  <div class="section-head">
+    <SectionNumber number="03" />
+    <p class="eyebrow">// how I work</p>
+  </div>
   <div class="section-content">
     <h2>How an engagement runs</h2>
     <div class="path-frame">
@@ -69,8 +73,15 @@ const phases = [
     border-top: 1px solid var(--border);
   }
 
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
   .eyebrow {
-    margin: 0 0 var(--space-6);
+    margin: 0;
     font-family: var(--font-mono);
     font-size: 0.875rem;
     letter-spacing: 0.06em;

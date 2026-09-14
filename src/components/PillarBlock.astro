@@ -12,6 +12,7 @@
 // (src/components/SectionLoader.astro); the checkmark stays what it always was, a
 // plain glyph prefixing the body text, not part of the bar.
 import SectionLoader from './SectionLoader.astro';
+import SectionNumber from './SectionNumber.astro';
 
 const ITEM_STAGGER = 0.35;
 
@@ -32,7 +33,10 @@ const pillars = [
 ---
 
 <section class="pillar-block" data-reveal>
-  <h2 class="eyebrow">// principles</h2>
+  <div class="section-head">
+    <SectionNumber number="02" />
+    <h2 class="eyebrow">// principles</h2>
+  </div>
   <div class="checks">
     {
       pillars.map((pillar, i) => {
@@ -65,8 +69,15 @@ const pillars = [
     background: color-mix(in srgb, var(--text) 3%, transparent);
   }
 
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
   .eyebrow {
-    margin: 0 0 var(--space-6);
+    margin: 0;
     font-family: var(--font-mono);
     font-weight: 400;
     font-size: 0.875rem;

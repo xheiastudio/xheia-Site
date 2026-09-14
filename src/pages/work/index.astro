@@ -1,5 +1,9 @@
 ---
 // Header, intro line, grid of full CaseStudyCards, Footer (SPEC.md — Pages & routes /work).
+// The first case study is featured full-width with a bigger CaseStudyCard treatment
+// (Apple HIG design-improvement pass, "bolder structurally" round) - real visual
+// hierarchy instead of three identical boxes; order is whatever getCollection
+// returns, no editorial ranking implied beyond "shown first."
 // Intro line (copy pass) leads with sector breadth instead of repeating Home's
 // lifecycle phrasing verbatim — no new claims invented, ties into the sectors strip
 // directly below it. A small static note sits below the real grid ("More engagements
@@ -62,7 +66,9 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
             real.
           </p>
           <div class="grid">
-            {caseStudies.map(({ id, data }) => <CaseStudyCard slug={caseStudySlug(id)} {...data} />)}
+            {caseStudies.map(({ id, data }, i) => (
+              <CaseStudyCard slug={caseStudySlug(id)} featured={i === 0} {...data} />
+            ))}
           </div>
           <p class="loading-more">More engagements are added here as they wrap up.</p>
         </>
@@ -151,6 +157,10 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: var(--space-4);
+  }
+
+  .grid > :global(.featured) {
+    grid-column: 1 / -1;
   }
 
   .loading-more {

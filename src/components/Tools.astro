@@ -15,6 +15,8 @@
 // per direct feedback that an unframed section read as noticeably smaller than the
 // rest of the page.
 
+import SectionNumber from './SectionNumber.astro';
+
 const tools = [
   'Microsoft data & AI stack (Azure, Power BI, Foundry)',
   'Python',
@@ -25,7 +27,10 @@ const tools = [
 ---
 
 <section class="tools" data-reveal>
-  <h2 class="eyebrow">// tools</h2>
+  <div class="section-head">
+    <SectionNumber number="04" />
+    <h2 class="eyebrow">// tools</h2>
+  </div>
   <div class="tools-frame">
     <ul class="tags section-content">
       {tools.map((tool) => <li>{tool}</li>)}
@@ -41,8 +46,15 @@ const tools = [
     border-top: 1px solid var(--border);
   }
 
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
   .eyebrow {
-    margin: 0 0 var(--space-6);
+    margin: 0;
     font-family: var(--font-mono);
     font-weight: 400;
     font-size: 0.875rem;

@@ -21,6 +21,8 @@
 // out" precisely because it breaks from the site's monochrome/pixel-art visual
 // language everywhere else, rather than trying to compete with it stylistically.
 // astro:assets <Image> handles optimization/responsive sizing from the source file.
+// Photo and "Hoda" heading sized up again ("bolder structurally" round) - a real
+// masthead moment instead of a modest intro line.
 //
 // Name/role type in (src/scripts/typewriter.ts) once the headshot has actually
 // loaded, rather than on a fixed delay - a genuine trigger instead of a guess at
@@ -101,7 +103,7 @@ import headshot from '../assets/hoda-headshot.jpg';
 
 <style>
   .about-page {
-    max-width: 46rem;
+    max-width: 52rem;
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
   }
@@ -116,7 +118,7 @@ import headshot from '../assets/hoda-headshot.jpg';
   .headshot {
     position: relative;
     flex-shrink: 0;
-    width: 15rem;
+    width: 19rem;
     border: 1px solid var(--border);
     line-height: 0;
   }
@@ -129,15 +131,16 @@ import headshot from '../assets/hoda-headshot.jpg';
 
   .intro-text h1 {
     font-family: var(--font-display);
-    font-size: 1.5rem;
-    line-height: 1.7;
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.5;
     margin-bottom: var(--space-4);
   }
 
   .role {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 1.0625rem;
+    font-size: 1.1875rem;
   }
 
   .about-page p {
@@ -152,7 +155,7 @@ import headshot from '../assets/hoda-headshot.jpg';
     }
 
     .headshot {
-      width: 12rem;
+      width: 14rem;
     }
   }
 </style>
