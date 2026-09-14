@@ -90,6 +90,21 @@
 // line anyway) - cutting them is a content simplification, not a content loss.
 // PixelRivets.astro is now unused anywhere on the site and has been deleted rather
 // than left as dead code.
+//
+// Monumental mark watermark (bold-signature pass): Hero's composition is one column
+// of text in a large lit void - spare by design, but the void itself had nothing
+// deliberate about it beyond the ambient glow. Rather than inventing a second column
+// of content BRANDFINAL doesn't support, the site's own pixel-eye mark is rendered at
+// a huge scale, bleeding off the bottom-right corner, at very low opacity - the
+// brand's own icon as atmosphere, not a logo placed in a corner. `shape-rendering:
+// crispEdges` (already on PixelMark) keeps the blocks crisp even blown up, so it reads
+// as deliberate pixel-art geometry, not a blurry artifact. Opacity is themed
+// separately (see CSS) - the session's glow work already proved identical alpha
+// values don't read the same on Ink vs. Paper. A slow scroll parallax (a fraction of
+// scroll speed) adds depth without ever being the thing you're looking at; gated
+// entirely behind prefers-reduced-motion so a reduced-motion visitor gets a static
+// mark, not a stripped-down animation.
+import PixelMark from './PixelMark.astro';
 import CTAButton from './CTAButton.astro';
 
 const CPS = 140; // characters typed per second — fast but still visibly "typed"
@@ -139,7 +154,10 @@ const ctaDelay = clock + 0.04;
 const revealDelayMs = Math.ceil(ctaDelay * 1000);
 ---
 
-<section class="hero">
+<section class="hero" id="hero">
+  <div class="mark-watermark" id="mark-watermark" aria-hidden="true">
+    <PixelMark size={640} />
+  </div>
   <div class="bezel">
     <div class="screen">
       <div class="terminal-body">
@@ -230,6 +248,40 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   }
 </script>
 
+<script>
+  // Slow scroll parallax on the mark watermark - a fraction of scroll speed, purely
+  // decorative depth. Gated entirely behind prefers-reduced-motion: the listener is
+  // never attached at all when set, rather than attached-but-neutralized, so there's
+  // no motion to reduce in the first place. rAF-throttled so scroll never triggers
+  // more than one style write per frame.
+  if (!(window as any).__xheiaMarkParallaxBound) {
+    (window as any).__xheiaMarkParallaxBound = true;
+    document.addEventListener('astro:page-load', () => {
+      const mark = document.getElementById('mark-watermark');
+      const hero = document.getElementById('hero');
+      if (!mark || !hero) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      let ticking = false;
+      const sync = () => {
+        ticking = false;
+        const rect = hero.getBoundingClientRect();
+        // Only move while Hero is anywhere near the viewport - no work once scrolled
+        // well past it into the footer.
+        if (rect.bottom < -200 || rect.top > window.innerHeight + 200) return;
+        mark.style.transform = `translateY(${rect.top * -0.12}px)`;
+      };
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(sync);
+      };
+      sync();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    });
+  }
+</script>
+
 <style>
   /* A flat black void reads as empty, not spare - real dark-mode product pages
      almost always have a soft light source somewhere on the page rather than a
@@ -245,6 +297,42 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     min-height: calc(100vh - 5rem);
     padding: var(--space-8) var(--space-4);
     overflow: hidden;
+  }
+
+  /* Monumental, whisper-quiet - see the frontmatter note. Anchored past the
+     bottom-right corner so overflow:hidden on .hero crops it (an immersive bleed,
+     not a fully-contained decoration); a different zone than the glow's peak
+     (upper-left/center, behind the headline) so the two don't compete. Opacity
+     values are per-theme and were tuned by sampling actual rendered pixels, not
+     guessed - see the light-mode override below for why the same number can't work
+     in both modes. */
+  .mark-watermark {
+    position: absolute;
+    right: -9rem;
+    bottom: -12rem;
+    z-index: 0;
+    opacity: 0.07;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .mark-watermark :global(svg) {
+    display: block;
+    width: 34rem;
+    height: auto;
+  }
+
+  /* Ink outline at low opacity over Paper reads as a faint gray smudge rather than a
+     recognizable shape at the same alpha that works for Signal green over Ink - the
+     same per-mode lesson as the ambient glow. Measured and bumped for legibility. */
+  :global(html[data-theme='light']) .mark-watermark {
+    opacity: 0.05;
+  }
+
+  @media (max-width: 40rem) {
+    .mark-watermark :global(svg) {
+      width: 20rem;
+    }
   }
 
   /* Spans the whole section (not a smaller fixed-size box centered inside it) so
