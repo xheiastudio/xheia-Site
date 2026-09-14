@@ -17,12 +17,24 @@ html {
   color: var(--text);
   font-family: var(--font-body);
   color-scheme: dark light;
+  /* Crisper text rendering (WebKit/Firefox-Mac) - a foundational, invisible-by-
+     default technique nearly every premium site uses; text at every size site-wide
+     reads slightly thinner/sharper instead of the OS's default subpixel rendering. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   min-height: 100vh;
   font-size: 1rem;
   line-height: 1.5;
+}
+
+/* Branded text selection instead of the browser default blue - small, only visible
+   when someone actually selects text, but a real "considered everywhere" detail. */
+::selection {
+  background: color-mix(in srgb, var(--accent-primary) 35%, transparent);
+  color: var(--text);
 }
 
 h1,

@@ -231,12 +231,62 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 </script>
 
 <style>
+  /* A flat black void reads as empty, not spare - real dark-mode product pages
+     almost always have a soft light source somewhere on the page rather than a
+     uniform black field. One large, very low-opacity radial glow behind the
+     content, blending the same two accents already used everywhere else on this
+     page (the operator/CTA glow's blue, the caret/status green) - environment
+     lighting, not a visible shape. Purely decorative background, inert. */
   .hero {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 5rem);
     padding: var(--space-8) var(--space-4);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 62rem;
+    height: 44rem;
+    transform: translate(-50%, -50%);
+    background:
+      radial-gradient(
+        38% 55% at 32% 38%,
+        color-mix(in srgb, var(--accent-primary) 16%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        30% 45% at 70% 68%,
+        color-mix(in srgb, var(--accent-status) 10%, transparent),
+        transparent 100%
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Coral (light mode's --accent-status) reads far more saturated against Paper
+     than Signal green does against Ink at the same mix percentage - washed the
+     light-mode glow out toward a visible peach tint instead of a subtle ambient
+     light. Both stops turned down for light mode specifically, same per-mode-
+     tonal-split precedent as the checkmark/status-text contrast fixes elsewhere. */
+  :global(html[data-theme='light']) .hero::before {
+    background:
+      radial-gradient(
+        38% 55% at 32% 38%,
+        color-mix(in srgb, var(--accent-primary) 7%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        30% 45% at 70% 68%,
+        color-mix(in srgb, var(--accent-status) 4%, transparent),
+        transparent 100%
+      );
   }
 
   /* No border, no inset shadow, no window-chrome bar - the literal "device" framing
@@ -245,9 +295,9 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      used to. */
   .bezel {
     position: relative;
+    z-index: 1;
     width: 100%;
     max-width: var(--content-max-width);
-    background: var(--bg);
     opacity: 0;
     transform: scale(0.98);
     animation: bezel-power-on 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
