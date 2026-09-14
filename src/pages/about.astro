@@ -64,6 +64,23 @@
 // JS/class toggle) so a no-JS visitor still sees the photo resolve normally rather
 // than getting stuck in a blurred, JS-dependent state - and it's disabled outright
 // under prefers-reduced-motion, image visible immediately.
+//
+// Smoothness pass (explicit request - "drastic, no simplicity," Apple HIG's Motion
+// guidance on fluid, physically-plausible feedback): the load-in choreography swaps
+// steps() for a real deceleration curve (cubic-bezier(0.16,1,0.3,1), the same
+// "settles into place" curve Apple's own motion relies on) across the photo resolve,
+// its loading bar, and the story section's reveal - one coordinated moment instead
+// of several separately-timed effects. This is deliberately different from the
+// sitewide [data-reveal]/SectionLoader steps() convention used on data-heavy grids
+// (Capabilities, PillarBlock, Tools) - About is the one page about a person, not a
+// module list, so its motion register is warmer/fluid rather than mechanical, an
+// intentional per-page distinction rather than a sitewide change. Added: a soft
+// ambient glow that blooms in behind the photo as it resolves (depth/materials, HIG
+// §Materials), a hover zoom on the photo (image scales inside its fixed frame,
+// clipped by overflow:hidden - the frame itself never moves, so it can't disturb
+// layout), a hover highlight sweep per readout row, and the pull-quote's accent bar
+// now draws itself downward on reveal instead of appearing instantly. All of it
+// still respects prefers-reduced-motion - full states with zero animation.
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
@@ -182,6 +199,14 @@ import headshot from '../assets/hoda-headshot.jpg';
     aspect-ratio: 1 / 1;
     overflow: hidden;
     line-height: 0;
+    box-shadow: 0 0 0 0 transparent;
+    animation: photo-glow 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes photo-glow {
+    to {
+      box-shadow: 0 0 2.5rem -0.4rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+    }
   }
 
   .headshot :global(img) {
@@ -190,7 +215,12 @@ import headshot from '../assets/hoda-headshot.jpg';
     height: 100%;
     object-fit: cover;
     object-position: center 95%;
-    animation: photo-resolve 1.1s steps(8, end) forwards;
+    animation: photo-resolve 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .headshot:hover :global(img) {
+    transform: scale(1.06);
   }
 
   @keyframes photo-resolve {
@@ -228,7 +258,7 @@ import headshot from '../assets/hoda-headshot.jpg';
     height: 100%;
     width: 0;
     background: var(--accent-status);
-    animation: photo-bar-fill 1.1s steps(8, end) forwards;
+    animation: photo-bar-fill 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes photo-bar-fill {
@@ -238,10 +268,20 @@ import headshot from '../assets/hoda-headshot.jpg';
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .headshot {
+      animation: none;
+      box-shadow: none;
+    }
+
     .headshot :global(img) {
       animation: none;
       filter: none;
       clip-path: none;
+      transition: none;
+    }
+
+    .headshot:hover :global(img) {
+      transform: none;
     }
 
     .photo-bar-fill {
@@ -279,6 +319,34 @@ import headshot from '../assets/hoda-headshot.jpg';
     margin: 0;
   }
 
+  /* Smooth, coordinated entrance for this page only - see the top comment block.
+     Higher specificity than the sitewide [data-reveal]/.item-content rules in
+     global.css (steps() timing), so this overrides them without touching that
+     shared file. */
+  .story[data-reveal] {
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .story[data-reveal] .item-content {
+    transform: translateY(0.9rem);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .story[data-reveal].is-visible .item-content {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story[data-reveal] .item-content {
+      transform: none;
+      transition: none;
+    }
+  }
+
   .comment-glyph {
     margin-right: 0.4em;
     font-family: var(--font-mono);
@@ -303,6 +371,13 @@ import headshot from '../assets/hoda-headshot.jpg';
     grid-template-columns: 8rem 1fr;
     gap: var(--space-4);
     align-items: baseline;
+    padding: var(--space-2) var(--space-3);
+    margin: 0 calc(-1 * var(--space-3));
+    transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .readout-row:hover {
+    background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
   }
 
   .readout-row dt {
@@ -357,14 +432,39 @@ import headshot from '../assets/hoda-headshot.jpg';
   }
 
   .about-page .pull-quote {
+    position: relative;
     margin: 0;
     padding-left: var(--space-6);
-    border-left: 3px solid var(--accent-primary);
     color: var(--text);
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.125rem, 2.2vw, 1.375rem);
     line-height: 1.7;
+  }
+
+  .about-page .pull-quote::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-primary);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0.2s;
+  }
+
+  .story[data-reveal].is-visible .pull-quote::before {
+    transform: scaleY(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-page .pull-quote::before {
+      transform: scaleY(1);
+      transition: none;
+    }
   }
 
   @media (max-width: 34rem) {
