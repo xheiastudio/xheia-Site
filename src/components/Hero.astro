@@ -1,21 +1,19 @@
 ---
-// Mark, tagline headline, one-line outcome-framed subhead, CTA — wrapped in the CRT/
-// boot-sequence bezel. Home is now Hero-only (see SPEC.md's structural-redesign
-// revision note), so this carries a much richer boot sequence than before: a fast
-// module-loading preamble, the signature typed $ whoami exchange, then an
-// operator--info line folding in what used to be a separate IdentityHook component
-// below the Hero. SPEC.md is explicit: this literal boot-sequence device (typed
-// terminal lines, chrome-buttons bar) stays Hero-exclusive — the broader pixel-art
-// system (rivets, cursor, scanlines) extends site-wide, see BRANDFINAL.md.
+// Mark, tagline headline, one-line outcome-framed subhead, CTA — wrapped in a typed
+// boot-sequence. Home is now Hero-only (see SPEC.md's structural-redesign revision
+// note); the operator--info line folds in what used to be a separate IdentityHook
+// component below the Hero. See the "Stripped-down terminal" note further down for
+// why this is no longer the literal CRT-device treatment SPEC.md originally
+// described — that description is now stale and BRANDFINAL.md has been updated to
+// match what's actually built here.
 //
 // Headline is the approved tagline verbatim (BRANDFINAL.md — Tagline). Subhead
 // (rewritten in the copy pass) leads with the full-lifecycle work itself, deliberately
 // not AI-specific — same "not AI-first" framing decision as the home-finalization
-// pass, just newer wording. Module names in the boot preamble are the existing
-// Capabilities categories staged as a boot flourish, not new claims. Operator line
-// (also rewritten in the copy pass, to a skills-summary framing rather than the
-// years-contracting fact — same "Hoda -" lead-in and (more) link to /about kept)
-// still points at the same real bio /about tells in full.
+// pass, just newer wording. Operator line (also rewritten in the copy pass, to a
+// skills-summary framing rather than the years-contracting fact — same "Hoda -"
+// lead-in and (more) link to /about kept) still points at the same real bio /about
+// tells in full.
 //
 // Single-frame terminal: everything (boot log, headline, subhead, CTA) lives inside ONE
 // left-aligned `.terminal-body`, not a separately bordered/tinted box nested inside the
@@ -43,9 +41,9 @@
 // growing the headline/CTA/terminal text sizes instead, which carries no risk of
 // recreating the empty-space bug since the bezel itself still sizes to content.
 //
-// Typing: every single-line item (preamble/postamble/whoami/role/operator command,
-// module names) types out character-by-character via the width-clip `.typed`
-// technique. Anything that wraps onto multiple lines (operator-response, headline,
+// Typing: every single-line item (preamble/operator command) types out
+// character-by-character via the width-clip `.typed` technique. Anything that wraps
+// onto multiple lines (operator-response, headline,
 // subhead) does NOT — animating a fixed inline-block's width while its content wraps
 // causes the browser to re-wrap the partially-revealed text at every animation step,
 // throwing line breaks around chaotically (this broke the operator-response line in an
@@ -73,13 +71,30 @@
 // point. The bezel entrance replays on every visit to Home (like About's photo does
 // on every visit to About) - only the boot-skip class is about not re-typing the same
 // text you've already read, which is unrelated to whether the frame itself fades in.
-import PixelRivets from './PixelRivets.astro';
+//
+// Stripped-down terminal, round two (explicit request, authorized to override
+// BRANDFINAL.md's existing description of this element - the doc's "console
+// buttons"/"scanlines"/corner-rivets description of Home's hero no longer matches
+// what's built here and needs updating to match, not the other way around): the
+// literal skeuomorphic device chrome - the window-buttons bar, the LED, the
+// "xheia_terminal" label, the bezel's border + inset shadow, the scanline texture,
+// the corner rivets - is gone. What's left is the actual identity worth keeping:
+// mono type, `$`/`>` prompt glyphs, real character-by-character typing, the caret.
+// That's a terminal in the sense of "typed text on a prompt," not "a CRT monitor
+// prop sitting on the page." Whitespace does the framing job the border used to do.
+// The boot text itself is cut down to match - the module-loading flourish
+// (cleansing.sys/warehousing.sys/agentic_ai.sys with progress bars) and the
+// `$ whoami` exchange are removed entirely; neither carried unique information
+// (the module names are decorative restatements of /approach's real Capabilities
+// section, and "full-stack data consultant" is restated by the headline/operator
+// line anyway) - cutting them is a content simplification, not a content loss.
+// PixelRivets.astro is now unused anywhere on the site and has been deleted rather
+// than left as dead code.
 import CTAButton from './CTAButton.astro';
 
 const CPS = 140; // characters typed per second — fast but still visibly "typed"
 const DWELL = 0.04; // pause after a line finishes before the next one starts
 const BEAT = 0.1; // longer pause marking a new "section" of the session
-const BAR_FILL_DURATION = 0.18;
 
 let clock = 0;
 
@@ -103,22 +118,7 @@ const blockLine = (text: string) => {
   return { delay, duration };
 };
 
-const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules...')];
-
-const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
-  const delay = clock;
-  const duration = name.length / CPS;
-  const barDelay = delay + duration + 0.02;
-  const statusDelay = barDelay + BAR_FILL_DURATION + 0.04;
-  clock = statusDelay + DWELL;
-  return { name, delay, duration, barDelay, statusDelay };
-});
-
-const postamble = [typeLine('>', 'system ready')];
-
-clock += BEAT;
-const whoami = typeLine('$', 'whoami');
-const role = typeLine('>', 'full-stack data consultant');
+const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'system ready')];
 
 clock += BEAT;
 const operatorCommand = typeLine('$', 'operator --info');
@@ -141,19 +141,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
 <section class="hero">
   <div class="bezel">
-    <PixelRivets />
-
-    <div class="bezel-chrome">
-      <span class="led" aria-hidden="true"></span>
-      <span class="bezel-label">xheia_terminal</span>
-      <span class="chrome-buttons" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
-    </div>
-
     <div class="screen">
-      <div class="scanlines" aria-hidden="true"></div>
-
       <div class="terminal-body">
         {
           preamble.map((line) => (
@@ -173,78 +161,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
             </p>
           ))
         }
-        {
-          modules.map((mod) => (
-            <p class="boot-line module-line">
-              <span class="module-name">
-                <span
-                  class="typed"
-                  style={{
-                    width: padWidth(mod.name.length),
-                    animationDuration: `${mod.duration}s`,
-                    animationDelay: `${mod.delay}s`,
-                    animationTimingFunction: `steps(${mod.name.length}, end)`,
-                  }}
-                >
-                  {mod.name}
-                </span>
-              </span>
-              <span class="progress-bar" aria-hidden="true">
-                <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
-              </span>
-              <span class="module-status" style={{ animationDelay: `${mod.statusDelay}s` }}>
-                OK
-              </span>
-            </p>
-          ))
-        }
-        {
-          postamble.map((line) => (
-            <p class="boot-line">
-              <span class="prompt-glyph">{line.glyph}</span>{' '}
-              <span
-                class="typed"
-                style={{
-                  width: padWidth(line.text.length),
-                  animationDuration: `${line.duration}s`,
-                  animationDelay: `${line.delay}s`,
-                  animationTimingFunction: `steps(${line.text.length}, end)`,
-                }}
-              >
-                {line.text}
-              </span>
-            </p>
-          ))
-        }
-
-        <p class="boot-line">
-          <span class="prompt-glyph">{whoami.glyph}</span>{' '}
-          <span
-            class="typed"
-            style={{
-              width: padWidth(whoami.text.length),
-              animationDuration: `${whoami.duration}s`,
-              animationDelay: `${whoami.delay}s`,
-              animationTimingFunction: `steps(${whoami.text.length}, end)`,
-            }}
-          >
-            {whoami.text}
-          </span>
-        </p>
-        <p class="boot-line prompt-response">
-          <span class="prompt-glyph">{role.glyph}</span>{' '}
-          <span
-            class="typed"
-            style={{
-              width: padWidth(role.text.length),
-              animationDuration: `${role.duration}s`,
-              animationDelay: `${role.delay}s`,
-              animationTimingFunction: `steps(${role.text.length}, end)`,
-            }}
-          >
-            {role.text}
-          </span>
-        </p>
 
         <p class="boot-line">
           <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
@@ -323,11 +239,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     padding: var(--space-8) var(--space-4);
   }
 
+  /* No border, no inset shadow, no window-chrome bar - the literal "device" framing
+     is gone (see the top comment block). Whitespace (.screen's generous padding
+     below) is what marks this out as its own moment now, the way a bordered panel
+     used to. */
   .bezel {
     position: relative;
     width: 100%;
     max-width: var(--content-max-width);
-    border: 3px solid var(--border);
     background: var(--bg);
     opacity: 0;
     transform: scale(0.98);
@@ -335,26 +254,9 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   }
 
   @keyframes bezel-power-on {
-    0% {
-      opacity: 0;
-      transform: scale(0.98);
-      box-shadow:
-        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
-        0 0 0 0 transparent;
-    }
-    60% {
+    to {
       opacity: 1;
       transform: scale(1);
-      box-shadow:
-        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
-        0 0 4rem -0.5rem color-mix(in srgb, var(--accent-status) 40%, transparent);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-      box-shadow:
-        inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent),
-        0 0 1.5rem -0.5rem color-mix(in srgb, var(--accent-status) 15%, transparent);
     }
   }
 
@@ -363,73 +265,12 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
       opacity: 1;
       transform: none;
       animation: none;
-      box-shadow: inset 0 0 3rem color-mix(in srgb, var(--text) 8%, transparent);
     }
-  }
-
-  .bezel-chrome {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-  }
-
-  .led {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--accent-status);
-    animation: led-pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes led-pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .led {
-      animation: none;
-    }
-  }
-
-  .chrome-buttons {
-    display: inline-flex;
-    gap: 0.25rem;
-    margin-left: auto;
-  }
-
-  .chrome-buttons span {
-    width: 0.4rem;
-    height: 0.4rem;
-    border: 1px solid var(--border);
   }
 
   .screen {
     position: relative;
-    overflow: hidden;
-    padding: var(--space-16) var(--space-8);
-  }
-
-  .scanlines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 3px,
-      color-mix(in srgb, var(--text) 4%, transparent) 4px
-    );
+    padding: var(--space-16) var(--space-8) var(--space-16);
   }
 
   .terminal-body {
@@ -440,66 +281,10 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
 
   .boot-line {
     position: relative;
-    margin: 0 0 var(--space-1);
+    margin: 0 0 var(--space-2);
     font-family: var(--font-mono);
     font-size: 1.125rem;
     white-space: nowrap;
-  }
-
-  .module-line {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding-left: 1.5em;
-    color: var(--text-secondary);
-  }
-
-  .module-name {
-    display: inline-block;
-    min-width: 15ch;
-  }
-
-  .progress-bar {
-    display: inline-flex;
-    width: 5rem;
-    height: 0.5rem;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    display: block;
-    height: 100%;
-    width: 0;
-    background: var(--accent-status);
-    animation: progress-fill-in 0.35s steps(8, end) forwards;
-  }
-
-  @keyframes progress-fill-in {
-    to {
-      width: 100%;
-    }
-  }
-
-  .module-status {
-    color: var(--accent-status);
-    opacity: 0;
-    animation: fade-in 0.15s ease-out forwards;
-  }
-
-  /* Flare coral (light mode's --accent-status) is 2.04:1 on Paper as text — fails
-     WCAG's 4.5:1 minimum (Apple HIG design-review pass), same issue as PillarBlock/
-     Capabilities' checkmark. Progress bars stay coral (decorative fill, not text);
-     "OK" switches to --text (Ink) in light mode only. Dark mode's Signal green
-     (12.9:1) is unaffected. */
-  :global(html[data-theme='light']) .module-status {
-    color: var(--text);
-  }
-
-  @keyframes fade-in {
-    to {
-      opacity: 1;
-    }
   }
 
   .prompt-response {
@@ -603,16 +388,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
       animation: none;
     }
 
-    .module-status {
-      opacity: 1;
-      animation: none;
-    }
-
-    .progress-fill {
-      width: 100%;
-      animation: none;
-    }
-
     .line-reveal {
       opacity: 1;
       transform: none;
@@ -626,16 +401,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      above, just gated on a runtime class instead of a media feature. */
   .bezel.boot-skip .typed {
     width: auto !important;
-    animation: none;
-  }
-
-  .bezel.boot-skip .module-status {
-    opacity: 1;
-    animation: none;
-  }
-
-  .bezel.boot-skip .progress-fill {
-    width: 100%;
     animation: none;
   }
 
