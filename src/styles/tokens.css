@@ -25,6 +25,25 @@
      Constant across themes since --accent-primary itself doesn't change. */
   --on-accent-primary: var(--color-paper);
 
+  /* Full audit (apple-design skill, all modes) found --accent-primary itself can't
+     satisfy both its dark-mode roles at once: text-on-Ink needs a LIGHTER blue
+     (raise luminance), while --on-accent-primary-on-fill (CTAButton) needs a DARKER
+     blue (lower luminance) - opposite directions from the same #3E6BF0, verified via
+     WCAG relative-luminance math, not guessed. Two dark-mode-specific derived
+     variants, same hue, no new brand color:
+     --accent-primary-text: Aperture blue lightened ~15% toward Paper - 5.27:1 against
+       Ink (was 4.22:1, failing the 4.5:1 minimum). Use for accent-primary-as-TEXT on
+       the page background: eyebrow labels, nav hover/current-page state, CTAButton's
+       hover-state text, Footer nav hover, Tools' row-index numerals.
+     --accent-primary-fill: Aperture blue darkened ~15% toward Ink -> #375dce, which is
+       exactly light mode's own --accent-primary value below (5.09:1 with Paper text
+       on it, was 4.04:1). Use for accent-primary as a SOLID FILL with --on-accent-
+       primary text on top (CTAButton's default/dark-mode state).
+     Light mode needs neither at a different value from its own --accent-primary
+     (overridden below to match) - its single color already clears both directions. */
+  --accent-primary-text: #597fef;
+  --accent-primary-fill: #375dce;
+
   /* fonts */
   --font-display: "Press Start 2P", monospace;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -71,6 +90,18 @@
   --text: var(--color-ink);
   --text-secondary: #62625f; /* Mist deepened ~40% toward Ink — 5.37:1 on Paper */
   --accent-primary: #375dce; /* Aperture blue deepened ~15% toward Ink — 5.09:1 on Paper */
-  --accent-status: var(--color-flare);
+  /* Light's single accent-primary already satisfies both text-on-Paper and
+     fill-under-Paper-text directions (5.09:1 each way) - both new dark-mode-specific
+     variants above just point at it here, so light mode renders identically to
+     before this pass. */
+  --accent-primary-text: #375dce;
+  --accent-primary-fill: #375dce;
+  --accent-status: #c36b49; /* Flare coral darkened ~25% toward Ink - was 2.04:1 on
+    Paper for non-text uses (status dot, loader-bar fill, check-indicator dot),
+    below WCAG's 3:1 non-text minimum; now 3.34:1. The checkmark glyph (needs the
+    stricter 4.5:1 text minimum) already overrides to --text separately - unaffected. */
+  --border: #7e7e79; /* Mist darkened ~20% toward Ink - was 2.48:1 on Paper, below 3:1
+    for a control's visible boundary (ThemeToggle's border, SectionLoader's track);
+    now 3.58:1. Dark mode's border (Mist on Ink, 6.85:1) already passes unmodified. */
   --mark-outline: var(--color-ink);
 }

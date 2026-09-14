@@ -62,6 +62,9 @@ const tools = [
     margin-bottom: var(--space-6);
   }
 
+  /* --accent-primary-text, not --accent-primary: see Capabilities.astro's equivalent
+     comment (full audit finding, raw --accent-primary is 4.22:1 against Ink in dark
+     mode, below the 4.5:1 text minimum). */
   .eyebrow {
     margin: 0;
     font-family: var(--font-mono);
@@ -69,7 +72,7 @@ const tools = [
     font-size: 0.875rem;
     line-height: 1.5;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   /* typography.md's macOS translation: 13pt default / 10pt minimum (~17px/~13px).
@@ -99,12 +102,15 @@ const tools = [
     gap: var(--space-6);
   }
 
+  /* --accent-primary-text, not --accent-primary: this is real visible text (18px,
+     regular weight - under WCAG's large-text threshold) even though aria-hidden.
+     Full audit finding, same as the eyebrow labels above. */
   .row-index {
     flex-shrink: 0;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 1.125rem;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .row-name {

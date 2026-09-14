@@ -53,13 +53,16 @@ const moonPixels: Array<[number, number]> = [
 </script>
 
 <style>
+  /* 2.75rem (44px), not the previous 2.25rem (36px) - full audit finding:
+     accessibility.md's default mobile control size is 44x44pt; 36px cleared the
+     28px floor but sat well under the recommended default for a touch target. */
   .theme-toggle {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     border: 1px solid var(--border);
     border-radius: var(--radius);

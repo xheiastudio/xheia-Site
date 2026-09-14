@@ -151,6 +151,9 @@ const capabilities = [
     margin-bottom: var(--space-6);
   }
 
+  /* --accent-primary-text, not --accent-primary: this is real visible text on the
+     page background (full audit finding - raw --accent-primary measured 4.22:1
+     against Ink in dark mode, below the 4.5:1 minimum). */
   .eyebrow {
     margin: 0;
     font-family: var(--font-mono);
@@ -158,7 +161,7 @@ const capabilities = [
     font-size: 0.875rem;
     line-height: 1.5;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   /* typography.md's macOS translation: 13pt default / 10pt minimum (~17px/~13px).
@@ -186,7 +189,7 @@ const capabilities = [
   }
 
   .selector {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
     font-size: 0.875rem;
   }
 
@@ -227,24 +230,35 @@ const capabilities = [
     color: var(--text);
   }
 
+  /* --accent-primary-text, not --accent-primary: full audit finding, same as the
+     eyebrow above (raw --accent-primary is 4.22:1 against Ink in dark mode, below
+     the 4.5:1 text minimum). */
   .see-more {
     display: inline-block;
     margin-top: var(--space-8);
     font-family: var(--font-mono);
     font-size: 1rem;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
     /* Was plain ease - found on a full sweep matching this to the site's
        established cubic-bezier(0.16,1,0.3,1) curve used everywhere else. */
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Was opacity: 0.7 - full audit finding: dimming this link's already-adjusted
+     text color toward the page background dropped it to 3.13:1 (dark) / 2.95:1
+     (light), undoing the fix above for the one state a mouse/keyboard user
+     specifically triggers to confirm interactivity. An underline reveal keeps the
+     text at full, already-verified contrast in every state. */
   .see-more:hover,
   .see-more:focus-visible {
-    opacity: 0.7;
+    text-decoration-color: currentColor;
   }
 
   .see-more:focus-visible {
-    outline: 2px solid var(--accent-primary);
+    outline: 2px solid var(--accent-primary-text);
     outline-offset: 0.2em;
   }
 </style>

@@ -199,9 +199,12 @@ const navLinks = [
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* --accent-primary-text, not --accent-primary: full audit finding - raw
+     --accent-primary as text on the page background is 4.22:1 against Ink in dark
+     mode, below the 4.5:1 minimum (tokens.css has the full computation). */
   nav a:hover,
   nav a:focus-visible {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   nav a:hover::after,
@@ -213,7 +216,7 @@ const navLinks = [
      underline (not just on hover) plus the accent color, keyed off aria-current
      rather than a route-matching class the browser doesn't already know about. */
   nav a.is-current {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   nav a.is-current::after {

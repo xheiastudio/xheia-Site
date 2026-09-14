@@ -81,19 +81,28 @@ const socialLinks = [
 
   nav {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
 
+  /* Full audit finding: measured 21px tall with zero padding, below
+     accessibility.md's stated 28x28pt MINIMUM control size (not just the 44pt
+     default). Vertical padding brings the real tap target past 44px; gap trimmed
+     from --space-4 to --space-3 since the padding now supplies part of that
+     separation itself. */
   nav a {
+    padding: var(--space-3) var(--space-1);
     color: var(--text-secondary);
     text-decoration: none;
     border-radius: var(--radius);
     transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* --accent-primary-text, not --accent-primary: full audit finding, same as
+     Header's nav (raw --accent-primary is 4.22:1 against Ink in dark mode, below
+     the 4.5:1 text minimum). */
   nav a:hover,
   nav a:focus-visible {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   /* Color alone isn't a visible keyboard-focus indicator (accessibility.md - WCAG

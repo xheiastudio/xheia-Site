@@ -78,12 +78,15 @@ const phases = [
     margin-bottom: var(--space-6);
   }
 
+  /* --accent-primary-text, not --accent-primary: full audit finding, same as the
+     other three /approach sections' eyebrows (raw --accent-primary is 4.22:1
+     against Ink in dark mode, below the 4.5:1 text minimum). */
   .eyebrow {
     margin: 0;
     font-family: var(--font-mono);
     font-size: 0.875rem;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   h2 {

@@ -15,10 +15,10 @@ const { class: className } = Astro.props;
     align-items: center;
     justify-content: center;
     gap: 0.4em;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--accent-primary);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--accent-primary-fill);
     border-radius: var(--radius);
-    background: var(--accent-primary);
+    background: var(--accent-primary-fill);
     color: var(--on-accent-primary);
     font-family: var(--font-mono);
     font-size: 0.875rem;
@@ -55,20 +55,23 @@ const { class: className } = Astro.props;
       opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Text-on-transparent (revealing the page background) - the same scenario
+     --accent-primary-text exists for (full audit finding: raw --accent-primary here
+     measured 4.22:1 against Ink in dark mode, below the 4.5:1 text minimum). */
   .cta-button:hover,
   .cta-button:focus-visible {
     background: transparent;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   /* clip-path (.pixel-notch) cuts two corners off the box, so an outward `outline`
      would get clipped away right where it's cut — invisible/broken focus ring. An
-     inset ring stays inside the clipped shape instead. Safe to key off accent-primary
-     here since focus-visible always coincides with the transparent-bg state above,
-     which is legible in both themes. */
+     inset ring stays inside the clipped shape instead. Matches the hover-state text
+     color above (both are the same "accent-on-transparent" moment) rather than the
+     plain --accent-primary token. */
   .cta-button:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 2px var(--accent-primary);
+    box-shadow: inset 0 0 0 2px var(--accent-primary-text);
   }
 
   .cta-button:hover::before,

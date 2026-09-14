@@ -81,6 +81,9 @@ const pillars = [
     margin-bottom: var(--space-6);
   }
 
+  /* --accent-primary-text, not --accent-primary: see Capabilities.astro's equivalent
+     comment (full audit finding, raw --accent-primary is 4.22:1 against Ink in dark
+     mode, below the 4.5:1 text minimum). */
   .eyebrow {
     margin: 0;
     font-family: var(--font-mono);
@@ -88,7 +91,7 @@ const pillars = [
     font-size: 0.875rem;
     line-height: 1.5;
     letter-spacing: 0.06em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .checks {
