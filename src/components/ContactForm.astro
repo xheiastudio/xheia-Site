@@ -4,9 +4,28 @@
 // the built output). Plain mailto fallback rendered near the form, not styled as a
 // competing CTA (SPEC.md — ContactForm). Delivery address is a temporary placeholder,
 // flagged in SPEC.md — replace before public launch.
+//
+// Labels styled as $-prefixed prompts (terminal register, zero UX risk — pure
+// markup/CSS, no new interaction) — all fields stay visible/editable at once, no
+// step-by-step wizard, since a lead-capture form is the wrong place to trade
+// usability for flair (entering-data.md favors efficient entry over sequencing).
+//
+// Progressive-enhancement submit handler: with JS, a fetch-based Netlify Forms
+// submission shows a typed success confirmation (src/scripts/typewriter.ts) or an
+// inline error — the site previously gave zero feedback after submission, a real
+// risk for its one lead-gen action (feedback.md: "confirm that a significant
+// action has completed"). With JS disabled, the form still submits via its native
+// POST exactly as before, just without the inline confirmation.
 ---
 
-<form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" class="contact-form">
+<form
+  name="contact"
+  method="POST"
+  data-netlify="true"
+  data-netlify-honeypot="bot-field"
+  class="contact-form"
+  id="contact-form"
+>
   <input type="hidden" name="form-name" value="contact" />
   <p class="honeypot" aria-hidden="true">
     <label>
@@ -16,31 +35,97 @@
   </p>
 
   <label>
-    <span>Name</span>
+    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> name</span>
     <input class="pixel-notch" type="text" name="name" placeholder="Your name" required />
   </label>
 
   <label>
-    <span>Email</span>
+    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> email</span>
     <input class="pixel-notch" type="email" name="email" placeholder="name@company.com" required />
   </label>
 
   <label>
-    <span>Company <span class="optional">(optional)</span></span>
+    <span class="prompt">
+      <span class="glyph" aria-hidden="true">$</span> company <span class="optional">(optional)</span>
+    </span>
     <input class="pixel-notch" type="text" name="company" placeholder="Where you work" />
   </label>
 
   <label>
-    <span>Message</span>
-    <textarea class="pixel-notch" name="message" rows="6" placeholder="What are you trying to solve?" required></textarea>
+    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> message</span>
+    <textarea
+      class="pixel-notch"
+      name="message"
+      rows="6"
+      placeholder="What are you trying to solve?"
+      required
+    ></textarea>
   </label>
 
   <button class="pixel-notch" type="submit">Send</button>
 </form>
 
+<p class="form-status" id="form-status" role="status" hidden>
+  <span class="status-mark" id="form-status-mark" aria-hidden="true"></span>
+  <span id="form-status-text"></span>
+</p>
+<p class="sr-only" id="form-status-announcer" aria-live="polite"></p>
+
 <p class="mailto-fallback">
   Prefer email? Write to <a href="mailto:hoda.97@live.com">hoda.97@live.com</a> directly.
 </p>
+
+<script>
+  import { typeText } from '../scripts/typewriter';
+
+  document.addEventListener('astro:page-load', () => {
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    const statusMark = document.getElementById('form-status-mark');
+    const statusText = document.getElementById('form-status-text');
+    const announcer = document.getElementById('form-status-announcer');
+    const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!(form instanceof HTMLFormElement) || !status || !statusMark || !statusText || !announcer || !button) {
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending...';
+
+      try {
+        const params = new URLSearchParams();
+        new FormData(form).forEach((value, key) => params.append(key, String(value)));
+
+        const res = await fetch(window.location.pathname, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
+        });
+        if (!res.ok) throw new Error('submit failed');
+
+        const message = "Got it - I'll reply within a couple of business days.";
+        form.hidden = true;
+        status.hidden = false;
+        status.className = 'form-status success';
+        statusMark.textContent = '✓';
+        announcer.textContent = message;
+        typeText(statusText, message);
+      } catch {
+        button.disabled = false;
+        button.textContent = 'Send';
+        const message = 'Something went wrong - try again, or email hoda.97@live.com directly.';
+        status.hidden = false;
+        status.className = 'form-status error';
+        statusMark.textContent = '';
+        statusText.textContent = message;
+        announcer.textContent = message;
+      }
+    });
+  });
+</script>
 
 <style>
   .contact-form {
@@ -50,7 +135,12 @@
     max-width: 32rem;
   }
 
-  .honeypot {
+  .contact-form[hidden] {
+    display: none;
+  }
+
+  .honeypot,
+  .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -66,6 +156,16 @@
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--text-secondary);
+  }
+
+  .prompt {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+  }
+
+  .glyph {
+    color: var(--accent-primary);
   }
 
   .optional {
@@ -110,15 +210,57 @@
     cursor: pointer;
   }
 
+  button[type='submit']:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
   button[type='submit']:hover,
   button[type='submit']:focus-visible {
     opacity: 0.85;
+  }
+
+  button[type='submit']:disabled:hover {
+    opacity: 0.6;
   }
 
   /* Same clip-path corner issue as inputs above — inset ring instead of outline. */
   button[type='submit']:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--on-accent-primary);
+  }
+
+  .form-status {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    max-width: 32rem;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+  }
+
+  .form-status[hidden] {
+    display: none;
+  }
+
+  .form-status.success {
+    color: var(--text);
+  }
+
+  .form-status.error {
+    color: var(--text-secondary);
+  }
+
+  .status-mark {
+    color: var(--accent-status);
+  }
+
+  /* Flare coral (light mode's --accent-status) is too low-contrast as small text —
+     same fix already applied to PillarBlock/Capabilities/Hero's checkmarks. */
+  :global(html[data-theme='light']) .status-mark {
+    color: var(--text);
   }
 
   .mailto-fallback {
