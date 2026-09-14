@@ -16,11 +16,11 @@ import Footer from '../../components/Footer.astro';
 
 <BaseLayout title="Approach" description="What I do, how I think about it, and how a project runs from first call to handover.">
   <Header />
-  <main class="approach-page">
-    <p class="intro">
+  <main class="approach-page" id="main-content">
+    <h1 class="intro">
       What I do, how I think about it, and how a project runs from first call to
       handover.
-    </p>
+    </h1>
     <Capabilities />
     <PillarBlock />
     <EngagementStructure />
@@ -42,5 +42,8 @@ import Footer from '../../components/Footer.astro';
     margin: 0 0 var(--space-8);
     color: var(--text-secondary);
     font-size: 1.0625rem;
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.5;
   }
 </style>

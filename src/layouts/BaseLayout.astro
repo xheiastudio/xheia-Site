@@ -46,6 +46,7 @@ const {
     </script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <div class="boot-flicker" aria-hidden="true"></div>
     <PixelCursor />
     <slot />
@@ -76,3 +77,27 @@ const {
     </script>
   </body>
 </html>
+
+<style>
+  /* Standard keyboard-navigation affordance: off-screen until focused, then jumps
+     on-screen above everything else so a keyboard user can bypass the header/nav
+     on every page. Targets id="main-content" on each page's own <main>. */
+  .skip-link {
+    position: absolute;
+    top: 0;
+    left: -999px;
+    z-index: 10000;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg);
+    border: 1px solid var(--accent-primary);
+    color: var(--accent-primary);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    left: var(--space-4);
+    top: var(--space-4);
+  }
+</style>

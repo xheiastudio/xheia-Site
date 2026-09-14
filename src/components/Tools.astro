@@ -25,7 +25,7 @@ const tools = [
 ---
 
 <section class="tools" data-reveal>
-  <p class="eyebrow">// tools</p>
+  <h2 class="eyebrow">// tools</h2>
   <div class="tools-frame">
     <ul class="tags section-content">
       {tools.map((tool) => <li>{tool}</li>)}
@@ -44,7 +44,9 @@ const tools = [
   .eyebrow {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
+    font-weight: 400;
     font-size: 0.875rem;
+    line-height: 1.5;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }

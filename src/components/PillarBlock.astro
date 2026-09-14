@@ -32,7 +32,7 @@ const pillars = [
 ---
 
 <section class="pillar-block" data-reveal>
-  <p class="eyebrow">// principles</p>
+  <h2 class="eyebrow">// principles</h2>
   <div class="checks">
     {
       pillars.map((pillar, i) => {
@@ -41,7 +41,7 @@ const pillars = [
           <div class="check-item">
             <div class="check-head item-content" style={{ transitionDelay: `${delay}s` }}>
               <span class="check-indicator" aria-hidden="true" />
-              <span class="check-title">{pillar.title}</span>
+              <h3 class="check-title">{pillar.title}</h3>
             </div>
             <div class="check-result">
               <SectionLoader delay={delay} />
@@ -68,7 +68,9 @@ const pillars = [
   .eyebrow {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
+    font-weight: 400;
     font-size: 0.875rem;
+    line-height: 1.5;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
@@ -100,7 +102,9 @@ const pillars = [
   }
 
   .check-title {
+    margin: 0;
     font-family: var(--font-display);
+    font-weight: 400;
     font-size: 0.9375rem;
     line-height: 1.6;
   }

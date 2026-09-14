@@ -92,7 +92,7 @@ const capabilities = [
 ---
 
 <section class="capabilities" data-reveal>
-  <p class="eyebrow">// what I do</p>
+  <h2 class="eyebrow">// what I do</h2>
   <div class="menu-frame">
     <p class="menu-frame-label">loading modules...</p>
     <div class="menu">
@@ -104,7 +104,7 @@ const capabilities = [
               <div class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
                 <span class="selector" aria-hidden="true">▶</span>
                 <PixelIcon pixels={c.icon} cols={7} rows={7} size={28} />
-                <span class="menu-title">{c.title}</span>
+                <h3 class="menu-title">{c.title}</h3>
               </div>
               <div class="menu-result">
                 <SectionLoader delay={delay} />
@@ -132,7 +132,9 @@ const capabilities = [
   .eyebrow {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
+    font-weight: 400;
     font-size: 0.875rem;
+    line-height: 1.5;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
@@ -178,7 +180,9 @@ const capabilities = [
   }
 
   .menu-title {
+    margin: 0;
     font-family: var(--font-display);
+    font-weight: 400;
     font-size: 0.9375rem;
     line-height: 1.6;
   }

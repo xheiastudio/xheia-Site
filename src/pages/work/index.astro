@@ -33,16 +33,16 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
 
 <BaseLayout title="Work" description="Full-lifecycle data work, delivered.">
   <Header />
-  <main class="work-page">
-    <p class="intro">
+  <main class="work-page" id="main-content">
+    <h1 class="intro">
       Real engagements across life sciences, public sector, and fitness - different
       sectors, same underlying problem to solve.
-    </p>
+    </h1>
     {
       sectors.length > 0 && (
-        <p class="eyebrow">
+        <h2 class="eyebrow">
           // sectors <span class="sectors">{sectors.join(' · ')}</span>
-        </p>
+        </h2>
       )
     }
     {
@@ -83,12 +83,17 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     margin: 0 0 var(--space-8);
     color: var(--text-secondary);
     font-size: 1.0625rem;
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.5;
   }
 
   .eyebrow {
     margin: 0 0 var(--space-6);
     font-family: var(--font-mono);
+    font-weight: 400;
     font-size: 0.75rem;
+    line-height: 1.5;
     letter-spacing: 0.06em;
     color: var(--accent-primary);
   }
