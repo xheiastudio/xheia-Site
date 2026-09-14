@@ -25,6 +25,18 @@ This repo is the Xheia consulting website (`xheia-Site`): an Astro static site (
 - `CTAButton` is the only CTA component, always labeled "Start a conversation", always linking to `/contact` — don't create a second CTA style or destination.
 - Case study data lives in the `caseStudies` content collection (`src/content.config.ts`, Astro's Content Layer API — config path is `src/content.config.ts`, not the older `src/content/config.ts`), not hardcoded arrays.
 
+## Apple-sleekness pattern reference (established on Home, replicate elsewhere)
+
+Home (`Hero.astro`, `Header.astro`, `Footer.astro`) went through a full "Apple-level sleekness, pixel-DNA kept" pass. These are the reusable rules — apply them deliberately when giving another page the same treatment, don't re-derive from scratch:
+
+- **Two-tier motion, by design:** data/grid sections (Capabilities, PillarBlock, EngagementStructure, Tools) keep the sitewide default `[data-reveal]` blocky `steps(6, end)` reveal — the "pixel-materialize" feel. Personal/hero-moment sections (Home, About, Contact) and all interactive controls (buttons, toggles, links) use `cubic-bezier(0.16, 1, 0.3, 1)` — the "Apple-smooth" feel. Pick per content type, don't apply one everywhere.
+- **Ambient glow recipe:** two `radial-gradient`s on an `inset: 0` container (never a smaller fixed-size box — the edge shows as a visible seam against light backgrounds). Dark mode: moderate two-accent-blob opacity. Light mode needs a **materially bolder** primary blob than the dark-mode value, verified by sampling actual rendered pixels (`getImageData`) — the same percentage shift reads as an obvious glow near black but is nearly imperceptible near white (Weber-Fechner). Never eyeball a screenshot as "good enough." Drop `--accent-status`/Coral from any light-mode glow — it saturates too visibly against Paper; use `--text` at low opacity for a second "shadow" point of depth instead.
+- **Monumental-mark-watermark recipe:** when a hero-like section has a large empty void and no real additional content to fill it, render `PixelMark` at a huge scale (`~30-40rem`) at very low opacity, bleeding off a corner via the container's `overflow: hidden`, in a different screen zone than any existing glow. Opacity is per-theme (verify, don't guess — Ink at low alpha reads very differently from Signal green at the same alpha). This fills a void without inventing content BRANDFINAL doesn't support.
+- **Sticky/blurred header, whitespace-not-border footer:** already global components (`Header.astro`, `Footer.astro`) — nothing to redo per-page.
+- **Focus rings:** any text link relying on color/underline-only affordance gets `outline: 2px solid var(--accent-primary); outline-offset: 2-3px` on `:focus-visible`.
+- **Reduced-transparency + reduced-motion:** ship both fallbacks in the same commit as any new `backdrop-filter` or `animation` — never as a follow-up.
+- **Pixel-DNA floor, never crossed:** `--radius: 0`, `PixelMark`, `PixelCursor`, `.pixel-notch`, the boot-flicker page-transition, and Hero's typed-terminal `.typed`/caret mechanics are the identity — new polish wraps around them, it never replaces them.
+
 ## Brand source of truth
 
 See @BRANDFINAL.md for all brand-facing decisions — copy, color, typography, tone, naming. Read it before any brand decision; don't restate its content here. Key constraints that are easy to get wrong:
