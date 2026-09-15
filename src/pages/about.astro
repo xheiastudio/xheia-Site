@@ -170,7 +170,10 @@ import headshot from '../assets/hoda-headshot.jpg';
       items.forEach(({ el }) => {
         el.textContent = '';
       });
-      typeSequence(items);
+      // Direct feedback: the cursor after the role line disappeared once typing
+      // finished - it should stay and keep blinking, matching Hero's own caret,
+      // which persists after its boot sequence completes rather than vanishing.
+      typeSequence(items, { keepCursorOnDone: true });
     };
 
     if (img.complete) start();
@@ -208,10 +211,19 @@ import headshot from '../assets/hoda-headshot.jpg';
     gap: var(--space-3);
   }
 
+  /* Portrait 4:5 crop + a generous, soft corner radius, not the sitewide
+     --radius:0 - direct feedback that a hard square read as flat rather than
+     "Apple." The photo is already the site's one deliberate exception to the
+     pixel-art visual language (a real photograph, not pixel art); a rounded,
+     portrait-oriented frame extends that same exception rather than
+     introducing a new inconsistency - every other bordered/cornered element
+     on the site stays sharp-cornered. box-shadow automatically follows this
+     radius, so the glow rounds with it for free. */
   .headshot {
     position: relative;
     width: 19rem;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
+    border-radius: 1.5rem;
     overflow: hidden;
     line-height: 0;
     box-shadow: 0 0 0 0 transparent;

@@ -9,11 +9,14 @@
 // Intro line (copy pass) leads with sector breadth instead of repeating Home's
 // lifecycle phrasing verbatim — no new claims invented, ties into the sectors strip
 // directly below it. A small static note sits below the real grid ("More engagements
-// are added here as they wrap up.") — deliberately NOT using the blinking-caret
-// .pending-caret device here (Apple HIG design-improvement pass): a blinking cursor
-// under three already-finished cards read as a stuck/broken loader, not an
-// intentional "more coming" cue. The empty-state branch below keeps its caret —
-// there, the section genuinely has nothing yet, so "in progress" is accurate.
+// are added here as they wrap up.") — deliberately NOT typed/caret'd (Apple HIG
+// design-improvement pass): a blinking cursor under three already-finished cards
+// read as a stuck/broken loader, not an intentional "more coming" cue. The
+// empty-state branch below is different - the section genuinely has nothing yet,
+// so "in progress" is accurate - and (full redesign pass) now actually types out via
+// TypedText with a persisting cursor, instead of static text with a merely
+// decorative dash after it - the same typed-then-blinking convention Home/About/404
+// already use, not a one-off.
 //
 // Handles two states so real case studies can be dropped into
 // src/content/case-studies/ later with no further code changes: empty (now — an honest
@@ -33,6 +36,7 @@ import PageIntroAtmosphere from '../../components/PageIntroAtmosphere.astro';
 import Footer from '../../components/Footer.astro';
 import CaseStudyCard from '../../components/CaseStudyCard.astro';
 import ContactCTA from '../../components/ContactCTA.astro';
+import TypedText from '../../components/TypedText.astro';
 
 const caseStudies = await getCollection('caseStudies');
 
@@ -60,10 +64,13 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
       }
       {
         caseStudies.length === 0 ? (
-          <p class="pending">
-            Case studies are added here as real engagements are finalized for
-            publication.<span class="pending-caret" aria-hidden="true"></span>
-          </p>
+          <div class="pending">
+            <TypedText
+              as="p"
+              text="Case studies are added here as real engagements are finalized for publication."
+              keepCursor
+            />
+          </div>
         ) : (
           <>
             <p class="disclaimer">
@@ -131,37 +138,12 @@ const sectors = [...new Set(caseStudies.map((cs) => cs.data.tags.at(-1)))].map(
     letter-spacing: normal;
   }
 
+  /* TypedText's own <p class="type-target"> inherits color/font-family/font-size
+     from this wrapper - no need to reach into the component with :global(). */
   .pending {
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.9375rem;
-  }
-
-  .pending-caret {
-    display: inline-block;
-    width: 0.5em;
-    height: 1em;
-    margin-left: 0.25em;
-    background: var(--accent-status);
-    vertical-align: text-bottom;
-    animation: pending-cursor-blink 1s steps(1) infinite;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pending-caret {
-      animation: none;
-    }
-  }
-
-  @keyframes pending-cursor-blink {
-    0%,
-    49% {
-      opacity: 1;
-    }
-    50%,
-    100% {
-      opacity: 0;
-    }
   }
 
   .disclaimer {

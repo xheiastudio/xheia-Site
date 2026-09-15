@@ -13,6 +13,8 @@ export interface TypeOptions {
   cps?: number;
   /** append a blinking .type-cursor while typing */
   cursor?: boolean;
+  /** leave the blinking cursor in place once typing finishes, instead of removing it */
+  keepCursorOnDone?: boolean;
   onDone?: () => void;
 }
 
@@ -21,7 +23,7 @@ function reducedMotion(): boolean {
 }
 
 export function typeText(el: HTMLElement, text: string, opts: TypeOptions = {}): void {
-  const { cps = 45, cursor = true, onDone } = opts;
+  const { cps = 45, cursor = true, keepCursorOnDone = false, onDone } = opts;
 
   if (reducedMotion()) {
     el.textContent = text;
@@ -30,23 +32,32 @@ export function typeText(el: HTMLElement, text: string, opts: TypeOptions = {}):
   }
 
   el.textContent = '';
+  // A dedicated inner span for the typed characters - not el.textContent directly
+  // - so the cursor (also a child of el, appended right after it) survives every
+  // tick's update instead of being wiped out along with it. This also fixes a real
+  // positioning bug: the cursor used to live *after* el itself (insertAdjacentElement
+  // 'afterend'), which visually parks it on its own line below the whole element
+  // when el is a block (h1/p) instead of immediately after the last character.
+  const textSpan = document.createElement('span');
+  el.appendChild(textSpan);
+
   let cursorEl: HTMLSpanElement | null = null;
   if (cursor) {
     cursorEl = document.createElement('span');
     cursorEl.className = 'type-cursor';
     cursorEl.setAttribute('aria-hidden', 'true');
-    el.insertAdjacentElement('afterend', cursorEl);
+    el.appendChild(cursorEl);
   }
 
   const interval = 1000 / cps;
   let i = 0;
   const tick = () => {
     i += 1;
-    el.textContent = text.slice(0, i);
+    textSpan.textContent = text.slice(0, i);
     if (i < text.length) {
       setTimeout(tick, interval);
     } else {
-      cursorEl?.remove();
+      if (!keepCursorOnDone) cursorEl?.remove();
       onDone?.();
     }
   };
@@ -71,10 +82,15 @@ export function typeSequence(
   const runNext = (index: number) => {
     if (index >= items.length) return;
     const { el, text } = items[index];
+    const isLast = index === items.length - 1;
     typeText(el, text, {
       ...rest,
+      // Only the LAST line's cursor can persist - intermediate lines in a
+      // multi-line sequence still clear theirs as each one finishes,
+      // matching Hero's own boot sequence where only the final caret stays.
+      keepCursorOnDone: isLast && rest.keepCursorOnDone,
       onDone: () => {
-        if (index === items.length - 1) rest.onDone?.();
+        if (isLast) rest.onDone?.();
         setTimeout(() => runNext(index + 1), gap);
       },
     });

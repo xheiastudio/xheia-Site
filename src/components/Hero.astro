@@ -519,6 +519,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     }
   }
 
+  /* Single animation, not two: caret-blink's own 0% keyframe is already
+     opacity:1, so a separate "caret-appear" animation (to {opacity:1} at 0s
+     duration) was fully redundant - it never did anything caret-blink wasn't
+     already doing. Worse, two animations both targeting the same `opacity`
+     property is a genuine cross-browser fragility (composition order isn't
+     always resolved the same way), and was reported as the caret rendering
+     static in one real browser rather than blinking - real risk for zero
+     benefit, removed. */
   .caret {
     display: inline-block;
     width: 0.5em;
@@ -527,9 +535,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     background: var(--accent-status);
     vertical-align: text-bottom;
     opacity: 0;
-    animation:
-      caret-appear 0s forwards,
-      caret-blink 1s steps(1) infinite;
+    animation: caret-blink 1s steps(1) infinite;
     /* animation-delay set inline per-instance (see markup) — overrides any value here. */
   }
 
@@ -592,12 +598,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     opacity: 1;
     transform: none;
     animation: none;
-  }
-
-  @keyframes caret-appear {
-    to {
-      opacity: 1;
-    }
   }
 
   @keyframes caret-blink {

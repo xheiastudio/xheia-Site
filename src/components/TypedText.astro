@@ -12,12 +12,20 @@ interface Props {
   delay?: number;
   /** characters per second */
   cps?: number;
+  /** leave the blinking cursor in place once typing finishes, instead of removing it */
+  keepCursor?: boolean;
 }
 
-const { text, as: Tag = 'span', delay = 0, cps }: Props = Astro.props;
+const { text, as: Tag = 'span', delay = 0, cps, keepCursor = false }: Props = Astro.props;
 ---
 
-<Tag class="type-target" data-type-text={text} data-type-delay={delay} data-type-cps={cps ?? ''}>{text}</Tag>
+<Tag
+  class="type-target"
+  data-type-text={text}
+  data-type-delay={delay}
+  data-type-cps={cps ?? ''}
+  data-type-keep-cursor={keepCursor ? 'true' : undefined}
+>{text}</Tag>
 
 <script>
   import { typeText } from '../scripts/typewriter';
@@ -35,11 +43,12 @@ const { text, as: Tag = 'span', delay = 0, cps }: Props = Astro.props;
       }
       const cps = el.dataset.typeCps ? Number(el.dataset.typeCps) : undefined;
       const delayMs = Number(el.dataset.typeDelay ?? 0) * 1000;
+      const keepCursorOnDone = el.dataset.typeKeepCursor === 'true';
       // Clear immediately (not just once the delay above elapses) so a staggered
       // later field never flashes its full real text before being wiped and
       // retyped — only this element's own delay controls when typing *starts*.
       el.textContent = '';
-      setTimeout(() => typeText(el, text, { cps }), delayMs);
+      setTimeout(() => typeText(el, text, { cps, keepCursorOnDone }), delayMs);
     });
   });
 </script>
