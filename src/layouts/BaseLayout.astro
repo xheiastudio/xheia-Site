@@ -22,6 +22,32 @@ const {
   title,
   description = 'Xheia is a full-stack data consultancy run by Hoda. I turn fragmented data into systems you can actually trust.',
 } = Astro.props;
+
+const fullTitle = `${title} · Xheia`;
+
+// Astro.site (astro.config.mjs) is a placeholder until a real production domain
+// exists - see that file's own comment. Every absolute URL below derives from it,
+// so updating that one line is what fixes all of these at once.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL('og-image.png', Astro.site);
+
+// ProfessionalService, not Person - Xheia is the entity a search result should
+// surface (matches the site's own "Xheia stays the standalone brand" rule,
+// BRANDFINAL.md §1), with Hoda named as founder rather than as the primary
+// subject. `sameAs` is omitted entirely - Footer's social links are still `#`
+// placeholders, and linking dead anchors in structured data would be worse
+// than naming none at all.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Xheia',
+  description,
+  url: Astro.site,
+  founder: {
+    '@type': 'Person',
+    name: 'Hoda',
+  },
+};
 ---
 
 <html lang="en">
@@ -29,8 +55,27 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title} · Xheia</title>
+    <title>{fullTitle}</title>
+
+    <meta name="theme-color" content="#0D0D10" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F2F0EA" media="(prefers-color-scheme: light)" />
+
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Xheia" />
+    <meta property="og:image" content={ogImageURL} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+
     <ClientRouter />
     <script is:inline>
       (function () {
