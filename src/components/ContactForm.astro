@@ -177,7 +177,7 @@
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-6);
     max-width: 32rem;
     transition:
       opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
@@ -262,16 +262,43 @@
     font-style: italic;
   }
 
+  /* Round two of the polish pass (direct feedback: still didn't read as "sleek" -
+     a hover border wasn't the actual problem). The real issue: background was
+     var(--bg), identical to the page itself, so a field was only ever a thin outline
+     with nothing behind it - it never read as its own surface, resting or not.
+     A barely-there tint (color-mix toward --text, works in both themes without a
+     separate light-mode override since it's relative to whichever --bg is active)
+     gives every field real presence at rest, not just on interaction. Padding
+     bumped up too - the old spacing read as cramped/default-form-ish next to the
+     rest of the site's generous spacing scale. */
   input,
   textarea {
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-3) var(--space-4);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: var(--bg);
+    background: color-mix(in srgb, var(--text) 5%, var(--bg));
     color: var(--text);
     font-family: var(--font-body);
     font-size: 1rem;
-    transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-secondary);
+  }
+
+  /* Fields had a focus ring but zero feedback before that - the first sign a field
+     was interactive was clicking into it. A hover-only border tint + a slightly
+     stronger fill (no ring - that's reserved for the accessibility-required focus
+     state below) signals "this is ready" earlier. */
+  input:hover,
+  textarea:hover {
+    border-color: var(--accent-primary);
+    background: color-mix(in srgb, var(--text) 8%, var(--bg));
   }
 
   /* clip-path (.pixel-notch) cuts two corners off each field, so an outward `outline`/
@@ -280,6 +307,7 @@
   input:focus-visible,
   textarea:focus-visible {
     outline: none;
+    background: color-mix(in srgb, var(--text) 8%, var(--bg));
     border-color: var(--accent-primary);
     box-shadow: inset 0 0 0 2px var(--accent-primary);
   }
@@ -306,8 +334,10 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
+    box-shadow: 0 0 0 0 transparent;
     transition:
       opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
       transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -316,9 +346,22 @@
     opacity: 0.6;
   }
 
-  button[type='submit']:hover,
+  /* Polish pass: the same soft accent-primary bloom now on every other button on
+     the site (CTAButton, the logo, the theme toggle) - this one was still opacity-
+     dim only. :not(:disabled) so a disabled Send never glows on hover. */
+  button[type='submit']:hover:not(:disabled),
   button[type='submit']:focus-visible {
     opacity: 0.85;
+    box-shadow: 0 0 1rem -0.2rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  /* Light mode needs a materially bolder glow than the dark-mode value to read as a
+     real bloom against Paper (Weber-Fechner - the same percentage shift is obvious
+     near black, nearly imperceptible near white) - same finding as every other glow
+     on the site, verified rather than guessed. */
+  :global(html[data-theme='light']) button[type='submit']:hover:not(:disabled),
+  :global(html[data-theme='light']) button[type='submit']:focus-visible {
+    box-shadow: 0 0 1.25rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
   button[type='submit']:active:not(:disabled) {
@@ -327,12 +370,25 @@
 
   button[type='submit']:disabled:hover {
     opacity: 0.6;
+    box-shadow: 0 0 0 0 transparent;
   }
 
-  /* Same clip-path corner issue as inputs above — inset ring instead of outline. */
+  /* Same clip-path corner issue as inputs above — inset ring instead of outline.
+     Combined with the outward glow above (two box-shadow layers, comma-separated)
+     rather than replacing it - the inset ring is the accessibility-required
+     indicator, the outward glow is the same decorative bloom every hover state
+     gets. */
   button[type='submit']:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 2px var(--on-accent-primary);
+    box-shadow:
+      inset 0 0 0 2px var(--on-accent-primary),
+      0 0 1rem -0.2rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  :global(html[data-theme='light']) button[type='submit']:focus-visible {
+    box-shadow:
+      inset 0 0 0 2px var(--on-accent-primary),
+      0 0 1.25rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
   @media (prefers-reduced-motion: reduce) {

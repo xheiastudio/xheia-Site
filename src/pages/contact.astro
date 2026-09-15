@@ -17,6 +17,13 @@
 // data-grid sections - staggered across the heading, intro copy, and status line.
 // The form itself (ContactForm.astro) got the matching treatment plus a fully
 // reworked success/error transition - see that file's own comment block.
+//
+// Polish pass (direct feedback the page felt "dull"): the left column previously
+// had just two short lines and a lot of empty space beneath them next to the form's
+// full height. Added a real "$ next" sequence - what actually happens after you
+// submit - reusing Tools.astro's own numbered-row terminal-listing pattern rather
+// than inventing new visual language, real information (sets expectations for a
+// vendor-skeptical buyer) rather than decorative filler.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
@@ -41,6 +48,14 @@ import Footer from '../components/Footer.astro';
             <span class="status-dot" aria-hidden="true"></span>
             $ connection: ready
           </p>
+          <div class="next-steps item-content" style={{ transitionDelay: '0.3s' }}>
+            <p class="next-label">$ next</p>
+            <ol class="next-list">
+              <li><span class="next-index">01</span> I read what you send</li>
+              <li><span class="next-index">02</span> reply within 2 business days</li>
+              <li><span class="next-index">03</span> a call if it looks like a fit</li>
+            </ol>
+          </div>
         </div>
         <ContactForm />
       </div>
@@ -157,6 +172,47 @@ import Footer from '../components/Footer.astro';
     .status-dot {
       animation: none;
     }
+  }
+
+  .next-steps {
+    margin-top: var(--space-8);
+  }
+
+  .next-label {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+
+  .next-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .next-list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+  }
+
+  /* --accent-primary-text, not --accent-primary: same full-audit finding fixed
+     sitewide (raw --accent-primary is 4.22:1 against Ink in dark mode, below the
+     4.5:1 text minimum) - reused here even though this text is small/muted. */
+  .next-index {
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    color: var(--accent-primary-text);
   }
 
   @media (max-width: 45rem) {
