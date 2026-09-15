@@ -1,6 +1,6 @@
 ---
-// Xheia (mark+wordmark) — Approach — Work — About — Contact — theme toggle —
-// one CTA. No dropdowns, no secondary items (SPEC.md — Nav). This is the everyday logo
+// Xheia (mark+wordmark) — Approach — Work — About — Contact — theme toggle.
+// No dropdowns, no secondary items (SPEC.md — Nav). This is the everyday logo
 // lockup, no CRT bezel.
 //
 // Sticky + scroll-aware (Apple-sleekness pass): was a static header that scrolled
@@ -17,21 +17,56 @@
 // color-shift + drawn-in underline is already a considered, distinct affordance for
 // inline text; a box-shadow bloom on bare text reads as a smudge, not a glow.
 //
-// transition:persist on the logo/ThemeToggle/CTAButton (not the whole header, and
-// not <nav>): these three are byte-identical on every page, so persisting them
-// avoids an unnecessary remount on every navigation. <nav> is deliberately left
-// un-persisted - its `.is-current` state is computed server-side from
-// Astro.url.pathname per page, and a persisted element keeps its OLD DOM across a
-// swap, which would freeze the current-page underline on whatever page you
-// navigated FROM. transition:name is set explicitly (rather than relying on
-// Astro's auto-generated name) because CTAButton is rendered more than once on some
-// pages (Hero's own CTA on Home, ContactCTA's on /approach and /about) - two
-// instances on one page can never share a transition:name, so this one is scoped to
-// "header-cta" specifically, set at this call site rather than baked into
-// CTAButton.astro itself.
+// No CTA button in the header (direct feedback, reversing an earlier documented
+// decision - SPEC.md previously called for "nav links + theme toggle + one CTA
+// button"): a persistent header CTA on every page duplicated each page's own
+// bottom conversion moment (Hero's CTA on Home, ContactCTA on Approach/About/Work),
+// and on /contact specifically it pointed at the page the visitor was already
+// looking at. "Contact" stays as a normal nav link - always one click away - and
+// each page's own in-content CTA carries the actual "ask" instead of competing
+// with a header button for the same attention.
+//
+// transition:persist on the logo/ThemeToggle/nav-toggle (not the whole header, and
+// not <nav>): these are byte-identical on every page, so persisting them avoids an
+// unnecessary remount on every navigation. <nav> is deliberately left un-persisted -
+// its `.is-current` state is computed server-side from Astro.url.pathname per page,
+// and a persisted element keeps its OLD DOM across a swap, which would freeze the
+// current-page underline on whatever page you navigated FROM.
+//
+// Mobile nav (direct feedback: on a narrow screen, nav links wrapped onto their own
+// row, cramped and hard to scan on every page). Replaced the old wrap-based layout
+// with a real hamburger toggle: nav links collapse into a panel below the header,
+// revealed by a toggle button, on narrow screens. The toggle's icon crossfade
+// reuses ThemeToggle's exact sun/moon technique (two PixelIcon instances, opacity+
+// transform swap) rather than inventing a new mechanism. Desktop layout/behavior is
+// completely unchanged - the toggle and panel are both display:none above the
+// breakpoint.
+//
+// A real, deliberate accessibility fix baked into the toggle's script, not just the
+// visual collapse: <nav> stays in its original DOM position (between the logo and
+// .actions) for the exact reason above (recomputing is-current per page) - but that
+// means, in the DOM, the nav LINKS sit BEFORE the hamburger button that reveals
+// them. Tabbing forward from an opened toggle would therefore skip straight past
+// the now-visible links into page content, with no keyboard way to reach them - so
+// opening the menu moves focus directly to its first link (and closing returns
+// focus to the toggle), the standard disclosure-pattern fix for exactly this
+// DOM-order/visual-order mismatch, rather than physically relocating nav (which
+// would break the SAME kind of mismatch on desktop instead - see the WCAG 2.4.3 fix
+// this file already carries below).
 import PixelMark from './PixelMark.astro';
+import PixelIcon from './PixelIcon.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import CTAButton from './CTAButton.astro';
+
+const menuPixels: Array<[number, number]> = [
+  [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1],
+  [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [6, 3],
+  [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5],
+];
+
+const closePixels: Array<[number, number]> = [
+  [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6],
+  [6, 1], [5, 2], [4, 3], [3, 4], [2, 5], [1, 6],
+];
 
 // Current-page indicator (navigation-structure lens: "current location is always
 // visible") - costs nothing to add here and benefits every page once visited, even
@@ -54,7 +89,7 @@ const navLinks = [
       <span class="wordmark">xheia</span>
     </a>
 
-    <nav aria-label="Primary">
+    <nav aria-label="Primary" id="primary-nav">
       {
         navLinks.map((link) => {
           const isCurrent = currentPath.startsWith(link.href);
@@ -69,7 +104,19 @@ const navLinks = [
 
     <div class="actions">
       <ThemeToggle transition:persist transition:name="header-theme-toggle" />
-      <CTAButton transition:persist transition:name="header-cta" />
+      <button
+        type="button"
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+        aria-label="Open menu"
+        transition:persist
+        transition:name="header-nav-toggle"
+      >
+        <PixelIcon class="nav-icon nav-icon-menu" pixels={menuPixels} cols={8} rows={8} size={20} />
+        <PixelIcon class="nav-icon nav-icon-close" pixels={closePixels} cols={8} rows={8} size={20} />
+      </button>
     </div>
   </div>
 </header>
@@ -86,6 +133,64 @@ const navLinks = [
       };
       sync();
       window.addEventListener('scroll', sync, { passive: true });
+    });
+  }
+</script>
+
+<script>
+  if (!(window as any).__xheiaNavToggleBound) {
+    (window as any).__xheiaNavToggleBound = true;
+
+    const openMenu = () => {
+      const header = document.getElementById('site-header');
+      const toggle = document.getElementById('nav-toggle');
+      const nav = document.getElementById('primary-nav');
+      if (!header || !toggle || !nav) return;
+      header.classList.add('nav-open');
+      toggle.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      nav.querySelector('a')?.focus();
+    };
+
+    const closeMenu = (returnFocus: boolean) => {
+      const header = document.getElementById('site-header');
+      const toggle = document.getElementById('nav-toggle');
+      if (!header || !toggle) return;
+      header.classList.remove('nav-open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      if (returnFocus) toggle.focus();
+    };
+
+    document.addEventListener('click', (e) => {
+      const toggle = document.getElementById('nav-toggle');
+      const nav = document.getElementById('primary-nav');
+      const header = document.getElementById('site-header');
+      if (!toggle || !nav || !header) return;
+      const target = e.target as HTMLElement;
+
+      if (toggle.contains(target)) {
+        if (header.classList.contains('nav-open')) {
+          closeMenu(false);
+        } else {
+          openMenu();
+        }
+        return;
+      }
+
+      const isOpen = header.classList.contains('nav-open');
+      const clickedLink = target.closest('#primary-nav a');
+      if (isOpen && (clickedLink || !nav.contains(target))) {
+        closeMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const header = document.getElementById('site-header');
+      if (header?.classList.contains('nav-open')) closeMenu(true);
     });
   }
 </script>
@@ -147,6 +252,7 @@ const navLinks = [
   }
 
   .site-header-inner {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -266,9 +372,9 @@ const navLinks = [
   }
 
   /* Color/underline alone isn't a visible keyboard-focus indicator (accessibility.md
-     - WCAG 2.4.7 Focus Visible) - CTAButton already gets a real ring, these links
-     didn't. Outline, not the inset box-shadow trick used on the notched CTA button,
-     since these have no clip-path corners to protect against. */
+     - WCAG 2.4.7 Focus Visible) - these links didn't have a real ring. Outline, not
+     the inset box-shadow trick used on notched pixel-clipped elements, since these
+     have no clip-path corners to protect against. */
   nav a:focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 3px;
@@ -280,25 +386,139 @@ const navLinks = [
     gap: var(--space-4);
   }
 
-  /* `order: 3` here (removed) only ever changed visual position - it never touches
-     DOM/tab order, which is what keyboard navigation and VoiceOver's rotor
-     actually follow. That mismatch sent focus from the logo down to nav (visually
-     the *third* row) and then back up to the toggle/CTA (visually the *second*
-     row) - a real WCAG 2.4.3 Focus Order violation, found on a full sweep using
-     the skill's VoiceOver-navigation lens. Fixed by not reordering at all: nav
-     simply wraps to its own full-width row in its natural DOM position (still
-     between the logo and actions, same as source order), so visual order and tab
-     order are identical at every breakpoint - logo, then nav, then actions, top
-     to bottom, matching how it already reads on desktop. */
+  /* Hidden above the mobile breakpoint - desktop keeps nav inline exactly as
+     before, this button plays no part in that layout at all. */
+  .nav-toggle {
+    display: none;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 0 0 0 transparent;
+    transition:
+      box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav-toggle:hover,
+  .nav-toggle:focus-visible {
+    box-shadow: 0 0 1rem -0.2rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  :global(html[data-theme='light']) .nav-toggle:hover,
+  :global(html[data-theme='light']) .nav-toggle:focus-visible {
+    box-shadow: 0 0 1.25rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
+  }
+
+  .nav-toggle:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  .nav-toggle:active {
+    transform: scale(0.92);
+  }
+
+  /* Both icons stacked and crossfaded, exact same technique as ThemeToggle's sun/
+     moon swap (opacity + scale + rotate, absolutely positioned so neither
+     participates in layout while hidden) - reused rather than reinvented.
+     :global() - PixelIcon is a separate child component, so Astro never attaches
+     this file's own scope attribute to its rendered <svg> (the same cross-
+     component scoping gap found and fixed in ThemeToggle.astro). */
+  :global(.nav-icon) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.25rem;
+    height: 1.25rem;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+    transition:
+      opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.nav-icon-close) {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-90deg);
+  }
+
+  .nav-toggle.is-open :global(.nav-icon-menu) {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
+  }
+
+  .nav-toggle.is-open :global(.nav-icon-close) {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  /* `order: 3` here (removed, full-review-pass history) only ever changed visual
+     position - it never touches DOM/tab order, which is what keyboard navigation
+     and VoiceOver's rotor actually follow. That mismatch sent focus from the logo
+     down to nav (visually the *third* row) and then back up to the toggle
+     (visually the *second* row) - a real WCAG 2.4.3 Focus Order violation, found on
+     a full sweep. nav stays in its natural DOM position (between the logo and
+     actions) at every breakpoint for exactly this reason - see this file's own
+     script for the companion fix (focus moves into the opened panel directly,
+     rather than relocating nav and reintroducing the same mismatch in reverse). */
   @media (max-width: 40rem) {
-    .site-header-inner {
-      flex-wrap: wrap;
+    .nav-toggle {
+      display: inline-flex;
     }
 
-    nav {
-      width: 100%;
-      justify-content: center;
-      gap: var(--space-4);
+    #primary-nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0 var(--space-4) var(--space-4);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-0.5rem);
+      transition:
+        opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 0.25s;
+    }
+
+    .site-header.nav-open #primary-nav {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 0s;
+    }
+
+    #primary-nav a {
+      padding: var(--space-3) 0;
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-toggle,
+    .nav-toggle:active,
+    :global(.nav-icon) {
+      transition: none;
+    }
+
+    #primary-nav {
+      transition: none;
     }
   }
 </style>
