@@ -589,9 +589,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     animation: none;
   }
 
+  /* Real bug, not intentional: this made the caret permanently static
+     (opacity:1, no animation) on every repeat visit within the same session
+     - reported as "the cursor isn't working," and correct - a real terminal's
+     cursor keeps blinking whether or not you just watched it boot. Skipping
+     the boot-skip class should only skip the TYPING replay, not turn off the
+     caret's own blink - restart caret-blink with no delay instead of freezing it. */
   .bezel.boot-skip .caret {
-    animation: none;
-    opacity: 1;
+    animation: caret-blink 1s steps(1) infinite;
   }
 
   .bezel.boot-skip .line-reveal {
