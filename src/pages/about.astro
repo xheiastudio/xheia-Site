@@ -84,6 +84,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
 import headshot from '../assets/hoda-headshot.jpg';
@@ -94,53 +95,58 @@ import headshot from '../assets/hoda-headshot.jpg';
   description="I'm Hoda - a full-stack data consultant who's spent four-plus years contracting across the UK."
 >
   <Header />
-  <main class="about-page" id="main-content">
-    <div class="intro-row">
-      <div class="photo-frame">
-        <div class="headshot">
-          <Image src={headshot} alt="Hoda" width={480} height={530} />
+  <main id="main-content">
+    <PageIntroAtmosphere>
+      <div class="intro-row">
+        <div class="photo-frame">
+          <div class="headshot">
+            <Image src={headshot} alt="Hoda" width={480} height={530} />
+          </div>
+          <p class="photo-caption">
+            <span class="photo-bar" aria-hidden="true"><span class="photo-bar-fill"></span></span>
+            operator.jpg
+          </p>
         </div>
-        <p class="photo-caption">
-          <span class="photo-bar" aria-hidden="true"><span class="photo-bar-fill"></span></span>
-          operator.jpg
+        <div class="intro-text">
+          <h1 id="about-name">Hoda</h1>
+          <p class="role" id="about-role">
+            I do full-stack data consulting under the name Xheia - based remotely,
+            working with clients across the world.
+          </p>
+        </div>
+      </div>
+    </PageIntroAtmosphere>
+
+    <div class="about-page">
+      <div class="story" data-reveal>
+        <p class="eyebrow">// profile</p>
+        <dl class="readout">
+          <div class="readout-row item-content" style={{ transitionDelay: '0s' }}>
+            <dt>focus</dt>
+            <dd>data quality &rarr; agentic AI</dd>
+          </div>
+          <div class="readout-row item-content" style={{ transitionDelay: '0.15s' }}>
+            <dt>experience</dt>
+            <dd>4+ years, UK contracting</dd>
+          </div>
+          <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
+            <dt>stack</dt>
+            <dd>Azure &middot; Power BI &middot; Python &middot; SQL &middot; Power Automate</dd>
+          </div>
+          <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
+            <dt>availability</dt>
+            <dd>
+              <span class="status-dot" aria-hidden="true"></span>
+              available for new work
+            </dd>
+          </div>
+        </dl>
+
+        <p class="pull-quote item-content" style={{ transitionDelay: '0.65s' }}>
+          What keeps me doing this: I like the actual problem-solving - messy data, no
+          clear starting point, figuring it out anyway.
         </p>
       </div>
-      <div class="intro-text">
-        <h1 id="about-name">Hoda</h1>
-        <p class="role" id="about-role">
-          I do full-stack data consulting under the name Xheia - based remotely,
-          working with clients across the world.
-        </p>
-      </div>
-    </div>
-
-    <div class="story" data-reveal>
-      <dl class="readout">
-        <div class="readout-row item-content" style={{ transitionDelay: '0s' }}>
-          <dt>focus</dt>
-          <dd>data quality &rarr; agentic AI</dd>
-        </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.15s' }}>
-          <dt>experience</dt>
-          <dd>4+ years, UK contracting</dd>
-        </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
-          <dt>stack</dt>
-          <dd>Azure &middot; Power BI &middot; Python &middot; SQL &middot; Power Automate</dd>
-        </div>
-        <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
-          <dt>availability</dt>
-          <dd>
-            <span class="status-dot" aria-hidden="true"></span>
-            available for new work
-          </dd>
-        </div>
-      </dl>
-
-      <p class="pull-quote item-content" style={{ transitionDelay: '0.65s' }}>
-        What keeps me doing this: I like the actual problem-solving - messy data, no
-        clear starting point, figuring it out anyway.
-      </p>
     </div>
   </main>
   <ContactCTA />
@@ -173,17 +179,26 @@ import headshot from '../assets/hoda-headshot.jpg';
 </script>
 
 <style>
+  /* PageIntroAtmosphere's own content column defaults to the sitewide
+     content-max-width (72rem) - narrowed here to match this page's own
+     deliberate 52rem column so the masthead's left edge lines up with
+     .about-page's content below it. The glow/mark backdrop itself is
+     unaffected (still full-bleed) - only the content column width changes,
+     same principle as /approach's page-scoped intro-atmosphere override. */
+  main :global(.intro-atmosphere-content) {
+    width: min(100% - 2 * var(--space-4), 52rem);
+  }
+
   .about-page {
     max-width: 52rem;
     margin: 0 auto;
-    padding: var(--space-8) var(--space-4) var(--space-16);
+    padding: var(--space-12) var(--space-4) var(--space-16);
   }
 
   .intro-row {
     display: flex;
     align-items: center;
     gap: var(--space-8);
-    margin-bottom: var(--space-12);
   }
 
   .photo-frame {
@@ -234,13 +249,15 @@ import headshot from '../assets/hoda-headshot.jpg';
     }
   }
 
+  /* 13px, not 12px - the translated typography.md minimum already applied
+     everywhere else this session. */
   .photo-caption {
     margin: 0;
     display: flex;
     align-items: center;
     gap: var(--space-3);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
   }
 
@@ -290,11 +307,17 @@ import headshot from '../assets/hoda-headshot.jpg';
     }
   }
 
+  /* Exact match to Home's headline (.headline, Hero.astro) - same font,
+     weight, clamp, line-height, letter-spacing, same fix already proven on
+     /approach and /work. Was font-display (Press Start 2P) at a much
+     smaller/lighter size - the same pixel-font-on-real-text mismatch fixed
+     everywhere else. */
   .intro-text h1 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.5;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     margin-bottom: var(--space-4);
   }
 
@@ -353,14 +376,32 @@ import headshot from '../assets/hoda-headshot.jpg';
     color: var(--text-secondary);
   }
 
-  /* System-profile readout - PillarBlock's exact one-box recipe, applied to a
-     labeled fact table instead of prose (About's own distinct interaction). */
+  /* --accent-primary-text, not --accent-primary: full-audit finding already
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. Labels this now-borderless fact
+     table as one group, matching the convention every other de-boxed
+     data-group on the site already has (Capabilities' "loading modules...",
+     Tools' "stack manifest"). */
+  /* .about-page (element+class) is higher specificity than .eyebrow alone -
+     .about-page .eyebrow needed, not just .eyebrow, or the broader ".about-
+     page p" text-secondary rule below wins regardless of source order. */
+  .about-page .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary-text);
+  }
+
+  /* System-profile readout - no border/tinted background, matching the
+     "zero borders anywhere" standard already applied to every /approach and
+     /work section; the eyebrow above now does the "this is one group" job
+     the box used to. */
   .readout {
     margin: 0;
     width: min(100% - 2 * var(--space-4), 34rem);
-    padding: var(--space-8) var(--space-8);
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--text) 3%, transparent);
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
@@ -386,7 +427,7 @@ import headshot from '../assets/hoda-headshot.jpg';
     font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .readout-row dd {
@@ -431,15 +472,18 @@ import headshot from '../assets/hoda-headshot.jpg';
     }
   }
 
+  /* font-mono, not font-display: same fix as every other page's real-text
+     titles - Home's headline is 100% IBM Plex Mono. Weight bumped to 600 for
+     the same presence the pixel font carried at this size. */
   .about-page .pull-quote {
     position: relative;
     margin: 0;
     padding-left: var(--space-6);
     color: var(--text);
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-mono);
+    font-weight: 600;
     font-size: clamp(1.125rem, 2.2vw, 1.375rem);
-    line-height: 1.7;
+    line-height: 1.5;
   }
 
   .about-page .pull-quote::before {
