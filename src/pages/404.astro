@@ -50,16 +50,21 @@ import TypedText from '../components/TypedText.astro';
     color: var(--text-secondary);
   }
 
+  /* --accent-primary-text, not --accent-primary: same full-audit finding
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. */
   .glyph {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
+  /* font-mono, not font-display: same fix as every other page's real-text
+     titles - Home's headline is 100% IBM Plex Mono. */
   .not-found :global(h1) {
     margin: 0 0 var(--space-4);
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-mono);
+    font-weight: 700;
     font-size: 1.125rem;
-    line-height: 1.7;
+    line-height: 1.5;
   }
 
   .not-found :global(p) {
@@ -71,6 +76,6 @@ import TypedText from '../components/TypedText.astro';
   .home-link {
     font-family: var(--font-mono);
     font-size: 0.9375rem;
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 </style>

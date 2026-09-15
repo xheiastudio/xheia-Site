@@ -19,36 +19,62 @@
 // reworked success/error transition - see that file's own comment block.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
+import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <BaseLayout title="Contact" description="Start a conversation.">
   <Header />
-  <main class="contact-page" id="main-content">
-    <div class="contact-grid">
-      <div class="contact-intro" data-reveal>
-        <h1 class="item-content" style={{ transitionDelay: '0s' }}>Start a conversation</h1>
-        <p class="intro-text item-content" style={{ transitionDelay: '0.15s' }}>
-          Tell me what you're trying to solve - I'll get back to you within a couple
-          of business days.
-        </p>
-        <p class="status-line item-content" style={{ transitionDelay: '0.3s' }}>
-          <span class="status-dot" aria-hidden="true"></span>
-          $ connection: ready
-        </p>
+  <main id="main-content">
+    <PageIntroAtmosphere>
+      <h1 class="intro">Start a conversation</h1>
+    </PageIntroAtmosphere>
+    <div class="contact-page">
+      <div class="contact-grid">
+        <div class="contact-intro" data-reveal>
+          <p class="intro-text item-content" style={{ transitionDelay: '0s' }}>
+            Tell me what you're trying to solve - I'll get back to you within a couple
+            of business days.
+          </p>
+          <p class="status-line item-content" style={{ transitionDelay: '0.15s' }}>
+            <span class="status-dot" aria-hidden="true"></span>
+            $ connection: ready
+          </p>
+        </div>
+        <ContactForm />
       </div>
-      <ContactForm />
     </div>
   </main>
   <Footer />
 </BaseLayout>
 
 <style>
+  /* Only the content BELOW the intro is width-constrained - the intro itself
+     (PageIntroAtmosphere) is full-bleed, matching Home's actual structure and
+     the same fix already applied to /approach, /work, and /about. */
   .contact-page {
     max-width: 64rem;
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) var(--space-16);
+  }
+
+  /* Exact match to Home's headline (.headline, Hero.astro) - same font,
+     weight, clamp, line-height, letter-spacing, same fix already proven on
+     every other page. Was font-display (Press Start 2P) capped at
+     clamp(1.5rem,3vw,1.75rem) specifically because it used to live in a
+     narrow grid column next to the form - now full-width above the grid, so
+     it can take the same scale as everywhere else without overflowing
+     anything. */
+  .intro {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
   }
 
   .contact-grid {
@@ -56,15 +82,6 @@ import Footer from '../components/Footer.astro';
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     gap: var(--space-12);
     align-items: start;
-  }
-
-  /* The intro column is narrow relative to the form (1fr vs 1.2fr), and the
-     display font renders wide - "conversation" was filling the column's full
-     width with zero margin before the grid gap, reading as if it were crowding
-     into the form. This forces a small reserve so the heading never touches the
-     column edge, regardless of exact viewport width. */
-  .contact-intro {
-    padding-right: var(--space-6);
   }
 
   /* Smooth, coordinated entrance - see the top comment block. Higher specificity
@@ -92,20 +109,6 @@ import Footer from '../components/Footer.astro';
       transform: none;
       transition: none;
     }
-  }
-
-  .contact-intro h1 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    /* This heading lives in a narrow column next to the form (1fr of a 1fr/1.2fr
-       grid), not full page width like About's - the display font renders at
-       roughly 1em per character, so the old clamp's 2.5rem ceiling needed ~480px
-       for "conversation" alone, more than the ~430px column had, and the word
-       (unbreakable, can't wrap mid-word) ran straight into the form regardless of
-       padding. Capped lower so it always fits with real margin to spare. */
-    font-size: clamp(1.5rem, 3vw, 1.75rem);
-    line-height: 1.15;
-    margin: 0 0 var(--space-4);
   }
 
   .intro-text {

@@ -501,8 +501,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     text-decoration-color: currentColor;
   }
 
+  /* --accent-primary-text, not --accent-primary: same full-audit finding
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. Applies at both this class's sizes
+     (small boot-line prefixes and the large headline ">") - harmless at the
+     large size (already-passing text just gets a color already used
+     elsewhere at that size), and fixes the small one. */
   .prompt-glyph {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .comment-glyph {

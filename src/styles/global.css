@@ -51,8 +51,12 @@ p {
   margin: 0 0 var(--space-4);
 }
 
+/* --accent-primary-text, not --accent-primary: full-audit finding, applied
+   here at the sitewide default so every plain link (including any without
+   its own page-level override) gets it automatically - raw --accent-primary
+   as text is 4.22:1 against Ink in dark mode, below the 4.5:1 minimum. */
 a {
-  color: var(--accent-primary);
+  color: var(--accent-primary-text);
 }
 
 button {

@@ -250,8 +250,11 @@
     gap: var(--space-1);
   }
 
+  /* --accent-primary-text, not --accent-primary: same full-audit finding
+     fixed sitewide - raw --accent-primary as text is 4.22:1 against Ink in
+     dark mode, below the 4.5:1 minimum. */
   .glyph {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
   }
 
   .optional {
@@ -342,13 +345,16 @@
     }
   }
 
+  /* No border - matching the "zero borders anywhere" standard already applied
+     everywhere else. The success state's own glow (box-shadow below) still
+     marks it as a distinct moment; the error state relies on spacing alone,
+     same as every other de-boxed element on the site now does. */
   .form-status {
     display: flex;
     align-items: baseline;
     gap: var(--space-2);
     max-width: 32rem;
-    padding: var(--space-4);
-    border: 1px solid var(--border);
+    padding: var(--space-4) 0;
     font-family: var(--font-mono);
     font-size: 0.9375rem;
     opacity: 0;

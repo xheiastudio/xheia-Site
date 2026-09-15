@@ -82,6 +82,10 @@ const {
   /* Standard keyboard-navigation affordance: off-screen until focused, then jumps
      on-screen above everything else so a keyboard user can bypass the header/nav
      on every page. Targets id="main-content" on each page's own <main>. */
+  /* Border stays --accent-primary (non-text, 3:1 already passes); the text
+     color switches to --accent-primary-text - same full-audit finding fixed
+     sitewide, raw --accent-primary as text is 4.22:1 against Ink in dark
+     mode, below the 4.5:1 minimum. */
   .skip-link {
     position: absolute;
     top: 0;
@@ -90,7 +94,7 @@ const {
     padding: var(--space-2) var(--space-4);
     background: var(--bg);
     border: 1px solid var(--accent-primary);
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
     font-family: var(--font-mono);
     font-size: 0.875rem;
     text-decoration: none;
