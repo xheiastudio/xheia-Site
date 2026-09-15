@@ -11,20 +11,41 @@
 // (the sitewide "materials" signature already used on Home's CTA, About's photo,
 // Contact's confirmation) instead of just a plain fade, tying this page's closing
 // moment to that same visual language rather than leaving it as an afterthought.
+//
+// "Full atmosphere bookend" pass (direct feedback that the closing line read as plain
+// text next to Apple-sleek pages elsewhere): the line itself now gets the exact
+// pull-quote treatment already proven on About's own pull-quote (font-mono weight 600,
+// a self-drawing accent bar) rather than inventing new type language, and the whole
+// section gets a scaled-down version of PageIntroAtmosphere's two-blob glow + a small
+// bleeding PixelMark - so the page's closing moment visually echoes its opening one
+// instead of just trailing off as plain centered text. Also fixes a real inconsistency:
+// this section was inheriting the sitewide steps() "pixel-materialize" reveal meant for
+// data grids (global.css [data-reveal] default) even though CLAUDE.md's own rule puts
+// personal/hero-moment sections and interactive controls on the smooth cubic-bezier
+// curve - every other hero-moment section (Home, About, Contact) already overrides this
+// the same way.
 import CTAButton from './CTAButton.astro';
+import PixelMark from './PixelMark.astro';
 ---
 
 <section class="contact-cta" data-reveal>
-  <p class="item-content" style={{ transitionDelay: '0s' }}>
-    I turn fragmented data into systems that hold up after I've moved on.
-  </p>
-  <div class="cta-wrap item-content" style={{ transitionDelay: '0.2s' }}>
-    <CTAButton />
+  <div class="cta-mark" aria-hidden="true">
+    <PixelMark size={224} decorative />
+  </div>
+  <div class="cta-content">
+    <p class="cta-line item-content" style={{ transitionDelay: '0s' }}>
+      I turn fragmented data into systems that hold up after I've moved on.
+    </p>
+    <div class="cta-wrap item-content" style={{ transitionDelay: '0.2s' }}>
+      <CTAButton />
+    </div>
   </div>
 </section>
 
 <style>
   .contact-cta {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,11 +63,165 @@ import CTAButton from './CTAButton.astro';
     --cta-glow: 0 0 2.5rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
-  .contact-cta p {
-    max-width: 32rem;
+  /* Same two-blob recipe as PageIntroAtmosphere/Hero, re-tuned for a much flatter,
+     wider band instead of a near-square/tall intro zone - narrower, taller ellipses
+     so the blobs don't read as one flat wash across the whole section width. inset: 0
+     on the actual section (never a smaller fixed box) so no edge shows as a seam. */
+  .contact-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        26% 90% at 20% 45%,
+        color-mix(in srgb, var(--accent-primary) 16%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        22% 75% at 82% 60%,
+        color-mix(in srgb, var(--accent-status) 10%, transparent),
+        transparent 100%
+      );
+  }
+
+  /* Light mode needs a materially bolder primary blob than the dark-mode value to
+     read as a real glow at all against Paper (Weber-Fechner - the same percentage
+     shift is obvious near black, nearly imperceptible near white), verified by
+     sampling rendered pixels - same finding as PageIntroAtmosphere's identical fix. */
+  :global(html[data-theme='light']) .contact-cta::before {
+    background:
+      radial-gradient(
+        30% 100% at 18% 45%,
+        color-mix(in srgb, var(--accent-primary) 25%, transparent),
+        transparent 100%
+      ),
+      radial-gradient(
+        26% 85% at 84% 60%,
+        color-mix(in srgb, var(--accent-status) 18%, transparent),
+        transparent 100%
+      );
+  }
+
+  /* Small bleeding PixelMark, same "monumental-mark-watermark" idea as Hero/
+     PageIntroAtmosphere but scaled down to match this section's much shorter height -
+     a full 28rem mark would dwarf a two-line closing band. overflow: hidden on
+     .contact-cta (above) makes bleeding into neighboring sections structurally
+     impossible, not just positionally unlikely. */
+  .cta-mark {
+    position: absolute;
+    z-index: 0;
+    bottom: -4rem;
+    right: -2.5rem;
+    pointer-events: none;
+  }
+
+  .cta-mark :global(svg) {
+    display: block;
+    width: 14rem;
+    height: auto;
+  }
+
+  @media (max-width: 40rem) {
+    .cta-mark :global(svg) {
+      width: 9rem;
+    }
+  }
+
+  /* Independent alpha per part - same fix as PageIntroAtmosphere's identical mark
+     (a single opacity washes both outline and pupil to the same low-chroma gray in
+     light mode even though they're two different hues). */
+  .cta-mark :global(.outline) {
+    fill: color-mix(in srgb, var(--mark-outline) 7%, transparent);
+  }
+
+  .cta-mark :global(.pupil) {
+    fill: color-mix(in srgb, var(--mark-pupil) 7%, transparent);
+  }
+
+  :global(html[data-theme='light']) .cta-mark :global(.outline) {
+    fill: color-mix(in srgb, var(--mark-outline) 5%, transparent);
+  }
+
+  :global(html[data-theme='light']) .cta-mark :global(.pupil) {
+    fill: color-mix(in srgb, var(--mark-pupil) 35%, transparent);
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  /* Personal/hero-moment section, not a data grid - overrides global.css's sitewide
+     steps() default with the same smooth curve every other hero-moment section
+     (Home, About, Contact's own intro) already uses. Higher specificity than the
+     shared [data-reveal]/.item-content rules, so this wins without touching that
+     shared file - same technique as contact.astro's .contact-intro override. */
+  .contact-cta[data-reveal] .item-content {
+    transform: translateY(0.9rem);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .contact-cta[data-reveal].is-visible .item-content {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-cta[data-reveal] .item-content {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Pull-quote treatment, matching About's own exact pattern (same font-mono weight
+     600, same self-drawing accent bar) rather than inventing new type language for
+     what's functionally the same kind of moment - a short, considered statement of
+     intent. Left-aligned text + bar even though the section itself is centered: the
+     <p> sits as a centered block on the page, with its own internal quote structure,
+     the same "centered pull-quote card" reading as an editorial block quote. */
+  .contact-cta .cta-line {
+    position: relative;
+    max-width: 30rem;
     margin: 0;
+    padding-left: var(--space-6);
+    color: var(--text);
     font-family: var(--font-mono);
-    font-size: 1.125rem;
+    font-weight: 600;
+    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .contact-cta .cta-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-primary);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0.2s;
+  }
+
+  .contact-cta[data-reveal].is-visible .cta-line::before {
+    transform: scaleY(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-cta .cta-line::before {
+      transform: scaleY(1);
+      transition: none;
+    }
   }
 
   .cta-wrap {
