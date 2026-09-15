@@ -34,14 +34,32 @@ const {
     <ClientRouter />
     <script is:inline>
       (function () {
-        var stored = localStorage.getItem('xheia-theme');
-        var theme =
-          stored === 'light' || stored === 'dark'
+        function resolveTheme() {
+          var stored = localStorage.getItem('xheia-theme');
+          return stored === 'light' || stored === 'dark'
             ? stored
             : window.matchMedia('(prefers-color-scheme: light)').matches
               ? 'light'
               : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
+        }
+        // Runs once, synchronously, before first paint - prevents a flash of the
+        // wrong theme on a hard load. This alone isn't enough on its own: with
+        // <ClientRouter /> enabled, Astro doesn't re-execute an inline script that's
+        // byte-identical to one already run (by design, to avoid re-firing scripts
+        // like analytics snippets on every soft navigation) - so this block never
+        // ran again after the first page, and a soft navigation's incoming document
+        // has no data-theme attribute of its own (it's only ever set by this script,
+        // never server-rendered), silently resetting every subsequent page to dark
+        // regardless of what the visitor had chosen. astro:before-swap fires before
+        // each swap and exposes the incoming document directly - copying the
+        // CURRENT theme onto it there re-applies the choice on every navigation,
+        // with no flash, and needs no re-execution guard since it's a document-level
+        // listener (document itself persists across soft navigations, only parts of
+        // its content are swapped).
+        document.documentElement.setAttribute('data-theme', resolveTheme());
+        document.addEventListener('astro:before-swap', (e) => {
+          e.newDocument.documentElement.setAttribute('data-theme', resolveTheme());
+        });
       })();
     </script>
   </head>
