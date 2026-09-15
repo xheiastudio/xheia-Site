@@ -174,9 +174,28 @@ const outcomeStage = stage(outcome);
     max-width: 40rem;
   }
 
+  /* Full-review finding: same gap as 404.astro's .home-link - the only two
+     links on the site with zero hover/focus treatment. Same fix, matching
+     Capabilities.astro's ".see-more" reference pattern. */
   .back-link {
+    display: inline-block;
     font-family: var(--font-mono);
     font-size: 0.9375rem;
     color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    border-radius: var(--radius);
+    transition: text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .back-link:focus-visible {
+    outline: 2px solid var(--accent-primary-text);
+    outline-offset: 0.2em;
   }
 </style>
