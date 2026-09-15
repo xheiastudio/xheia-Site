@@ -87,7 +87,7 @@ import Header from '../components/Header.astro';
 import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import Footer from '../components/Footer.astro';
-import headshot from '../assets/hoda-headshot.jpg';
+import headshot from '../assets/hoda-headshot.png';
 ---
 
 <BaseLayout
@@ -226,6 +226,13 @@ import headshot from '../assets/hoda-headshot.jpg';
     border-radius: 1.5rem;
     overflow: hidden;
     line-height: 0;
+    /* Photo's studio backdrop is chroma-keyed out (transparent PNG) - without an
+       explicit background here, the transparent edges would show PageIntroAtmosphere's
+       gradient/mark bleeding through behind the photo instead of a clean card. --bg
+       matches the page's own background exactly in both themes, so the photo reads as
+       a flat, theme-matched card floating above the atmosphere rather than a cutout
+       with a visible hole. */
+    background: var(--bg);
     box-shadow: 0 0 0 0 transparent;
     animation: photo-glow 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     --photo-glow: 0 0 2.5rem -0.4rem color-mix(in srgb, var(--accent-status) 45%, transparent);
