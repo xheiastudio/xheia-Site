@@ -46,11 +46,10 @@
 - EUIPO: no exact match — clear
 - UK Companies House: no exact match — clear
 - UK IPO trademark (similar-match search): no exact match. Two phonetically close registered marks in tech classes: HEXIA (UK00004201247, classes 9/44) and XHENA (WO0000001899315, class 9). Not a blocker, but get a solicitor's opinion before filing a UK trademark application.
-- Domain: xheia.com is registered/parked, listed on the aftermarket at ~$7,695. .ai, .co, .uk, and most other TLDs are open. Plan to launch on an alternative TLD or budget for .com acquisition later.
+- Domain: xheia.com is registered/parked, listed on the aftermarket at ~$7,695 - stayed unavailable. **Resolved:** xheia.co registered via Namecheap and is the live production domain (see astro.config.mjs's `site`). A .com acquisition remains open as a future option, not a blocker to launch.
 
 **Outstanding before company registration:**
 - Solicitor review of HEXIA/XHENA proximity before filing a UK trademark
-- Final domain decision (.ai vs .co vs .uk)
 - Companies House registration under Xheia
 
 ## 4. Visual Identity
