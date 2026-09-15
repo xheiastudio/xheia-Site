@@ -150,38 +150,30 @@ svg {
   }
 }
 
-/* Brief CRT "power-on" flicker on every page load/navigation — markup lives in
+/* Brief "power-on" reveal on every page load/navigation — markup lives in
    BaseLayout.astro. Purely decorative overlay, inert (pointer-events: none),
-   fades itself out and stays invisible at rest. */
+   fades itself out and stays invisible at rest.
+   Direct feedback ("it flickers... needs to be smoothened out"): this used to
+   strobe through six separate opacity swings (1 -> 0.2 -> 0.8 -> 0.1 -> 0.6 ->
+   0.05 -> 0) via steps(8, end) - a real flicker/strobe by construction, and it
+   fired on every soft navigation at the same time as the view-transition's own
+   brightness pulse below, compounding into something worse than either alone.
+   Now a single smooth fade, same easing curve used for every other "settles
+   into place" moment on the site - one gentle reveal instead of a strobe. */
 .boot-flicker {
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
   background: var(--bg);
-  animation: boot-flicker 0.4s steps(8, end) forwards;
+  animation: boot-flicker 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes boot-flicker {
-  0% {
+  from {
     opacity: 1;
   }
-  10% {
-    opacity: 0.2;
-  }
-  20% {
-    opacity: 0.8;
-  }
-  30% {
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  70% {
-    opacity: 0.05;
-  }
-  100% {
+  to {
     opacity: 0;
   }
 }
@@ -204,29 +196,37 @@ svg {
   );
 }
 
-/* Custom CRT-style page transition (Astro <ClientRouter />, see BaseLayout.astro) —
-   replaces the default cross-fade with a power-flicker: outgoing page dims down,
-   incoming page flashes bright then settles. Progressive enhancement — browsers
-   without View Transitions support just navigate normally, no fallback needed here. */
+/* Custom page transition (Astro <ClientRouter />, see BaseLayout.astro) — replaces
+   the default cross-fade with a brightness settle: outgoing page dims slightly,
+   incoming page eases in from a touch brighter than normal. Progressive
+   enhancement — browsers without View Transitions support just navigate normally,
+   no fallback needed here.
+   Direct feedback ("it flickers... needs to be smoothened out"): this used to swing
+   brightness from 0.3x (outgoing) to a 2.5x overexposure flash (incoming) with
+   ease-in/ease-out timing - a real flash-then-recover, and it played at the same
+   time as .boot-flicker's own strobe above, compounding into a genuine flicker on
+   every navigation. Narrowed to a subtle 0.92x-1.08x range (barely past "no dip/
+   flash at all") and switched to the sitewide smooth easing curve - a gentle
+   settle, not a brightness spike. */
 ::view-transition-old(root) {
-  animation: crt-transition-out 0.25s ease-in forwards;
+  animation: crt-transition-out 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 ::view-transition-new(root) {
-  animation: crt-transition-in 0.3s ease-out forwards;
+  animation: crt-transition-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes crt-transition-out {
   to {
     opacity: 0;
-    filter: brightness(0.3);
+    filter: brightness(0.92);
   }
 }
 
 @keyframes crt-transition-in {
   from {
     opacity: 0;
-    filter: brightness(2.5);
+    filter: brightness(1.08);
   }
   to {
     opacity: 1;

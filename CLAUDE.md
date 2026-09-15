@@ -38,7 +38,7 @@ Home (`Hero.astro`, `Header.astro`, `Footer.astro`) went through a full "Apple-l
 - **Sticky/blurred header, whitespace-not-border footer:** already global components (`Header.astro`, `Footer.astro`) — nothing to redo per-page.
 - **Focus rings:** any text link relying on color/underline-only affordance gets `outline: 2px solid var(--accent-primary); outline-offset: 2-3px` on `:focus-visible`.
 - **Reduced-transparency + reduced-motion:** ship both fallbacks in the same commit as any new `backdrop-filter` or `animation` — never as a follow-up.
-- **Pixel-DNA floor, never crossed:** `--radius: 0`, `PixelMark`, `PixelCursor`, `.pixel-notch`, the boot-flicker page-transition, and Hero's typed-terminal `.typed`/caret mechanics are the identity — new polish wraps around them, it never replaces them.
+- **Pixel-DNA floor, never crossed:** `--radius: 0`, `PixelMark`, `PixelCursor`, `.pixel-notch`, the boot-flicker page-transition, and Hero's typed-terminal `.typed`/caret mechanics are the identity — new polish wraps around them, it never replaces them. **Update:** the boot-flicker/view-transition's *timing curve* is the one exception — direct feedback that its original multi-step opacity strobe (`steps(8, end)`) plus a 0.3x-2.5x brightness swing on the view-transition read as a genuine flicker/flash on every navigation, not a premium reveal. Both are now a single smooth fade on the sitewide `cubic-bezier(0.16, 1, 0.3, 1)` curve with a much narrower 0.92x-1.08x brightness range — the *moment itself* (a brief page-transition reveal) is unchanged and still present on every navigation, only its motion quality changed from stepped/strobing to smooth.
 
 ## Brand source of truth
 
