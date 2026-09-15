@@ -201,9 +201,9 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
           style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
         >
           <span class="prompt-glyph">&gt;</span>{' '}
-          Hoda - multidisciplinary across BI, automation and data strategy. (<a
-            href="/about">more about me</a
-          >)<span
+          Hoda - multidisciplinary across BI, automation and data strategy. <span
+            class="more-link">(<a href="/about">more about me</a>)</span
+          ><span
             class="caret"
             style={{ animationDelay: `${finalCaretDelay}s` }}
             aria-hidden="true"
@@ -466,8 +466,21 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     white-space: normal;
   }
 
+  /* Keeps "(more about me)" together as one unit instead of wrapping mid-phrase
+     - direct feedback that it looked awkward on desktop: the link text was
+     splitting across two lines ("(more about" / "me)"), leaving an orphaned
+     closing paren dangling alone. If it doesn't fit on the current line it now
+     wraps as a whole phrase to the next one instead of breaking inside it. */
+  .more-link {
+    white-space: nowrap;
+  }
+
+  /* --accent-primary-text, not --accent-primary: same full-audit finding fixed
+     everywhere else on the site - raw --accent-primary as text is 4.22:1
+     against Ink in dark mode, below the 4.5:1 minimum. Home itself had never
+     actually been checked against its own standard. */
   .operator-line a {
-    color: var(--accent-primary);
+    color: var(--accent-primary-text);
     border-radius: var(--radius);
     text-underline-offset: 0.15em;
     text-decoration-color: color-mix(in srgb, var(--accent-primary) 35%, transparent);
