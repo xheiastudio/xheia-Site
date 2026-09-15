@@ -10,6 +10,25 @@
 // rest. `astro:page-load`-guarded scroll listener (same guard pattern as
 // ThemeToggle/PixelCursor) toggles `.is-scrolled`; CSS does the rest with the site's
 // established smooth easing.
+//
+// Full-review pass: the logo gets the same hover/focus glow now on PixelCursor/
+// ThemeToggle (it was opacity-fade only - the one interactive "icon" left without
+// it). Nav text links are deliberately NOT given this treatment - their existing
+// color-shift + drawn-in underline is already a considered, distinct affordance for
+// inline text; a box-shadow bloom on bare text reads as a smudge, not a glow.
+//
+// transition:persist on the logo/ThemeToggle/CTAButton (not the whole header, and
+// not <nav>): these three are byte-identical on every page, so persisting them
+// avoids an unnecessary remount on every navigation. <nav> is deliberately left
+// un-persisted - its `.is-current` state is computed server-side from
+// Astro.url.pathname per page, and a persisted element keeps its OLD DOM across a
+// swap, which would freeze the current-page underline on whatever page you
+// navigated FROM. transition:name is set explicitly (rather than relying on
+// Astro's auto-generated name) because CTAButton is rendered more than once on some
+// pages (Hero's own CTA on Home, ContactCTA's on /approach and /about) - two
+// instances on one page can never share a transition:name, so this one is scoped to
+// "header-cta" specifically, set at this call site rather than baked into
+// CTAButton.astro itself.
 import PixelMark from './PixelMark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import CTAButton from './CTAButton.astro';
@@ -30,7 +49,7 @@ const navLinks = [
 
 <header class="site-header" id="site-header">
   <div class="site-header-inner">
-    <a href="/" class="logo" aria-label="Xheia home">
+    <a href="/" class="logo" aria-label="Xheia home" transition:persist transition:name="site-logo">
       <PixelMark size={56} decorative />
       <span class="wordmark">xheia</span>
     </a>
@@ -49,8 +68,8 @@ const navLinks = [
     </nav>
 
     <div class="actions">
-      <ThemeToggle />
-      <CTAButton />
+      <ThemeToggle transition:persist transition:name="header-theme-toggle" />
+      <CTAButton transition:persist transition:name="header-cta" />
     </div>
   </div>
 </header>
@@ -145,10 +164,33 @@ const navLinks = [
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    margin: calc(var(--space-1) * -1) calc(var(--space-2) * -1);
     color: var(--text);
     text-decoration: none;
     border-radius: var(--radius);
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 0 0 transparent;
+    transition:
+      opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Same soft accent-primary bloom now on PixelCursor/ThemeToggle - the logo was
+     the one remaining "icon" left without it. Padding + a matching negative margin
+     above keeps the glow from hugging the mark/wordmark too tightly without
+     shifting the lockup's own position in the header row. */
+  .logo:hover,
+  .logo:focus-visible {
+    box-shadow: 0 0 1.25rem -0.2rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  /* Light mode needs a materially bolder glow than the dark-mode value to read as a
+     real bloom against Paper (Weber-Fechner - the same percentage shift is obvious
+     near black, nearly imperceptible near white) - same finding as every other glow
+     on the site, verified rather than guessed. */
+  :global(html[data-theme='light']) .logo:hover,
+  :global(html[data-theme='light']) .logo:focus-visible {
+    box-shadow: 0 0 1.5rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
   .logo:hover {
