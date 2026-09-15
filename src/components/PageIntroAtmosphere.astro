@@ -65,17 +65,22 @@ const { markSize = 512 } = Astro.props;
       );
   }
 
-  /* Light mode needs a materially bolder primary blob, not just a brightness shift -
-     the same Weber-Fechner lesson from Hero's glow (a percentage shift that reads as
-     an obvious glow near black is nearly imperceptible near white). Coral/accent-status
-     is dropped here too (it saturates too visibly against Paper); --text at low opacity
-     stands in as the second "shadow" point of depth, same substitution Hero's own
-     light-mode override already makes. */
+  /* Monochromatic in light mode, not a lighter version of the same colored glow -
+     direct feedback that a cool blue wash against warm Paper read as a color clash
+     rather than one clean surface (three visibly different "zones" - blue upper-left,
+     neutral middle, gray mark lower-right), and that light mode overall needed more
+     restraint to feel premium rather than tinted. Both blobs are --text at low
+     opacity now - a soft shadow/depth cue with no hue of its own, closer to how
+     Apple's own light-mode work reserves color for buttons/links/accents and keeps
+     the page surface itself neutral. 8%/6% (not matching the old blue blob's 25%
+     literally - Ink is far darker than Aperture blue, so the same percentage would
+     read as a much heavier smudge, not a lighter one) - verified by sampling actual
+     luminance delta against flat Paper, tuned for "a whisper of shadow," not a stain. */
   :global(html[data-theme='light']) .intro-atmosphere::before {
     background:
       radial-gradient(
         34% 50% at 28% 48%,
-        color-mix(in srgb, var(--accent-primary) 25%, transparent),
+        color-mix(in srgb, var(--text) 8%, transparent),
         transparent 100%
       ),
       radial-gradient(

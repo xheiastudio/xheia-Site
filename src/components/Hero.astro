@@ -373,29 +373,26 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     z-index: 0;
   }
 
-  /* Measured, not eyeballed, after two rounds that still read as "just a white
-     page": sampled actual rendered pixels at the glow's peak vs. plain background.
-     The previous version (14%/5%) moved the peak to a LOWER luminance than the
-     background (~220 vs ~240) - i.e. it was rendering as a faint shadow, not a
-     light source, because color-mix toward a saturated blue or toward --text both
-     necessarily darken a near-white base. Human contrast sensitivity is far lower
-     near white than near black (Weber-Fechner) - the same percentage shift that
-     reads as an obvious glow on Ink is nearly imperceptible on Paper. Fixed by
-     going meaningfully bolder on the blue (25%) so the tint itself is what
-     registers, not a brightness delta - this is closer to how Apple's own light-
-     mode marketing pages actually look (a visible soft blue/lavender wash), not a
-     token gesture at "some atmosphere." Coral still dropped entirely (see below).
-     Peak position measured and moved off the boot-line readout text specifically:
-     at 36% vertical it sat almost exactly under that small quiet text, and
-     --text-secondary's 5.37:1 (measured against flat Paper) dropped to 4.59:1
-     against the tinted area behind it - real but too close to the 4.5:1 minimum to
-     leave alone. Shifted down toward the headline instead (which sits on --text at
-     full strength, nowhere near its own contrast floor regardless of tint). */
+  /* Update: monochromatic, not the colored wash described in the previous version
+     of this comment. That version's "closer to how Apple's own light-mode marketing
+     pages actually look" claim was direct reasoning, not a citation - and direct
+     feedback later in the same project found the opposite: a cool blue wash against
+     warm Paper read as a color clash (three visibly different "zones" across the
+     page - blue upper-left, neutral middle, gray mark lower-right), not a clean
+     Apple-like surface. Both blobs are --text at low opacity now, same fix applied
+     to PageIntroAtmosphere.astro (the non-Hero implementation of this same recipe) -
+     a soft shadow/depth cue with no hue of its own. 8%/6%, not the old 25%: Ink is
+     far darker than Aperture blue, so reusing 25% on --text would read as a much
+     heavier smudge, not a lighter one - tuned instead by sampling the actual
+     luminance delta against flat Paper for "a whisper of shadow." Peak position
+     unchanged from the original tuning below (still measured off the boot-line
+     readout text, still shifted toward the headline for the same contrast-margin
+     reason), only the color itself changed. */
   :global(html[data-theme='light']) .hero::before {
     background:
       radial-gradient(
         34% 50% at 28% 54%,
-        color-mix(in srgb, var(--accent-primary) 25%, transparent),
+        color-mix(in srgb, var(--text) 8%, transparent),
         transparent 100%
       ),
       radial-gradient(
