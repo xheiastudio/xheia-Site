@@ -228,11 +228,21 @@ import headshot from '../assets/hoda-headshot.jpg';
     line-height: 0;
     box-shadow: 0 0 0 0 transparent;
     animation: photo-glow 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    --photo-glow: 0 0 2.5rem -0.4rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+  }
+
+  /* Direct feedback: this halo is vivid and clearly visible in dark mode (signal
+     green against near-black) but barely perceptible in light mode - a colored
+     box-shadow blur reads far weaker against a light surrounding, independent of
+     the color-mix percentage used. Bolder mix + larger blur + no negative spread
+     so it reads as a genuine, deliberate glow in light mode too. */
+  :global(html[data-theme='light']) .headshot {
+    --photo-glow: 0 0 3rem 0.25rem color-mix(in srgb, var(--accent-status) 85%, transparent);
   }
 
   @keyframes photo-glow {
     to {
-      box-shadow: 0 0 2.5rem -0.4rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+      box-shadow: var(--photo-glow);
     }
   }
 
@@ -459,6 +469,13 @@ import headshot from '../assets/hoda-headshot.jpg';
     border-radius: 50%;
     background: var(--accent-status);
     animation: about-status-pulse 2s ease-in-out infinite;
+  }
+
+  /* Light mode's coral is noticeably flatter than dark mode's glowing signal green -
+     a small halo gives it the same "alive" quality dark mode gets for free from the
+     color itself. */
+  :global(html[data-theme='light']) .status-dot {
+    box-shadow: 0 0 0.5rem 0.05rem color-mix(in srgb, var(--accent-status) 70%, transparent);
   }
 
   @keyframes about-status-pulse {

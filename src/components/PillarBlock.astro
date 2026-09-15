@@ -154,6 +154,13 @@ const pillars = [
     background: var(--accent-status);
   }
 
+  /* Light mode's coral is noticeably flatter than dark mode's glowing signal green -
+     a small halo gives it the same "alive" quality dark mode gets for free from the
+     color itself. */
+  :global(html[data-theme='light']) .check-indicator {
+    box-shadow: 0 0 0.5rem 0.05rem color-mix(in srgb, var(--accent-status) 70%, transparent);
+  }
+
   /* Rotates to point down when open - same "item marker that doubles as an expand
      affordance" as Capabilities' selector. */
   .selector {

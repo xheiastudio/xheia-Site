@@ -65,27 +65,26 @@ const { markSize = 512 } = Astro.props;
       );
   }
 
-  /* Monochromatic in light mode, not a lighter version of the same colored glow -
-     direct feedback that a cool blue wash against warm Paper read as a color clash
-     rather than one clean surface (three visibly different "zones" - blue upper-left,
-     neutral middle, gray mark lower-right), and that light mode overall needed more
-     restraint to feel premium rather than tinted. Both blobs are --text at low
-     opacity now - a soft shadow/depth cue with no hue of its own, closer to how
-     Apple's own light-mode work reserves color for buttons/links/accents and keeps
-     the page surface itself neutral. 8%/6% (not matching the old blue blob's 25%
-     literally - Ink is far darker than Aperture blue, so the same percentage would
-     read as a much heavier smudge, not a lighter one) - verified by sampling actual
-     luminance delta against flat Paper, tuned for "a whisper of shadow," not a stain. */
+  /* Third update: bolder still - direct feedback that 16%/10% was "barely there" in
+     practice. A color-mix percentage at a radial-gradient's own center doesn't
+     translate directly to perceived intensity once spread across a large, softly-
+     fading ellipse. Pushed to 25%/18%, same as Hero's identical glow - close to the
+     ORIGINAL single-blob 25% blue that caused the initial color-clash complaint, but
+     genuinely two-tone (blue + coral, dark mode's own structure) rather than one
+     dominant hue. No text sits close enough to this peak to risk the contrast
+     near-miss Hero's own version hit (this wrapper's only text is the page's H1, at
+     full --text strength with a large margin), so no position change needed here,
+     intensity only. */
   :global(html[data-theme='light']) .intro-atmosphere::before {
     background:
       radial-gradient(
         34% 50% at 28% 48%,
-        color-mix(in srgb, var(--text) 8%, transparent),
+        color-mix(in srgb, var(--accent-primary) 25%, transparent),
         transparent 100%
       ),
       radial-gradient(
         28% 42% at 76% 76%,
-        color-mix(in srgb, var(--text) 6%, transparent),
+        color-mix(in srgb, var(--accent-status) 18%, transparent),
         transparent 100%
       );
   }
@@ -101,7 +100,6 @@ const { markSize = 512 } = Astro.props;
     z-index: 0;
     bottom: -6vh;
     right: -7rem;
-    opacity: 0.07;
     pointer-events: none;
   }
 
@@ -117,12 +115,27 @@ const { markSize = 512 } = Astro.props;
     }
   }
 
-  /* Ink outline at low opacity over Paper reads as a faint gray smudge rather than a
-     recognizable shape at the same alpha that works for Signal green over Ink - same
-     per-mode lesson as Hero's mark, re-verified at this smaller render size rather than
-     assumed to carry over. */
-  :global(html[data-theme='light']) .intro-atmosphere-mark {
-    opacity: 0.05;
+  /* Independent alpha per part, not one opacity on the whole container - same fix as
+     Hero's own watermark (direct feedback: "looks grey" in light mode). A single
+     opacity multiplies uniformly across outline AND pupil, washing both out to the
+     same low-chroma gray in light mode even though they're two different hues (ink
+     vs. blue) - decoupling lets the pupil carry more of its own alpha so it still
+     reads as blue. Dark mode reproduces the previous look exactly (both at the old
+     uniform 7%); only light mode's pupil changes. */
+  .intro-atmosphere-mark :global(.outline) {
+    fill: color-mix(in srgb, var(--mark-outline) 7%, transparent);
+  }
+
+  .intro-atmosphere-mark :global(.pupil) {
+    fill: color-mix(in srgb, var(--mark-pupil) 7%, transparent);
+  }
+
+  :global(html[data-theme='light']) .intro-atmosphere-mark :global(.outline) {
+    fill: color-mix(in srgb, var(--mark-outline) 5%, transparent);
+  }
+
+  :global(html[data-theme='light']) .intro-atmosphere-mark :global(.pupil) {
+    fill: color-mix(in srgb, var(--mark-pupil) 35%, transparent);
   }
 
   /* .intro-atmosphere itself is full-bleed (no width constraint) so the glow/mark

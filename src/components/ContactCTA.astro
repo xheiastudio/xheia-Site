@@ -31,6 +31,15 @@ import CTAButton from './CTAButton.astro';
     gap: var(--space-6);
     padding: var(--space-16) var(--space-4);
     text-align: center;
+    --cta-glow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  /* Same light-mode boost as Hero's identical CTA glow - a colored box-shadow blur
+     reads as far weaker against a light surrounding than against black, independent
+     of the color-mix percentage. Bolder mix + larger blur + no negative spread so
+     the halo is a genuinely visible, deliberate moment in light mode too. */
+  :global(html[data-theme='light']) .contact-cta {
+    --cta-glow: 0 0 2.5rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
   .contact-cta p {
@@ -59,14 +68,14 @@ import CTAButton from './CTAButton.astro';
       box-shadow: 0 0 0 0 transparent;
     }
     to {
-      box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+      box-shadow: var(--cta-glow);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     [data-reveal].is-visible .cta-wrap {
       animation: none;
-      box-shadow: 0 0 2rem -0.4rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+      box-shadow: var(--cta-glow);
     }
   }
 </style>

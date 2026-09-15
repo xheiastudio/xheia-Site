@@ -364,6 +364,14 @@
       opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
       transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --success-glow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+  }
+
+  /* Same light-mode boost as About's photo glow and the CTA glow - a colored
+     box-shadow blur reads far weaker against a light surrounding than against
+     black, independent of the color-mix percentage. */
+  :global(html[data-theme='light']) .form-status {
+    --success-glow: 0 0 3rem -0.2rem color-mix(in srgb, var(--accent-status) 85%, transparent);
   }
 
   .form-status[hidden] {
@@ -380,7 +388,7 @@
   }
 
   .form-status.success.is-visible {
-    box-shadow: 0 0 2.5rem -0.6rem color-mix(in srgb, var(--accent-status) 45%, transparent);
+    box-shadow: var(--success-glow);
   }
 
   .form-status.error {
