@@ -9,6 +9,25 @@
 // No solid backing plate behind the arrow (dropped after live feedback: a filled
 // rect — even at reduced opacity — read as an unwanted dark box trailing the cursor,
 // and no other pixel-art element on the site uses a backing plate either).
+//
+// Sleekness pass (direct feedback: "the cursor could get an upgrade"): this was the
+// one thing on the whole site moving with zero interpolation - a raw 1:1 mousemove ->
+// transform snap, no easing at all, despite the arrow's own comment already noting
+// it's the most-visible-by-volume motion on the site. Three additions, each its own
+// independently-positioned child so CSS's own hover-scale transform on the arrow never
+// fights the JS-driven position transform:
+//   1. The arrow itself now eases toward the pointer (a per-frame lerp, ~2-3 frames of
+//      catch-up at 60fps) instead of snapping - still tight enough to feel responsive,
+//      not laggy.
+//   2. A soft blurred glow trails further behind (a slower lerp), echoing the same
+//      ambient-glow "materials" language used on Home's hero, About's photo, and
+//      ContactCTA - tinted --text at rest, --accent-primary over interactive elements,
+//      matching the arrow's own existing color swap.
+//   3. A small pixel-block burst fires on mousedown/up for tactile click feedback,
+//      the same kind of press-state feedback every real button on the site already has.
+// prefers-reduced-motion: the lerp/glow-trail/burst are motion by definition, so all
+// three are skipped outright - the arrow snaps 1:1 to the pointer with no trail and no
+// burst, matching the original zero-motion behavior exactly.
 const arrowPixels: Array<[number, number]> = [
   [0, 0],
   [0, 1], [1, 1],
@@ -22,9 +41,15 @@ const arrowPixels: Array<[number, number]> = [
 ---
 
 <div id="pixel-cursor" class="pixel-cursor" aria-hidden="true" transition:persist>
-  <svg viewBox="-1 -1 8 10" width="32" height="40" shape-rendering="crispEdges">
-    {arrowPixels.map(([x, y]) => <rect x={x} y={y} width="1" height="1" class="cursor-fill" />)}
-  </svg>
+  <div class="cursor-glow"></div>
+  <div class="cursor-arrow-wrap">
+    <svg class="cursor-arrow" viewBox="-1 -1 8 10" width="32" height="40" shape-rendering="crispEdges">
+      {arrowPixels.map(([x, y]) => <rect x={x} y={y} width="1" height="1" class="cursor-fill" />)}
+    </svg>
+  </div>
+  <div class="cursor-burst">
+    <span></span><span></span><span></span><span></span>
+  </div>
 </div>
 
 <script>
@@ -41,16 +66,67 @@ const arrowPixels: Array<[number, number]> = [
     if ((window as any).__pixelCursorBound) return;
     (window as any).__pixelCursorBound = true;
 
+    const arrowWrap = cursor.querySelector('.cursor-arrow-wrap') as HTMLElement | null;
+    const glow = cursor.querySelector('.cursor-glow') as HTMLElement | null;
+    const burst = cursor.querySelector('.cursor-burst') as HTMLElement | null;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let arrowX = mouseX;
+    let arrowY = mouseY;
+    let glowX = mouseX;
+    let glowY = mouseY;
+
+    const place = () => {
+      if (arrowWrap) arrowWrap.style.transform = `translate3d(${arrowX}px, ${arrowY}px, 0)`;
+      if (glow) glow.style.transform = `translate3d(${glowX}px, ${glowY}px, 0) translate(-50%, -50%)`;
+    };
+
     document.addEventListener('mousemove', (e) => {
-      const el = document.getElementById('pixel-cursor');
-      if (el) el.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (reduceMotion) {
+        arrowX = mouseX;
+        arrowY = mouseY;
+        glowX = mouseX;
+        glowY = mouseY;
+        place();
+      }
     });
 
+    if (!reduceMotion) {
+      const tick = () => {
+        // Arrow catches up quickly (tight lerp - stays responsive, not laggy); the
+        // glow trails further behind (looser lerp) for a soft comet-trail read.
+        arrowX += (mouseX - arrowX) * 0.35;
+        arrowY += (mouseY - arrowY) * 0.35;
+        glowX += (mouseX - glowX) * 0.15;
+        glowY += (mouseY - glowY) * 0.15;
+        place();
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
     document.addEventListener('mouseover', (e) => {
-      const el = document.getElementById('pixel-cursor');
-      if (!el) return;
       const target = e.target as Element | null;
-      el.classList.toggle('is-interactive', !!target?.closest('a, button'));
+      cursor.classList.toggle('is-interactive', !!target?.closest('a, button'));
+    });
+
+    document.addEventListener('mousedown', () => {
+      cursor.classList.add('is-pressed');
+      if (burst && !reduceMotion) {
+        burst.style.transform = `translate3d(${arrowX}px, ${arrowY}px, 0)`;
+        burst.classList.remove('burst-play');
+        void burst.offsetWidth; // restart the animation on every click
+        burst.classList.add('burst-play');
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      cursor.classList.remove('is-pressed');
     });
   });
 </script>
@@ -63,7 +139,42 @@ const arrowPixels: Array<[number, number]> = [
     left: 0;
     z-index: 10000;
     pointer-events: none;
+  }
+
+  /* Each of these is positioned independently by JS (see the script above) - keeping
+     position (translate3d) entirely separate from the CSS-driven hover/press scale
+     below means the two transforms never fight over the same element's `transform`
+     property. */
+  .cursor-glow,
+  .cursor-arrow-wrap,
+  .cursor-burst {
+    position: absolute;
+    top: 0;
+    left: 0;
     will-change: transform;
+  }
+
+  /* Trailing glow - same ambient-glow "materials" language used sitewide (Home's
+     hero, About's photo, ContactCTA), scaled down to cursor-size. Tinted --text at
+     rest so it reads correctly in both themes without a separate light-mode
+     override (unlike the large background glows, this is a small, close-up element
+     using the theme's own high-contrast token, not a saturated accent at low alpha -
+     no Weber-Fechner correction needed). */
+  .cursor-glow {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--text) 40%, transparent), transparent 70%);
+    filter: blur(4px);
+    transition: background 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pixel-cursor.is-interactive .cursor-glow {
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent-primary) 50%, transparent),
+      transparent 70%
+    );
   }
 
   .cursor-fill {
@@ -79,19 +190,89 @@ const arrowPixels: Array<[number, number]> = [
      transition at all on its hover scale-up, snapping instantly while every other
      interactive control on the site now eases. Real, findable gap, not a nitpick:
      it's the most-visible-by-volume motion on the whole site. */
-  svg {
+  .cursor-arrow {
+    display: block;
     transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .pixel-cursor.is-interactive svg {
+  .pixel-cursor.is-interactive .cursor-arrow {
     transform: scale(1.25);
     transform-origin: -4px -4px;
   }
 
+  /* Press feedback (buttons.md: "always include a press state") - the cursor never
+     had one despite being the site's own most-used interactive element. Toned down
+     when combined with the hover-scale so a click on a link doesn't fight the
+     hover-enlarge with an equally strong shrink. */
+  .pixel-cursor.is-pressed .cursor-arrow {
+    transform: scale(0.85);
+    transform-origin: -4px -4px;
+  }
+
+  .pixel-cursor.is-interactive.is-pressed .cursor-arrow {
+    transform: scale(1.05);
+    transform-origin: -4px -4px;
+  }
+
+  /* Small pixel-block burst on click - the same kind of tactile feedback every real
+     button on the site gets via :active, translated into the pixel-art vocabulary
+     instead of a generic ripple. Re-played on every click by toggling .burst-play
+     off and back on (see the script's forced reflow). */
+  .cursor-burst span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    background: var(--accent-primary);
+    opacity: 0;
+  }
+
+  .cursor-burst.burst-play span {
+    animation: cursor-burst-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .cursor-burst.burst-play span:nth-child(1) {
+    --dx: -11px;
+    --dy: -11px;
+  }
+  .cursor-burst.burst-play span:nth-child(2) {
+    --dx: 11px;
+    --dy: -11px;
+  }
+  .cursor-burst.burst-play span:nth-child(3) {
+    --dx: -11px;
+    --dy: 11px;
+  }
+  .cursor-burst.burst-play span:nth-child(4) {
+    --dx: 11px;
+    --dy: 11px;
+  }
+
+  @keyframes cursor-burst-pop {
+    from {
+      transform: translate(0, 0) scale(1);
+      opacity: 0.9;
+    }
+    to {
+      transform: translate(var(--dx), var(--dy)) scale(0.4);
+      opacity: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .cursor-fill,
-    svg {
+    .cursor-arrow,
+    .cursor-glow {
       transition: none;
+    }
+
+    /* Burst is never triggered under reduced motion (see the script's reduceMotion
+       guard) - this is just a hard backstop so a stale .burst-play class can never
+       animate even if something else re-added it. */
+    .cursor-burst.burst-play span {
+      animation: none;
+      opacity: 0;
     }
   }
 

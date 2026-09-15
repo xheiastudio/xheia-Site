@@ -2,6 +2,30 @@
 // Dark (default) / light toggle. Keeps document.documentElement's data-theme and
 // localStorage['xheia-theme'] in sync with BaseLayout's inline FOUC-prevention script.
 // Icons are pixel-art (PixelIcon) rather than line-art SVGs, per the site-wide pixel pass.
+//
+// Sleekness pass (direct feedback the button read as plain next to the rest of the
+// site's Apple-sleek treatment): hover/focus now blooms with the same accent-primary
+// glow every other interactive control on the site already gets (was border-color-only,
+// the one remaining "flat" hover state in the header). The border itself is gone too
+// (direct feedback: "I don't like the square box around it") - the tinted icon plus
+// the hover glow now carry the affordance instead of a static bordered square. Icons
+// are tinted via currentColor - both share --accent-primary (theme-invariant), matching
+// the hover glow, rather than flat --text silhouettes. A first pass tried a warm/cool
+// two-color code (coral sun, blue moon) - reverted per direct feedback: Flare coral is
+// "used sparingly" per BRANDFINAL, and a permanent two-hue code on a tiny toggle icon
+// is a decorative rule nobody needs to parse. One consistent accent instead.
+//
+// Real bug found while verifying the above (not introduced by this pass, but fixed
+// here since the tint work exposed it): `.icon`/`.icon-sun`/`.icon-moon` all target
+// <PixelIcon>'s rendered <svg>, but PixelIcon is a separate child component - Astro's
+// scoped-style attribute only gets attached to elements literally written in THIS
+// component's own template, never to a child component's rendered output. Every rule
+// below using a bare `.icon*` selector was silently dead: both icons have always
+// rendered simultaneously, un-positioned, side-by-side (no crossfade, no stacking) -
+// confirmed by inspecting the compiled stylesheet and computed styles directly, not
+// assumed. Fixed by wrapping those selectors in :global(), the same technique already
+// used in ContactCTA.astro/PageIntroAtmosphere.astro to reach into PixelMark's own
+// internals from the outside.
 import PixelIcon from './PixelIcon.astro';
 
 const sunPixels: Array<[number, number]> = [
@@ -55,7 +79,14 @@ const moonPixels: Array<[number, number]> = [
 <style>
   /* 2.75rem (44px), not the previous 2.25rem (36px) - full audit finding:
      accessibility.md's default mobile control size is 44x44pt; 36px cleared the
-     28px floor but sat well under the recommended default for a touch target. */
+     28px floor but sat well under the recommended default for a touch target.
+     No border/background at rest (direct feedback: "I don't like the square box
+     around it") - the tinted icon itself plus the hover/focus glow below now carry
+     the affordance, matching how a plain icon-only toolbar control reads on Apple
+     platforms (buttons.md/toolbars.md: icon buttons don't need a visible container
+     at rest, just a clear hover/press state). :focus-visible's outline further down
+     is unaffected - that's the accessibility-required indicator, independent of this
+     decorative border. */
   .theme-toggle {
     position: relative;
     display: inline-flex;
@@ -64,19 +95,29 @@ const moonPixels: Array<[number, number]> = [
     width: 2.75rem;
     height: 2.75rem;
     padding: 0;
-    border: 1px solid var(--border);
+    border: none;
     border-radius: var(--radius);
     background: transparent;
     color: var(--text);
     cursor: pointer;
+    box-shadow: 0 0 0 0 transparent;
     transition:
-      border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
       transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .theme-toggle:hover,
   .theme-toggle:focus-visible {
-    border-color: var(--accent-primary);
+    box-shadow: 0 0 1rem -0.2rem color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  }
+
+  /* Light mode needs a materially bolder glow than the dark-mode value to read as a
+     real bloom against Paper (Weber-Fechner - the same percentage shift is obvious
+     near black, nearly imperceptible near white) - same finding as every other glow
+     on the site, verified rather than guessed. */
+  :global(html[data-theme='light']) .theme-toggle:hover,
+  :global(html[data-theme='light']) .theme-toggle:focus-visible {
+    box-shadow: 0 0 1.25rem 0 color-mix(in srgb, var(--accent-primary) 85%, transparent);
   }
 
   /* buttons.md: "Always include a press state for a custom button." Same gap as
@@ -95,8 +136,10 @@ const moonPixels: Array<[number, number]> = [
   /* Both icons stacked and crossfaded (opacity + a slight scale/rotate) instead of a
      hard display:none/block swap - the one remaining instant toggle in the header
      next to everything else's smooth transitions. Absolutely positioned so neither
-     one participates in layout while hidden. */
-  .icon {
+     one participates in layout while hidden. :global() - see the top comment block:
+     this targets <PixelIcon>'s rendered <svg>, a child component's output, which
+     never carries this file's own scope attribute. */
+  :global(.icon) {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -109,19 +152,31 @@ const moonPixels: Array<[number, number]> = [
       transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Tinted via currentColor rather than inheriting the button's flat --text - gives
+     the control some color instead of a plain monochrome silhouette. Both icons
+     share the SAME accent (--accent-primary, theme-invariant) rather than a warm/
+     cool two-color code (an earlier version tried sun=coral/moon=blue - reverted per
+     direct feedback: BRANDFINAL calls for Flare coral "used sparingly," and a
+     permanent two-hue code on a tiny toggle icon is a decorative rule nobody needs
+     to parse). One consistent accent, matching the hover glow below. */
+  :global(.icon-sun),
+  :global(.icon-moon) {
+    color: var(--accent-primary);
+  }
+
   /* Dark mode (default): show the sun (click to go light). */
-  .icon-sun {
+  :global(.icon-sun) {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
   }
 
   /* Light mode: show the moon (click to go dark). */
-  :global(html[data-theme='light']) .icon-sun {
+  :global(html[data-theme='light'] .icon-sun) {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5) rotate(90deg);
   }
 
-  :global(html[data-theme='light']) .icon-moon {
+  :global(html[data-theme='light'] .icon-moon) {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
   }
@@ -135,7 +190,7 @@ const moonPixels: Array<[number, number]> = [
       transform: none;
     }
 
-    .icon {
+    :global(.icon) {
       transition: none;
       transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
