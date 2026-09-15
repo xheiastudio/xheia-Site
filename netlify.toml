@@ -1,3 +1,23 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+# Standard security headers on every response - nothing here was set before
+# (grep-confirmed). None of these affect the site's own behavior (no inline
+# framing, no cross-origin embedding), they just close off default-permissive
+# gaps a browser would otherwise leave open.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Astro's build output under /_astro/ is content-hashed (a filename changes
+# whenever its contents do), so it's always safe to cache aggressively -
+# a stale cached file simply can't exist under a name that's still referenced.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
