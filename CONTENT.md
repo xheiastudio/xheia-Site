@@ -226,7 +226,7 @@ Page title: "Contact"
 - Heading: "Start a conversation"
 - Form fields: Name, Email, Company, Message
 - Submit button: "Send"
-- Mailto fallback: "Prefer email? Write to hoda.97@live.com directly." **[PLACEHOLDER — temporary address, flagged in SPEC.md to replace with the business address before public launch]**
+- Mailto fallback: "Prefer email? Write to contact@xheia.co directly."
 
 ---
 
@@ -250,7 +250,7 @@ Page title: "Contact"
 - [ ] GitHub URL → Footer
 - [ ] Xheia company LinkedIn URL → Footer (add only once that page has real content)
 - [x] ~~Headshot image~~ → real photo added to `/about`
-- [ ] Real business contact email → replaces `hoda.97@live.com` in `ContactForm.astro` before public launch
+- [x] ~~Real business contact email~~ → `contact@xheia.co` (Google Workspace on the `xheia.co` domain), live in `ContactForm.astro`
 - [ ] Retail/Education substance — still no real detail; narrative and case studies both skip these sectors until there is
 - [ ] Public-proof link (article/demo/repo) on `/work` — recommended by the research doc, blocked until something real exists to link
 - [ ] Named/testimonial-backed case study — blocked until client permission or a testimonial exists

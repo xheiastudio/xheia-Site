@@ -2,8 +2,10 @@
 // Name, email, company, message. Submits via Netlify Forms (static HTML scan requires
 // data-netlify="true" + matching name + hidden form-name input, present verbatim in
 // the built output). Plain mailto fallback rendered near the form, not styled as a
-// competing CTA (SPEC.md — ContactForm). Delivery address is a temporary placeholder,
-// flagged in SPEC.md — replace before public launch.
+// competing CTA (SPEC.md — ContactForm). Mailto/error-message address is the real
+// business address, contact@xheia.co (Google Workspace on the xheia.co domain) - the
+// actual Netlify Forms submission delivery address is separate, configured in
+// Netlify's own dashboard (Site settings → Forms → Form notifications), not in code.
 //
 // Labels styled as $-prefixed prompts (terminal register, zero UX risk — pure
 // markup/CSS, no new interaction) — all fields stay visible/editable at once, no
@@ -86,7 +88,7 @@
 <p class="sr-only" id="form-status-announcer" aria-live="polite"></p>
 
 <p class="mailto-fallback">
-  Prefer email? Write to <a href="mailto:hoda.97@live.com">hoda.97@live.com</a> directly.
+  Prefer email? Write to <a href="mailto:contact@xheia.co">contact@xheia.co</a> directly.
 </p>
 
 <script>
@@ -157,7 +159,7 @@
       } catch {
         button.disabled = false;
         button.textContent = 'Send';
-        const message = 'Something went wrong - try again, or email hoda.97@live.com directly.';
+        const message = 'Something went wrong - try again, or email contact@xheia.co directly.';
         status.hidden = false;
         status.className = 'form-status error';
         statusMark.textContent = '';

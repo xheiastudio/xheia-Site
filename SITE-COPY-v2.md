@@ -94,7 +94,7 @@ Start a conversation
 Form fields: Name, Email, Company, Message
 Submit button: Send
 
-Prefer email? Write to hoda.97@live.com directly.
+Prefer email? Write to contact@xheia.co directly.
 
 ---
 
