@@ -1,8 +1,15 @@
 ---
 // New page per SPEC.md's booking-link-and-pricing-page revision note: five
-// starting-at engagement bands (PricingTiers), added to nav between Work and
-// About. Same composition shape as /approach — PageIntroAtmosphere intro,
-// content section(s), the shared ContactCTA band, Footer.
+// starting-at engagement bands (PricingTiers), same composition shape as
+// /approach — PageIntroAtmosphere intro, content section(s), the shared
+// ContactCTA band, Footer.
+//
+// Hidden post-launch (direct feedback: not yet decided whether to show
+// prices publicly) — pulled from Header.astro's nav and excluded from the
+// sitemap (astro.config.mjs), plus noindex here so it doesn't surface in
+// search while it's unlinked. The route/component/content are unchanged and
+// still reachable by direct URL - re-add the nav entry and drop `noindex`
+// (and the sitemap filter) to bring it back.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import PageIntroAtmosphere from '../../components/PageIntroAtmosphere.astro';
@@ -14,6 +21,7 @@ import Footer from '../../components/Footer.astro';
 <BaseLayout
   title="Pricing"
   description="Starting-point pricing for data cleansing, migration, warehousing, BI, and AI agent engagements - the final scope and number get set on a call."
+  noindex
 >
   <Header />
   <main id="main-content">

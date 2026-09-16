@@ -9,5 +9,11 @@ export default defineConfig({
   // links, and Open Graph/Twitter meta (BaseLayout.astro) all derive from this one
   // value via Astro.site/Astro.url.
   site: 'https://xheia.co',
-  integrations: [sitemap()],
+  integrations: [
+    // /pricing is hidden from nav post-launch (not yet decided whether to
+    // show prices publicly) - excluded here too so it doesn't surface via
+    // sitemap.xml while it's unlinked. Re-include by removing this filter
+    // once /pricing is back in the nav (Header.astro).
+    sitemap({ filter: (page) => !page.includes('/pricing') }),
+  ],
 });
