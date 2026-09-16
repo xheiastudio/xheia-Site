@@ -19,6 +19,24 @@
 // action has completed"). With JS disabled, the form still submits via its native
 // POST exactly as before, just without the inline confirmation.
 //
+// Book-a-call link, added in the booking-link-and-pricing-page pass (SPEC.md —
+// ContactForm / Nav "Single CTAButton, one deliberate exception"): a second
+// plain-text link at the same visual weight as the mailto fallback above it —
+// deliberately not a second CTAButton style, not a competing CTA. Points to a
+// public Google Calendar Appointment Schedule link (opens in a new tab since it
+// leaves the site entirely, same convention as any other outbound link would
+// warrant) — no sign-in required to view it, unlike a private week-view URL.
+// Wrapped, along with the form and both status paragraphs, in one
+// .contact-form-shell root: this component previously returned several
+// top-level siblings with no wrapper, which is normally harmless — until
+// contact.astro's two-column CSS grid treats each of THIS component's
+// top-level elements as its own grid item. With a second mailto-style
+// paragraph added, that split the two links across separate grid cells (the
+// book-a-call line landing under the form, the mailto line landing under the
+// unrelated left column) instead of stacking together under the form as
+// intended. A single wrapper makes this component one grid item again,
+// regardless of how many paragraphs it renders internally.
+//
 // Smoothness pass (explicit request - "drastic, no small changes," same treatment
 // as About): fields previously appeared all at once with zero motion, and every
 // interactive state (focus ring, button hover, the success/error swap) snapped
@@ -33,63 +51,68 @@
 // when motion is reduced, rather than relying on CSS alone to hide it.
 ---
 
-<form
-  name="contact"
-  method="POST"
-  data-netlify="true"
-  data-netlify-honeypot="bot-field"
-  class="contact-form"
-  id="contact-form"
-  data-reveal
->
-  <input type="hidden" name="form-name" value="contact" />
-  <p class="honeypot" aria-hidden="true">
-    <label>
-      Leave this field blank
-      <input name="bot-field" tabindex="-1" autocomplete="off" />
+<div class="contact-form-shell">
+  <form
+    name="contact"
+    method="POST"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+    class="contact-form"
+    id="contact-form"
+    data-reveal
+  >
+    <input type="hidden" name="form-name" value="contact" />
+    <p class="honeypot" aria-hidden="true">
+      <label>
+        Leave this field blank
+        <input name="bot-field" tabindex="-1" autocomplete="off" />
+      </label>
+    </p>
+
+    <label class="item-content" style={{ transitionDelay: '0s' }}>
+      <span class="prompt"><span class="glyph" aria-hidden="true">$</span> name</span>
+      <input class="pixel-notch" type="text" name="name" placeholder="Your name" required />
     </label>
+
+    <label class="item-content" style={{ transitionDelay: '0.1s' }}>
+      <span class="prompt"><span class="glyph" aria-hidden="true">$</span> email</span>
+      <input class="pixel-notch" type="email" name="email" placeholder="name@company.com" required />
+    </label>
+
+    <label class="item-content" style={{ transitionDelay: '0.2s' }}>
+      <span class="prompt">
+        <span class="glyph" aria-hidden="true">$</span> company <span class="optional">(optional)</span>
+      </span>
+      <input class="pixel-notch" type="text" name="company" placeholder="Where you work" />
+    </label>
+
+    <label class="item-content" style={{ transitionDelay: '0.3s' }}>
+      <span class="prompt"><span class="glyph" aria-hidden="true">$</span> message</span>
+      <textarea
+        class="pixel-notch"
+        name="message"
+        rows="6"
+        placeholder="What are you trying to solve?"
+        required
+      ></textarea>
+    </label>
+
+    <button class="pixel-notch item-content" style={{ transitionDelay: '0.4s' }} type="submit">Send</button>
+  </form>
+
+  <p class="form-status" id="form-status" role="status" hidden>
+    <span class="status-mark" id="form-status-mark" aria-hidden="true"></span>
+    <span id="form-status-text"></span>
   </p>
+  <p class="sr-only" id="form-status-announcer" aria-live="polite"></p>
 
-  <label class="item-content" style={{ transitionDelay: '0s' }}>
-    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> name</span>
-    <input class="pixel-notch" type="text" name="name" placeholder="Your name" required />
-  </label>
-
-  <label class="item-content" style={{ transitionDelay: '0.1s' }}>
-    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> email</span>
-    <input class="pixel-notch" type="email" name="email" placeholder="name@company.com" required />
-  </label>
-
-  <label class="item-content" style={{ transitionDelay: '0.2s' }}>
-    <span class="prompt">
-      <span class="glyph" aria-hidden="true">$</span> company <span class="optional">(optional)</span>
-    </span>
-    <input class="pixel-notch" type="text" name="company" placeholder="Where you work" />
-  </label>
-
-  <label class="item-content" style={{ transitionDelay: '0.3s' }}>
-    <span class="prompt"><span class="glyph" aria-hidden="true">$</span> message</span>
-    <textarea
-      class="pixel-notch"
-      name="message"
-      rows="6"
-      placeholder="What are you trying to solve?"
-      required
-    ></textarea>
-  </label>
-
-  <button class="pixel-notch item-content" style={{ transitionDelay: '0.4s' }} type="submit">Send</button>
-</form>
-
-<p class="form-status" id="form-status" role="status" hidden>
-  <span class="status-mark" id="form-status-mark" aria-hidden="true"></span>
-  <span id="form-status-text"></span>
-</p>
-<p class="sr-only" id="form-status-announcer" aria-live="polite"></p>
-
-<p class="mailto-fallback">
-  Prefer email? Write to <a href="mailto:contact@xheia.co">contact@xheia.co</a> directly.
-</p>
+  <p class="mailto-fallback">
+    Prefer email? Write to <a href="mailto:contact@xheia.co">contact@xheia.co</a> directly.
+  </p>
+  <p class="mailto-fallback">
+    Prefer to talk first? <a href="https://calendar.app.google/DdsSsKTNJierjQu89" target="_blank" rel="noopener noreferrer">Book a call &rarr;</a>
+  </p>
+</div>
 
 <script>
   import { typeText } from '../scripts/typewriter';
@@ -176,6 +199,13 @@
 </script>
 
 <style>
+  /* Caps at the form's own 32rem so the mailto/book-a-call lines below it
+     don't stretch to the full grid-column width and wrap at a noticeably
+     wider measure than the form sitting directly above them. */
+  .contact-form-shell {
+    max-width: 32rem;
+  }
+
   .contact-form {
     display: flex;
     flex-direction: column;
@@ -473,5 +503,30 @@
     margin-top: var(--space-6);
     color: var(--text-secondary);
     font-size: 0.9375rem;
+  }
+
+  /* Two lines at the same visual weight, grouped as one small block rather
+     than two independently-spaced statements - the book-a-call link is a
+     second option next to the mailto fallback, not a separate paragraph. */
+  .mailto-fallback + .mailto-fallback {
+    margin-top: var(--space-2);
+  }
+
+  .mailto-fallback a {
+    color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mailto-fallback a:hover,
+  .mailto-fallback a:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .mailto-fallback a:focus-visible {
+    outline: 2px solid var(--accent-primary-text);
+    outline-offset: 0.2em;
   }
 </style>

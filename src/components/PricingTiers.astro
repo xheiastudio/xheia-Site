@@ -1,0 +1,292 @@
+---
+// Five starting-at engagement bands on /pricing, added in the booking-link-and-
+// pricing-page pass (SPEC.md — PricingTiers). Same click-to-expand <details>/
+// <summary> disclosure as Capabilities.astro (progressive disclosure for a
+// 5-item title+body list, per CLAUDE.md's Apple-sleekness reference) - reusing
+// that exact mechanic/markup shape rather than inventing a new one, minus
+// Capabilities' PixelIcon (these aren't the boot-menu's own five items, no
+// icon set exists for this list and one isn't required by SPEC.md).
+//
+// Numbers and band names are copied verbatim from SPEC.md's revision note -
+// sourced from September 2026 market research on independent/boutique data,
+// BI, and AI-automation consulting rates, not invented. Body copy for the
+// three bands that map directly onto a Capabilities item (Cleansing &
+// migration / Warehousing & BI / AI agents & automation) reuses that
+// component's own wording verbatim rather than restating the same claim in
+// different words. The "final scope and price are set on a call" framing line
+// is required on every band per that same revision note, so each item carries
+// its own copy of it rather than one shared caption for the whole section -
+// keeps the caveat attached to the exact number it's qualifying, in case a
+// visitor only opens one band.
+import SectionLoader from './SectionLoader.astro';
+import SectionNumber from './SectionNumber.astro';
+
+const ITEM_STAGGER = 0.35;
+const NOTE = 'Final scope and price are set on a call - this is a starting point, not a fixed quote.';
+
+const tiers = [
+  {
+    title: 'Data audit / diagnostic',
+    meta: '1-2 weeks',
+    price: 'from $6,000',
+    body: "A fast, structured look at what's actually happening in your data before anything gets touched - what's broken, what's trustworthy, and what it'll take to fix.",
+  },
+  {
+    title: 'Cleansing & migration',
+    price: 'from $12,000',
+    body: 'Fixing and moving data so it can actually be trusted downstream.',
+  },
+  {
+    title: 'Warehousing & BI',
+    price: 'from $18,000',
+    body: 'A single source of truth, and the reporting layer built on it.',
+  },
+  {
+    title: 'AI agents & automation',
+    price: 'from $15,000',
+    body: 'The newest expression of the same full-lifecycle work - never a bolt-on.',
+  },
+  {
+    title: 'Post-acquisition integration / financial modelling',
+    meta: 'scoped individually',
+    price: '$1,200/day',
+    body: 'Consolidating systems after a merger, or financial analysis that stands up in front of a board - too bespoke for a fixed band, so it runs day-rate instead.',
+  },
+];
+---
+
+<section class="pricing-tiers" data-reveal>
+  <div class="section-head">
+    <SectionNumber number="01" />
+    <h2 class="eyebrow">// pricing</h2>
+  </div>
+  <p class="menu-frame-label">starting points, not a rate card</p>
+  <div class="menu">
+    {
+      tiers.map((tier, i) => {
+        const delay = i * ITEM_STAGGER;
+        return (
+          <details class="menu-item">
+            <summary class="menu-item-head item-content" style={{ transitionDelay: `${delay}s` }}>
+              <span class="selector" aria-hidden="true">▶</span>
+              <span class="menu-title-group">
+                <h3 class="menu-title">{tier.title}</h3>
+                {tier.meta && <span class="menu-meta">{tier.meta}</span>}
+              </span>
+              <span class="menu-price">{tier.price}</span>
+            </summary>
+            <div class="menu-result">
+              <SectionLoader />
+              <p class="menu-body">
+                <span class="check-mark" aria-hidden="true">✓</span> {tier.body}
+              </p>
+              <p class="menu-note">{NOTE}</p>
+            </div>
+          </details>
+        );
+      })
+    }
+  </div>
+</section>
+
+<script>
+  import { initDisclosure } from '../scripts/disclosure';
+
+  document.addEventListener('astro:page-load', () => {
+    initDisclosure('.pricing-tiers .menu-item', '.menu-result');
+  });
+</script>
+
+<style>
+  /* No border/tinted background - same "zero borders anywhere" standard every
+     other /approach-style section follows (Capabilities.astro carries the
+     full rationale in its own comment block). --space-20 separates this
+     section from PageIntroAtmosphere above and ContactCTA below. */
+  .pricing-tiers {
+    width: min(100% - 2 * var(--space-4), var(--content-max-width));
+    margin: var(--space-20) auto;
+    padding: 0;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  /* --accent-primary-text, not --accent-primary: full-audit finding, reused
+     sitewide - raw --accent-primary as text is 4.22:1 against Ink in dark
+     mode, below the 4.5:1 minimum. */
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    color: var(--accent-primary-text);
+  }
+
+  /* 13px minimum per typography.md's macOS translation - same fix already
+     applied to Capabilities' identical label. */
+  .menu-frame-label {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .menu-item {
+    list-style: none;
+  }
+
+  .menu-item summary {
+    list-style: none;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+
+  .menu-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-item-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  .menu-item summary:hover .menu-title,
+  .menu-item summary:focus-visible .menu-title {
+    color: var(--accent-primary-text);
+  }
+
+  .menu-item summary:focus-visible {
+    outline: 2px solid var(--accent-primary-text);
+    outline-offset: 3px;
+  }
+
+  .selector {
+    display: inline-block;
+    color: var(--accent-primary-text);
+    font-size: 0.875rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu-item[open] .selector {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .selector {
+      transition: none;
+    }
+  }
+
+  .menu-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* font-mono, not font-display - same rationale as Capabilities' identical
+     title (Home's headline is 100% IBM Plex Mono; a pixel-font item title
+     here would read as a different typeface next to the rest of the page). */
+  .menu-title {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu-meta {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  /* Price is the one piece of information worth showing before a band is
+     opened - kept out of the disclosure body entirely, right-aligned against
+     the title on the always-visible summary row. */
+  .menu-price {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--accent-primary-text);
+    white-space: nowrap;
+  }
+
+  .menu-result {
+    margin-top: var(--space-3);
+    padding-left: calc(1.5rem + var(--space-4));
+    overflow: hidden;
+  }
+
+  /* Bar plays per-item on open (native <details> toggle), not once for
+     everyone the moment the section scrolls into view - same override as
+     Capabilities' identical bar, matched here at equal specificity so it
+     wins unambiguously over global.css's scroll-triggered default. */
+  [data-reveal].is-visible .menu-item .loader-bar-fill {
+    width: 0;
+    animation: none;
+  }
+
+  .menu-item[open] .loader-bar-fill {
+    animation: section-loader-fill 0.5s steps(10, end) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-item[open] .loader-bar-fill {
+      width: 100%;
+      animation: none;
+    }
+  }
+
+  .menu-body {
+    margin: var(--space-3) 0 0;
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+  }
+
+  .check-mark {
+    color: var(--accent-status);
+  }
+
+  /* Flare coral (light mode's --accent-status) is 2.04:1 on Paper as text -
+     fails WCAG's 4.5:1 minimum. Same fix as every other checkmark on the
+     site - the glyph switches to --text (17:1 on Paper) in light mode only. */
+  :global(html[data-theme='light']) .check-mark {
+    color: var(--text);
+  }
+
+  .menu-note {
+    margin: var(--space-2) 0 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+
+  @media (max-width: 32rem) {
+    .menu-item-head {
+      flex-wrap: wrap;
+    }
+
+    .menu-price {
+      margin-left: calc(1.5rem + var(--space-4));
+    }
+  }
+</style>

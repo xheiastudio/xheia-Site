@@ -1,0 +1,56 @@
+---
+// New page per SPEC.md's booking-link-and-pricing-page revision note: five
+// starting-at engagement bands (PricingTiers), added to nav between Work and
+// About. Same composition shape as /approach — PageIntroAtmosphere intro,
+// content section(s), the shared ContactCTA band, Footer.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import PageIntroAtmosphere from '../../components/PageIntroAtmosphere.astro';
+import PricingTiers from '../../components/PricingTiers.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Pricing"
+  description="Starting-point pricing for data cleansing, migration, warehousing, BI, and AI agent engagements - the final scope and number get set on a call."
+>
+  <Header />
+  <main id="main-content">
+    <PageIntroAtmosphere>
+      <h1 class="intro">
+        What this kind of work typically starts at - the real number gets set
+        on a call, not guessed from a page.
+      </h1>
+    </PageIntroAtmosphere>
+    <div class="pricing-page">
+      <PricingTiers />
+    </div>
+  </main>
+  <ContactCTA />
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Only the content BELOW the intro is width-constrained - the intro itself
+     (PageIntroAtmosphere) is full-bleed, same split every other page uses. */
+  .pricing-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) 0;
+  }
+
+  /* Exact match to Home's headline (.headline, Hero.astro) and every other
+     page's own intro heading - same font, weight, clamp, line-height,
+     letter-spacing. */
+  .intro {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+</style>

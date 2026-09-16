@@ -1,7 +1,8 @@
 ---
-// Xheia (mark+wordmark) — Approach — Work — About — Contact — theme toggle.
-// No dropdowns, no secondary items (SPEC.md — Nav). This is the everyday logo
-// lockup, no CRT bezel.
+// Xheia (mark+wordmark) — Approach — Work — Pricing — About — Contact — theme
+// toggle. No dropdowns, no secondary items (SPEC.md — Nav). This is the
+// everyday logo lockup, no CRT bezel. Pricing added between Work and About in
+// the booking-link-and-pricing-page pass.
 //
 // Sticky + scroll-aware (Apple-sleekness pass): was a static header that scrolled
 // away with the page - the single most recognizable "premium nav" pattern (apple.com
@@ -77,6 +78,7 @@ const currentPath = Astro.url.pathname;
 const navLinks = [
   { href: '/approach', label: 'Approach' },
   { href: '/work', label: 'Work' },
+  { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
