@@ -1,0 +1,117 @@
+---
+// Solid pixel-art retro computer — monitor (casing + screen), stand, keyboard. Same
+// coordinate-array-to-SVG-rects technique as PixelMark.astro, deliberately reused: a
+// hollow outline trace or a CSS-bordered card both read as "a box," not a device, across
+// several rounds of direct feedback — solid filled blocks are what actually reads as
+// pixel-art hardware (the eye mark already proves this). See Hero.astro's frontmatter for
+// why this exists alongside the earlier "no CRT chrome" decision rather than reversing it
+// outright — this is a smaller, self-contained device graphic for the boot preamble
+// specifically, not the retired border/scanline/window-chrome treatment.
+//
+// Unlike PixelMark (purely decorative in every usage), this component hosts real content:
+// the default slot is positioned over the screen rect's own viewBox-relative bounds, so
+// whatever's passed in (boot-log text) renders as real DOM text on top of the SVG, not
+// baked into it. The SVG itself is aria-hidden — it's chrome around that real content.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const viewW = 20;
+const viewH = 15;
+
+const body: Array<[number, number, number, number]> = [
+  [2, 0, 16, 10], // monitor casing
+  [9, 10, 2, 1], // stand neck
+  [7, 11, 6, 1], // stand base
+  [1, 13, 18, 2], // keyboard body
+];
+
+const keys: Array<[number, number, number, number]> = [
+  [2.5, 13.5, 1.4, 1],
+  [4.5, 13.5, 1.4, 1],
+  [6.5, 13.5, 1.4, 1],
+  [8.5, 13.5, 1.4, 1],
+  [10.5, 13.5, 1.4, 1],
+  [12.5, 13.5, 1.4, 1],
+  [14.5, 13.5, 1.4, 1],
+  [16.5, 13.5, 1, 1],
+];
+
+// 2-unit bezel margin on every side of the casing.
+const screen = { x: 4, y: 2, width: 12, height: 6 };
+const screenRect = {
+  left: `${(screen.x / viewW) * 100}%`,
+  top: `${(screen.y / viewH) * 100}%`,
+  width: `${(screen.width / viewW) * 100}%`,
+  height: `${(screen.height / viewH) * 100}%`,
+};
+---
+
+<div class:list={['pixel-computer', className]}>
+  <svg
+    class="pixel-computer-svg"
+    viewBox={`0 0 ${viewW} ${viewH}`}
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    {body.map(([x, y, w, h]) => <rect class="body" x={x} y={y} width={w} height={h} />)}
+    <rect class="screen-bg" x={screen.x} y={screen.y} width={screen.width} height={screen.height} />
+    {keys.map(([x, y, w, h]) => <rect class="key" x={x} y={y} width={w} height={h} />)}
+  </svg>
+  <div class="pixel-computer-screen" style={screenRect}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .pixel-computer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 20 / 15;
+  }
+
+  .pixel-computer-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    shape-rendering: crispEdges;
+    filter: drop-shadow(
+      0 0.6rem 1.5rem color-mix(in srgb, var(--accent-status) 45%, transparent)
+    );
+  }
+
+  /* Muted tint of the mark token, not a full-saturation fill — checked by rendering
+     this: 45% read as a solid block of near-full Signal green in dark mode, dominating
+     the section instead of reading as "device material." Dropped well below that. */
+  .body {
+    fill: color-mix(in srgb, var(--mark-outline) 16%, var(--bg));
+  }
+
+  /* Lighter than the casing, not just a fainter version of it - individual keys need
+     to read as a highlight ON the casing, not disappear into it. */
+  .key {
+    fill: color-mix(in srgb, var(--mark-outline) 32%, var(--bg));
+  }
+
+  /* A tint of --bg, not a hardcoded dark primitive — themes naturally with the rest of
+     the page instead of forcing a permanently-dark "CRT screen" regardless of mode. This
+     also means the boot-log text sitting on it can keep its already-audited
+     --text-secondary/--accent-primary-text colors with no screen-specific overrides. */
+  .screen-bg {
+    fill: color-mix(in srgb, var(--accent-status) 12%, var(--bg));
+  }
+
+  /* overflow: visible, not hidden - the operator-response line's length varies with
+     real copy and real font metrics, and clipping it if it ever runs a touch taller
+     than the screen rect would silently cut off real content. Any small overrun just
+     extends slightly past the screen tint into the bezel below rather than losing text. */
+  .pixel-computer-screen {
+    position: absolute;
+    overflow: visible;
+    padding: 4% 5%;
+  }
+</style>

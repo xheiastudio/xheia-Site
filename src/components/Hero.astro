@@ -106,7 +106,19 @@
 // scroll speed) adds depth without ever being the thing you're looking at; gated
 // entirely behind prefers-reduced-motion so a reduced-motion visitor gets a static
 // mark, not a stripped-down animation.
+// Retro computer for the boot preamble (device-graphic pass, direct feedback after
+// several rounds of a standalone mockup): the fully chrome-less preamble read as flat,
+// and framing attempts using CSS borders/cards kept reading as "a box," not a device -
+// only a solid pixel-art silhouette (PixelComputer, same technique as PixelMark) actually
+// read as hardware. This is a narrower addition than the bezel/scanline/window-chrome
+// treatment retired in the stripped-down-terminal pass above - that decision about the
+// OVERALL Hero frame stands (.bezel/.screen stay unbordered); only the boot preamble
+// (the two-line xheia --init/system ready lines, the operator--info command, and the
+// operator-response line) now sits on PixelComputer's screen instead of as bare text.
+// Headline/subhead/CTA are unchanged - still bare terminal-body text below it, same as
+// before this pass.
 import PixelMark from './PixelMark.astro';
+import PixelComputer from './PixelComputer.astro';
 import CTAButton from './CTAButton.astro';
 
 const CPS = 140; // characters typed per second — fast but still visibly "typed"
@@ -163,52 +175,54 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   <div class="bezel">
     <div class="screen">
       <div class="terminal-body">
-        {
-          preamble.map((line) => (
-            <p class="boot-line">
-              <span class="prompt-glyph">{line.glyph}</span>{' '}
-              <span
-                class="typed"
-                style={{
-                  width: padWidth(line.text.length),
-                  animationDuration: `${line.duration}s`,
-                  animationDelay: `${line.delay}s`,
-                  animationTimingFunction: `steps(${line.text.length}, end)`,
-                }}
-              >
-                {line.text}
-              </span>
-            </p>
-          ))
-        }
+        <PixelComputer class="boot-computer">
+          {
+            preamble.map((line) => (
+              <p class="boot-line">
+                <span class="prompt-glyph">{line.glyph}</span>{' '}
+                <span
+                  class="typed"
+                  style={{
+                    width: padWidth(line.text.length),
+                    animationDuration: `${line.duration}s`,
+                    animationDelay: `${line.delay}s`,
+                    animationTimingFunction: `steps(${line.text.length}, end)`,
+                  }}
+                >
+                  {line.text}
+                </span>
+              </p>
+            ))
+          }
 
-        <p class="boot-line">
-          <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
-          <span
-            class="typed"
-            style={{
-              width: padWidth(operatorCommand.text.length),
-              animationDuration: `${operatorCommand.duration}s`,
-              animationDelay: `${operatorCommand.delay}s`,
-              animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
-            }}
+          <p class="boot-line">
+            <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
+            <span
+              class="typed"
+              style={{
+                width: padWidth(operatorCommand.text.length),
+                animationDuration: `${operatorCommand.duration}s`,
+                animationDelay: `${operatorCommand.delay}s`,
+                animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
+              }}
+            >
+              {operatorCommand.text}
+            </span>
+          </p>
+          <p
+            class="boot-line prompt-response operator-line line-reveal"
+            style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
           >
-            {operatorCommand.text}
-          </span>
-        </p>
-        <p
-          class="boot-line prompt-response operator-line line-reveal"
-          style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
-        >
-          <span class="prompt-glyph">&gt;</span>{' '}
-          Hoda - multidisciplinary across BI, automation and data strategy. <span
-            class="more-link">(<a href="/about">more about me</a>)</span
-          ><span
-            class="caret"
-            style={{ animationDelay: `${finalCaretDelay}s` }}
-            aria-hidden="true"
-          ></span>
-        </p>
+            <span class="prompt-glyph">&gt;</span>{' '}
+            Hoda - multidisciplinary across BI, automation and data strategy. <span
+              class="more-link">(<a href="/about">more about me</a>)</span
+            ><span
+              class="caret"
+              style={{ animationDelay: `${finalCaretDelay}s` }}
+              aria-hidden="true"
+            ></span>
+          </p>
+        </PixelComputer>
 
         <h1
           class="headline line-reveal"
@@ -472,6 +486,15 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     max-width: 46rem;
     margin: 0 auto;
     text-align: left;
+  }
+
+  /* Capped narrower than .terminal-body's own 46rem - at full width the device would
+     read as a huge flat panel rather than a computer sitting in the composition. The
+     screen rect sizes itself proportionally to this (see PixelComputer.astro), so
+     boot-line text below still has real room even at this width. */
+  .terminal-body :global(.boot-computer) {
+    max-width: 32rem;
+    margin: 0 0 var(--space-8);
   }
 
   /* Deliberately small and quiet - a system-readout preamble, not body text. The
