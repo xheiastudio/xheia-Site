@@ -147,6 +147,20 @@ const blockLine = (text: string) => {
   return { delay, duration };
 };
 
+// Reorder pass: headline/subhead are now the first thing on the page (see Hero's
+// import-block comment), so they reveal first - immediately, not after waiting on a
+// boot log that's no longer above them. The boot preamble/operator exchange on
+// PixelComputer plays after, as supporting detail under the tagline; CTA still closes
+// the sequence. Same typeLine()/blockLine() budget mechanism as before, just reordered
+// to match the new top-to-bottom visual order instead of the old boot-log-first one.
+const headlineText = 'I turn fragmented data into systems you can actually trust.';
+const headline = blockLine(headlineText);
+
+const subheadText =
+  'From cleansing and migration to warehousing and BI - building the foundation that makes reliable decisions possible.';
+const subhead = blockLine(subheadText);
+
+clock += BEAT;
 const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'system ready')];
 
 clock += BEAT;
@@ -155,14 +169,6 @@ const operatorResponseText =
   'Hoda - multidisciplinary across BI, automation and data strategy. (more about me)';
 const operatorResponse = blockLine(operatorResponseText);
 const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.04;
-
-clock += BEAT;
-const headlineText = 'I turn fragmented data into systems you can actually trust.';
-const headline = blockLine(headlineText);
-
-const subheadText =
-  'From cleansing and migration to warehousing and BI - building the foundation that makes reliable decisions possible.';
-const subhead = blockLine(subheadText);
 
 const ctaDelay = clock + 0.04;
 const revealDelayMs = Math.ceil(ctaDelay * 1000);
@@ -175,6 +181,20 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   <div class="bezel">
     <div class="screen">
       <div class="terminal-body">
+        <h1
+          class="headline line-reveal"
+          style={{ animationDelay: `${headline.delay + headline.duration}s` }}
+        >
+          <span class="prompt-glyph" aria-hidden="true">&gt;</span> {headlineText}
+        </h1>
+
+        <p
+          class="subhead line-reveal"
+          style={{ animationDelay: `${subhead.delay + subhead.duration}s` }}
+        >
+          <span class="comment-glyph" aria-hidden="true">//</span> {subheadText}
+        </p>
+
         <PixelComputer class="boot-computer">
           {
             preamble.map((line) => (
@@ -223,20 +243,6 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
             ></span>
           </p>
         </PixelComputer>
-
-        <h1
-          class="headline line-reveal"
-          style={{ animationDelay: `${headline.delay + headline.duration}s` }}
-        >
-          <span class="prompt-glyph" aria-hidden="true">&gt;</span> {headlineText}
-        </h1>
-
-        <p
-          class="subhead line-reveal"
-          style={{ animationDelay: `${subhead.delay + subhead.duration}s` }}
-        >
-          <span class="comment-glyph" aria-hidden="true">//</span> {subheadText}
-        </p>
 
         <div class="cta-wrap line-reveal" style={{ animationDelay: `${ctaDelay}s` }}>
           <CTAButton class="hero-cta" />
@@ -491,10 +497,11 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   /* Capped narrower than .terminal-body's own 46rem - at full width the device would
      read as a huge flat panel rather than a computer sitting in the composition. The
      screen rect sizes itself proportionally to this (see PixelComputer.astro), so
-     boot-line text below still has real room even at this width. */
+     boot-line text below still has real room even at this width. Margin on both sides
+     now - it sits between subhead and CTA after the reorder pass, not first. */
   .terminal-body :global(.boot-computer) {
     max-width: 32rem;
-    margin: 0 0 var(--space-8);
+    margin: var(--space-8) 0;
   }
 
   /* Deliberately small and quiet - a system-readout preamble, not body text. The
@@ -691,9 +698,11 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      the quiet readout above it, not an incremental bump. Tight line-height and a
      touch of negative tracking at this size, the way a confident display headline
      reads rather than a stretched-out paragraph. */
+  /* No top margin - reorder pass made this the first thing in .terminal-body, so
+     there's nothing above it to space away from anymore. */
   .headline {
     position: relative;
-    margin: var(--space-12) 0 0;
+    margin: 0;
     font-family: var(--font-mono);
     font-weight: 700;
     font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);

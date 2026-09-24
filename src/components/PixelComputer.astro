@@ -1,5 +1,5 @@
 ---
-// Solid pixel-art retro computer — monitor (casing + screen), stand, keyboard. Same
+// Solid pixel-art retro computer — monitor (casing + screen) on a stand. Same
 // coordinate-array-to-SVG-rects technique as PixelMark.astro, deliberately reused: a
 // hollow outline trace or a CSS-bordered card both read as "a box," not a device, across
 // several rounds of direct feedback — solid filled blocks are what actually reads as
@@ -7,6 +7,11 @@
 // why this exists alongside the earlier "no CRT chrome" decision rather than reversing it
 // outright — this is a smaller, self-contained device graphic for the boot preamble
 // specifically, not the retired border/scanline/window-chrome treatment.
+//
+// Round two (direct feedback): dropped the keyboard row entirely and thinned the bezel
+// from a 2-unit margin to 1-unit — both purely so the screen (where real boot-log text
+// has to actually fit and stay readable) gets a much bigger share of the component's own
+// space. Screen is now ~88% of the width and ~64% of the height, vs. ~60%/40% before.
 //
 // Unlike PixelMark (purely decorative in every usage), this component hosts real content:
 // the default slot is positioned over the screen rect's own viewBox-relative bounds, so
@@ -18,29 +23,18 @@ interface Props {
 
 const { class: className } = Astro.props;
 
-const viewW = 20;
-const viewH = 15;
+const viewW = 16;
+const viewH = 11;
 
 const body: Array<[number, number, number, number]> = [
-  [2, 0, 16, 10], // monitor casing
-  [9, 10, 2, 1], // stand neck
-  [7, 11, 6, 1], // stand base
-  [1, 13, 18, 2], // keyboard body
+  [0, 0, 16, 9], // monitor casing
+  [7, 9, 2, 1], // stand neck
+  [5, 10, 6, 1], // stand base
 ];
 
-const keys: Array<[number, number, number, number]> = [
-  [2.5, 13.5, 1.4, 1],
-  [4.5, 13.5, 1.4, 1],
-  [6.5, 13.5, 1.4, 1],
-  [8.5, 13.5, 1.4, 1],
-  [10.5, 13.5, 1.4, 1],
-  [12.5, 13.5, 1.4, 1],
-  [14.5, 13.5, 1.4, 1],
-  [16.5, 13.5, 1, 1],
-];
-
-// 2-unit bezel margin on every side of the casing.
-const screen = { x: 4, y: 2, width: 12, height: 6 };
+// 1-unit bezel margin on every side of the casing (was 2 — thinned so the screen gets
+// more of the component's own space).
+const screen = { x: 1, y: 1, width: 14, height: 7 };
 const screenRect = {
   left: `${(screen.x / viewW) * 100}%`,
   top: `${(screen.y / viewH) * 100}%`,
@@ -58,7 +52,6 @@ const screenRect = {
   >
     {body.map(([x, y, w, h]) => <rect class="body" x={x} y={y} width={w} height={h} />)}
     <rect class="screen-bg" x={screen.x} y={screen.y} width={screen.width} height={screen.height} />
-    {keys.map(([x, y, w, h]) => <rect class="key" x={x} y={y} width={w} height={h} />)}
   </svg>
   <div class="pixel-computer-screen" style={screenRect}>
     <slot />
@@ -69,7 +62,7 @@ const screenRect = {
   .pixel-computer {
     position: relative;
     width: 100%;
-    aspect-ratio: 20 / 15;
+    aspect-ratio: 16 / 11;
   }
 
   .pixel-computer-svg {
@@ -91,12 +84,6 @@ const screenRect = {
     fill: color-mix(in srgb, var(--mark-outline) 16%, var(--bg));
   }
 
-  /* Lighter than the casing, not just a fainter version of it - individual keys need
-     to read as a highlight ON the casing, not disappear into it. */
-  .key {
-    fill: color-mix(in srgb, var(--mark-outline) 32%, var(--bg));
-  }
-
   /* A tint of --bg, not a hardcoded dark primitive — themes naturally with the rest of
      the page instead of forcing a permanently-dark "CRT screen" regardless of mode. This
      also means the boot-log text sitting on it can keep its already-audited
@@ -108,10 +95,10 @@ const screenRect = {
   /* overflow: visible, not hidden - the operator-response line's length varies with
      real copy and real font metrics, and clipping it if it ever runs a touch taller
      than the screen rect would silently cut off real content. Any small overrun just
-     extends slightly past the screen tint into the bezel below rather than losing text. */
+     extends slightly past the screen tint into the thin bezel rather than losing text. */
   .pixel-computer-screen {
     position: absolute;
     overflow: visible;
-    padding: 4% 5%;
+    padding: 5% 6%;
   }
 </style>
