@@ -1,17 +1,24 @@
 ---
-// Solid pixel-art retro computer — monitor (casing + screen) on a stand. Same
-// coordinate-array-to-SVG-rects technique as PixelMark.astro, deliberately reused: a
-// hollow outline trace or a CSS-bordered card both read as "a box," not a device, across
-// several rounds of direct feedback — solid filled blocks are what actually reads as
-// pixel-art hardware (the eye mark already proves this). See Hero.astro's frontmatter for
-// why this exists alongside the earlier "no CRT chrome" decision rather than reversing it
-// outright — this is a smaller, self-contained device graphic for the boot preamble
-// specifically, not the retired border/scanline/window-chrome treatment.
+// Solid pixel-art retro computer monitor. Same coordinate-array-to-SVG-rects technique
+// as PixelMark.astro, deliberately reused: a hollow outline trace or a CSS-bordered card
+// both read as "a box," not a device, across several rounds of direct feedback — solid
+// filled blocks are what actually reads as pixel-art hardware (the eye mark already
+// proves this). See Hero.astro's frontmatter for why this exists alongside the earlier
+// "no CRT chrome" decision rather than reversing it outright — this is a smaller,
+// self-contained device graphic for the boot preamble specifically, not the retired
+// border/scanline/window-chrome treatment.
 //
-// Round two (direct feedback): dropped the keyboard row entirely and thinned the bezel
-// from a 2-unit margin to 1-unit — both purely so the screen (where real boot-log text
-// has to actually fit and stay readable) gets a much bigger share of the component's own
-// space. Screen is now ~88% of the width and ~64% of the height, vs. ~60%/40% before.
+// Round three (direct feedback): three changes at once, all aimed at the same
+// complaint - "not retro enough" / "awkward gap." (1) The stand didn't read well and is
+// gone - just the monitor now. (2) A single-tone thin bezel was flat, not retro; it's
+// now a layered two-tone bezel (an outer casing ring, then a lighter inner trim ring,
+// then the screen) - the classic "chunky plastic frame with a raised inner trim" look
+// old CRT monitors actually had, built with plain nested rects, no gradients. (3) The
+// viewBox went from a wide 16:11 to a boxier 14:12, closer to a real CRT's ~4:3 -
+// previously the screen was wide enough that short boot-preamble lines (nowrap, well
+// under the screen's own width) left a visibly lopsided gap on the right; a narrower
+// screen both looks more like a period-correct monitor and leaves much less dead space
+// next to short lines.
 //
 // Unlike PixelMark (purely decorative in every usage), this component hosts real content:
 // the default slot is positioned over the screen rect's own viewBox-relative bounds, so
@@ -23,18 +30,17 @@ interface Props {
 
 const { class: className } = Astro.props;
 
-const viewW = 16;
-const viewH = 11;
+const viewW = 14;
+const viewH = 12;
 
-const body: Array<[number, number, number, number]> = [
-  [0, 0, 16, 9], // monitor casing
-  [7, 9, 2, 1], // stand neck
-  [5, 10, 6, 1], // stand base
-];
+// Outermost casing, full extent.
+const casing = { x: 0, y: 0, width: 14, height: 12 };
+// Inner trim ring, inset 1 unit - a lighter tone than the casing, giving the bezel its
+// two-tone "raised inner frame" read instead of one flat border.
+const trim = { x: 1, y: 1, width: 12, height: 10 };
+// Screen, inset another 1 unit from the trim.
+const screen = { x: 2, y: 2, width: 10, height: 8 };
 
-// 1-unit bezel margin on every side of the casing (was 2 — thinned so the screen gets
-// more of the component's own space).
-const screen = { x: 1, y: 1, width: 14, height: 7 };
 const screenRect = {
   left: `${(screen.x / viewW) * 100}%`,
   top: `${(screen.y / viewH) * 100}%`,
@@ -50,7 +56,8 @@ const screenRect = {
     preserveAspectRatio="none"
     aria-hidden="true"
   >
-    {body.map(([x, y, w, h]) => <rect class="body" x={x} y={y} width={w} height={h} />)}
+    <rect class="casing" x={casing.x} y={casing.y} width={casing.width} height={casing.height} />
+    <rect class="trim" x={trim.x} y={trim.y} width={trim.width} height={trim.height} />
     <rect class="screen-bg" x={screen.x} y={screen.y} width={screen.width} height={screen.height} />
   </svg>
   <div class="pixel-computer-screen" style={screenRect}>
@@ -62,7 +69,7 @@ const screenRect = {
   .pixel-computer {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 14 / 12;
   }
 
   .pixel-computer-svg {
@@ -79,9 +86,15 @@ const screenRect = {
 
   /* Muted tint of the mark token, not a full-saturation fill — checked by rendering
      this: 45% read as a solid block of near-full Signal green in dark mode, dominating
-     the section instead of reading as "device material." Dropped well below that. */
-  .body {
-    fill: color-mix(in srgb, var(--mark-outline) 16%, var(--bg));
+     the section instead of reading as "device material." */
+  .casing {
+    fill: color-mix(in srgb, var(--mark-outline) 14%, var(--bg));
+  }
+
+  /* Lighter than the casing - the "raised trim ring" that gives the bezel its retro,
+     layered read instead of one flat-toned border. */
+  .trim {
+    fill: color-mix(in srgb, var(--mark-outline) 30%, var(--bg));
   }
 
   /* A tint of --bg, not a hardcoded dark primitive — themes naturally with the rest of
@@ -95,10 +108,10 @@ const screenRect = {
   /* overflow: visible, not hidden - the operator-response line's length varies with
      real copy and real font metrics, and clipping it if it ever runs a touch taller
      than the screen rect would silently cut off real content. Any small overrun just
-     extends slightly past the screen tint into the thin bezel rather than losing text. */
+     extends slightly past the screen tint into the trim ring rather than losing text. */
   .pixel-computer-screen {
     position: absolute;
     overflow: visible;
-    padding: 5% 6%;
+    padding: 6% 7%;
   }
 </style>
