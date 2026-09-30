@@ -106,24 +106,23 @@
 // scroll speed) adds depth without ever being the thing you're looking at; gated
 // entirely behind prefers-reduced-motion so a reduced-motion visitor gets a static
 // mark, not a stripped-down animation.
-// Retro computer for the boot preamble (device-graphic pass, direct feedback after
-// several rounds of a standalone mockup): the fully chrome-less preamble read as flat,
-// and framing attempts using CSS borders/cards kept reading as "a box," not a device -
-// only a solid pixel-art silhouette (PixelComputer, same technique as PixelMark) actually
-// read as hardware. This is a narrower addition than the bezel/scanline/window-chrome
-// treatment retired in the stripped-down-terminal pass above - that decision about the
-// OVERALL Hero frame stands (.bezel/.screen stay unbordered); only the boot preamble
-// (the two-line xheia --init/system ready lines, the operator--info command, and the
-// operator-response line) now sits on PixelComputer's screen instead of as bare text.
-// Headline/subhead/CTA are unchanged - still bare terminal-body text below it, same as
-// before this pass.
+//
+// Terminal window, restored (direct feedback, 30 Sep): the PixelComputer silhouette
+// that replaced the stripped-down preamble read as "just a green box," and the
+// original 18 Aug terminal window looked better - so its retro vocabulary is back
+// (title bar with LED + xheia_terminal label + pixel window buttons, scanlines, the
+// module-loading progress bars with OK), but only around the boot log, as a compact
+// window, not as a full-width frame around the whole hero. The headline/subhead/CTA
+// stay unframed (.bezel/.screen are still plain containers). On desktop the window
+// sits beside the headline rather than under it, so the hero fits one screen instead
+// of the device eating half the page. PixelComputer.astro is deleted.
 import PixelMark from './PixelMark.astro';
-import PixelComputer from './PixelComputer.astro';
 import CTAButton from './CTAButton.astro';
 
 const CPS = 140; // characters typed per second — fast but still visibly "typed"
 const DWELL = 0.04; // pause after a line finishes before the next one starts
 const BEAT = 0.1; // longer pause marking a new "section" of the session
+const BAR_FILL_DURATION = 0.18;
 
 let clock = 0;
 
@@ -147,12 +146,9 @@ const blockLine = (text: string) => {
   return { delay, duration };
 };
 
-// Reorder pass: headline/subhead are now the first thing on the page (see Hero's
-// import-block comment), so they reveal first - immediately, not after waiting on a
-// boot log that's no longer above them. The boot preamble/operator exchange on
-// PixelComputer plays after, as supporting detail under the tagline; CTA still closes
-// the sequence. Same typeLine()/blockLine() budget mechanism as before, just reordered
-// to match the new top-to-bottom visual order instead of the old boot-log-first one.
+// Headline, subhead and CTA reveal first (they're the left column / top of the
+// page); the terminal window's boot log then plays alongside as supporting detail.
+// Same typeLine()/blockLine() budget mechanism throughout, in reading order.
 const headlineText = 'Turning fragmented data into systems you can actually trust.';
 const headline = blockLine(headlineText);
 
@@ -160,8 +156,23 @@ const subheadText =
   'From cleansing and migration to warehousing and BI - building the foundation that makes reliable decisions possible.';
 const subhead = blockLine(subheadText);
 
+const ctaDelay = clock + 0.04;
+
 clock += BEAT;
-const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'system ready')];
+const preamble = [typeLine('$', 'xheia --init'), typeLine('>', 'loading modules...')];
+
+// Module names are the existing Capabilities categories staged as a boot flourish,
+// not new claims (same as the original 18 Aug terminal).
+const modules = ['cleansing.sys', 'warehousing.sys', 'agentic_ai.sys'].map((name) => {
+  const delay = clock;
+  const duration = name.length / CPS;
+  const barDelay = delay + duration + 0.02;
+  const statusDelay = barDelay + BAR_FILL_DURATION + 0.04;
+  clock = statusDelay + DWELL;
+  return { name, delay, duration, barDelay, statusDelay };
+});
+
+const postamble = typeLine('>', 'system ready');
 
 clock += BEAT;
 const operatorCommand = typeLine('$', 'operator --info');
@@ -170,8 +181,7 @@ const operatorResponseText =
 const operatorResponse = blockLine(operatorResponseText);
 const finalCaretDelay = operatorResponse.delay + operatorResponse.duration + 0.04;
 
-const ctaDelay = clock + 0.04;
-const revealDelayMs = Math.ceil(ctaDelay * 1000);
+const revealDelayMs = Math.ceil(finalCaretDelay * 1000);
 ---
 
 <section class="hero" id="hero">
@@ -180,72 +190,120 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
   </div>
   <div class="bezel">
     <div class="screen">
-      <div class="terminal-body">
-        <h1
-          class="headline line-reveal"
-          style={{ animationDelay: `${headline.delay + headline.duration}s` }}
-        >
-          <span class="prompt-glyph" aria-hidden="true">&gt;</span> {headlineText}
-        </h1>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <h1
+            class="headline line-reveal"
+            style={{ animationDelay: `${headline.delay + headline.duration}s` }}
+          >
+            <span class="prompt-glyph" aria-hidden="true">&gt;</span> {headlineText}
+          </h1>
 
-        <p
-          class="subhead line-reveal"
-          style={{ animationDelay: `${subhead.delay + subhead.duration}s` }}
-        >
-          <span class="comment-glyph" aria-hidden="true">//</span> {subheadText}
-        </p>
+          <p
+            class="subhead line-reveal"
+            style={{ animationDelay: `${subhead.delay + subhead.duration}s` }}
+          >
+            <span class="comment-glyph" aria-hidden="true">//</span> {subheadText}
+          </p>
 
-        <PixelComputer class="boot-computer">
-          {
-            preamble.map((line) => (
-              <p class="boot-line">
-                <span class="prompt-glyph">{line.glyph}</span>{' '}
-                <span
+          <div class="cta-wrap line-reveal" style={{ animationDelay: `${ctaDelay}s` }}>
+            <CTAButton class="hero-cta" />
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-bar" aria-hidden="true">
+            <span class="led"></span>
+            <span class="terminal-label">xheia_terminal</span>
+            <span class="window-buttons"><span></span><span></span><span></span></span>
+          </div>
+          <div class="terminal-screen">
+            <div class="scanlines" aria-hidden="true"></div>
+            {
+              preamble.map((line) => (
+                <p class="boot-line">
+                  <span class="prompt-glyph">{line.glyph}</span>{' '}
+                  <span
+                    class="typed"
+                    style={{
+                      width: padWidth(line.text.length),
+                      animationDuration: `${line.duration}s`,
+                      animationDelay: `${line.delay}s`,
+                      animationTimingFunction: `steps(${line.text.length}, end)`,
+                    }}
+                  >
+                    {line.text}
+                  </span>
+                </p>
+              ))
+            }
+            {
+              modules.map((mod) => (
+                <p class="boot-line module-line">
+                  <span class="module-name">
+                    <span
+                      class="typed"
+                      style={{
+                        width: padWidth(mod.name.length),
+                        animationDuration: `${mod.duration}s`,
+                        animationDelay: `${mod.delay}s`,
+                        animationTimingFunction: `steps(${mod.name.length}, end)`,
+                      }}
+                    >
+                      {mod.name}
+                    </span>
+                  </span>
+                  <span class="progress-bar" aria-hidden="true">
+                    <span class="progress-fill" style={{ animationDelay: `${mod.barDelay}s` }} />
+                  </span>
+                  <span class="module-status" style={{ animationDelay: `${mod.statusDelay}s` }}>
+                    OK
+                  </span>
+                </p>
+              ))
+            }
+            <p class="boot-line">
+              <span class="prompt-glyph">{postamble.glyph}</span>{' '}
+              <span
                   class="typed"
                   style={{
-                    width: padWidth(line.text.length),
-                    animationDuration: `${line.duration}s`,
-                    animationDelay: `${line.delay}s`,
-                    animationTimingFunction: `steps(${line.text.length}, end)`,
+                    width: padWidth(postamble.text.length),
+                    animationDuration: `${postamble.duration}s`,
+                    animationDelay: `${postamble.delay}s`,
+                    animationTimingFunction: `steps(${postamble.text.length}, end)`,
                   }}
                 >
-                  {line.text}
+                  {postamble.text}
                 </span>
-              </p>
-            ))
-          }
-
-          <p class="boot-line">
-            <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
-            <span
-              class="typed"
-              style={{
-                width: padWidth(operatorCommand.text.length),
-                animationDuration: `${operatorCommand.duration}s`,
-                animationDelay: `${operatorCommand.delay}s`,
-                animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
-              }}
+            </p>
+            <p class="boot-line">
+              <span class="prompt-glyph">{operatorCommand.glyph}</span>{' '}
+              <span
+                  class="typed"
+                  style={{
+                    width: padWidth(operatorCommand.text.length),
+                    animationDuration: `${operatorCommand.duration}s`,
+                    animationDelay: `${operatorCommand.delay}s`,
+                    animationTimingFunction: `steps(${operatorCommand.text.length}, end)`,
+                  }}
+                >
+                  {operatorCommand.text}
+                </span>
+            </p>
+            <p
+              class="boot-line prompt-response operator-line line-reveal"
+              style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
             >
-              {operatorCommand.text}
-            </span>
-          </p>
-          <p
-            class="boot-line prompt-response operator-line line-reveal"
-            style={{ animationDelay: `${operatorResponse.delay + operatorResponse.duration}s` }}
-          >
-            <span class="prompt-glyph">&gt;</span>{' '}
-            Hoda - multidisciplinary across BI, automation and data strategy. <span
-              class="more-link">(<a href="/about">more about me</a>)</span
-            ><span
-              class="caret"
-              style={{ animationDelay: `${finalCaretDelay}s` }}
-              aria-hidden="true"
-            ></span>
-          </p>
-        </PixelComputer>
-
-        <div class="cta-wrap line-reveal" style={{ animationDelay: `${ctaDelay}s` }}>
-          <CTAButton class="hero-cta" />
+              <span class="prompt-glyph">&gt;</span>{' '}
+              Hoda - multidisciplinary across BI, automation and data strategy. <span
+                class="more-link">(<a href="/about">more about me</a>)</span
+              ><span
+                class="caret"
+                style={{ animationDelay: `${finalCaretDelay}s` }}
+                aria-hidden="true"
+              ></span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -488,33 +546,222 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     padding: var(--space-16) var(--space-8);
   }
 
-  .terminal-body {
-    max-width: 46rem;
-    margin: 0 auto;
+  @media (max-width: 40rem) {
+    .screen {
+      padding: var(--space-8) var(--space-2);
+    }
+  }
+
+  /* Stacked on narrow screens (headline, subhead, CTA, then the terminal); side by
+     side from 64rem up, headline left and a compact terminal window right. */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-12);
+    align-items: center;
     text-align: left;
   }
 
-  /* Capped narrower than .terminal-body's own 46rem - at full width the device would
-     read as a huge flat panel rather than a computer sitting in the composition. The
-     screen rect sizes itself proportionally to this (see PixelComputer.astro), so
-     boot-line text below still has real room even at this width. Margin on both sides
-     now - it sits between subhead and CTA after the reorder pass, not first. */
-  .terminal-body :global(.boot-computer) {
-    max-width: 32rem;
-    margin: var(--space-8) 0;
+  @media (min-width: 64rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: var(--space-16);
+    }
   }
 
-  /* Deliberately small and quiet - a system-readout preamble, not body text. The
-     headline below is the one thing on this page meant to command attention;
-     everything above it should read as a quick status check you glance past, not
-     compete with it for weight (Apple HIG "one strong idea per screen" logic). */
+  /* The retro terminal window - see the frontmatter's "Terminal window, restored"
+     note. Square corners (--radius: 0), a hard pixel offset shadow rather than a soft
+     blur (the retro-UI read), and a faint status-colour glow that's the "screen is on"
+     cue. Capped narrow so it reads as a window in the composition, not a panel. */
+  .terminal {
+    position: relative;
+    width: 100%;
+    max-width: 30rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    box-shadow:
+      0.5rem 0.5rem 0 color-mix(in srgb, var(--border) 35%, transparent),
+      0 0 3rem -0.5rem color-mix(in srgb, var(--accent-status) 22%, transparent);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 2px solid var(--border);
+    background: color-mix(in srgb, var(--text) 6%, var(--bg));
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  /* Square, not round - a pixel LED. */
+  .led {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--accent-status);
+    animation: led-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes led-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  .window-buttons {
+    display: inline-flex;
+    gap: 0.3rem;
+    margin-left: auto;
+  }
+
+  .window-buttons span {
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 2px solid var(--border);
+  }
+
+  /* Inset shadow = the curved-glass vignette of a CRT; in dark mode it's tinted with
+     the status colour so the screen reads as glowing phosphor, not a flat fill. */
+  .terminal-screen {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-6) var(--space-6) var(--space-8);
+    box-shadow: inset 0 0 2.5rem color-mix(in srgb, var(--text) 7%, transparent);
+  }
+
+  :global(html:not([data-theme='light'])) .terminal-screen {
+    box-shadow: inset 0 0 3rem color-mix(in srgb, var(--accent-status) 9%, transparent);
+  }
+
+  @media (max-width: 26rem) {
+    .terminal-screen {
+      padding: var(--space-4) var(--space-4) var(--space-6);
+    }
+
+    .module-name {
+      min-width: 15ch;
+    }
+
+    .progress-bar {
+      width: 3rem;
+    }
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      color-mix(in srgb, var(--text) 5%, transparent) 3px
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .led {
+      animation: none;
+    }
+  }
+
+  /* Deliberately small and quiet - a system-readout, not body text. The headline is
+     the one thing on this page meant to command attention (Apple HIG "one strong
+     idea per screen" logic). */
   .boot-line {
     position: relative;
     margin: 0 0 var(--space-1);
     font-family: var(--font-mono);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
     white-space: nowrap;
+  }
+
+  /* Faint phosphor bloom on the terminal text - dark mode only; a glow on Paper just
+     reads as blur. */
+  :global(html:not([data-theme='light'])) .boot-line {
+    text-shadow: 0 0 0.4rem color-mix(in srgb, var(--accent-status) 28%, transparent);
+  }
+
+  .module-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-left: 1.25em;
+  }
+
+  .module-name {
+    display: inline-block;
+    min-width: 16ch;
+  }
+
+  .progress-bar {
+    display: inline-flex;
+    width: 4.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent-status);
+    animation: progress-fill-in 0.35s steps(8, end) forwards;
+  }
+
+  @keyframes progress-fill-in {
+    to {
+      width: 100%;
+    }
+  }
+
+  .module-status {
+    color: var(--accent-status);
+    opacity: 0;
+    animation: fade-in 0.15s ease-out forwards;
+  }
+
+  /* Coral (light mode's --accent-status) is 2.04:1 on Paper as text - fails 4.5:1.
+     The progress bars stay coral (decorative fill); the "OK" text uses --text. */
+  :global(html[data-theme='light']) .module-status {
+    color: var(--text);
+  }
+
+  @keyframes fade-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .module-status {
+      opacity: 1;
+      animation: none;
+    }
+
+    .progress-fill {
+      width: 100%;
+      animation: none;
+    }
+  }
+
+  .bezel.boot-skip .module-status {
+    opacity: 1;
+    animation: none;
+  }
+
+  .bezel.boot-skip .progress-fill {
+    width: 100%;
+    animation: none;
   }
 
   .prompt-response {
@@ -698,7 +945,7 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
      the quiet readout above it, not an incremental bump. Tight line-height and a
      touch of negative tracking at this size, the way a confident display headline
      reads rather than a stretched-out paragraph. */
-  /* No top margin - reorder pass made this the first thing in .terminal-body, so
+  /* No top margin - reorder pass made this the first thing in .hero-copy, so
      there's nothing above it to space away from anymore. */
   .headline {
     position: relative;
@@ -710,6 +957,14 @@ const revealDelayMs = Math.ceil(ctaDelay * 1000);
     letter-spacing: -0.01em;
     color: var(--text);
     white-space: normal;
+  }
+
+  /* Side-by-side layout gives the headline roughly half the width, so it steps down
+     a size to stay at four lines instead of five. */
+  @media (min-width: 64rem) {
+    .headline {
+      font-size: clamp(2.5rem, 2.2vw + 0.9rem, 3.125rem);
+    }
   }
 
   .subhead {
