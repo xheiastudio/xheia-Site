@@ -51,8 +51,10 @@
 // restated the readout's EXPERIENCE and FOCUS rows in sentence form - literal
 // duplication, not two different things. Cut both entirely rather than trying to
 // reword around the overlap. The page is now three distinct beats, nothing repeated:
-// masthead (who), readout (the facts), pull-quote (why it matters to me) - fewer
-// words, no filler.
+// masthead (who) and readout (the facts, ending on a "motivation" row) - fewer
+// words, no filler. The motivation line used to be a separate big-type pull-quote,
+// but at that size it read as a second tagline echoing Home's headline; direct
+// feedback moved it into the readout's own format.
 //
 // The photo itself was "just sitting there" - static from first paint, no motion,
 // the one place on the page doing nothing. It now resolves into focus on load: a
@@ -78,8 +80,7 @@
 // ambient glow that blooms in behind the photo as it resolves (depth/materials, HIG
 // §Materials), a hover zoom on the photo (image scales inside its fixed frame,
 // clipped by overflow:hidden - the frame itself never moves, so it can't disturb
-// layout), a hover highlight sweep per readout row, and the pull-quote's accent bar
-// now draws itself downward on reveal instead of appearing instantly. All of it
+// layout), and a hover highlight sweep per readout row. All of it
 // still respects prefers-reduced-motion - full states with zero animation.
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -110,8 +111,8 @@ import headshot from '../assets/hoda-headshot.png';
         <div class="intro-text">
           <h1 id="about-name">Hoda</h1>
           <p class="role" id="about-role">
-            I do full-stack data consulting under the name Xheia - based remotely,
-            working with clients across the world.
+            I do full-stack data consulting under the name Xheia - helping businesses
+            make better decisions by getting their data right.
           </p>
         </div>
       </div>
@@ -131,7 +132,7 @@ import headshot from '../assets/hoda-headshot.png';
           </div>
           <div class="readout-row item-content" style={{ transitionDelay: '0.3s' }}>
             <dt>stack</dt>
-            <dd>Azure &middot; Power BI &middot; Python &middot; SQL &middot; Power Automate</dd>
+            <dd>Power BI &middot; Python &middot; SQL &middot; agentic AI</dd>
           </div>
           <div class="readout-row item-content" style={{ transitionDelay: '0.45s' }}>
             <dt>availability</dt>
@@ -140,12 +141,14 @@ import headshot from '../assets/hoda-headshot.png';
               available for new work
             </dd>
           </div>
+          <div class="readout-row item-content" style={{ transitionDelay: '0.6s' }}>
+            <dt>motivation</dt>
+            <dd>
+              the problem-solving - messy data, no clear starting point, figuring it out
+              anyway
+            </dd>
+          </div>
         </dl>
-
-        <p class="pull-quote item-content" style={{ transitionDelay: '0.65s' }}>
-          What keeps me doing this: I like the actual problem-solving - messy data, no
-          clear starting point, figuring it out anyway.
-        </p>
       </div>
     </div>
   </main>
@@ -508,44 +511,6 @@ import headshot from '../assets/hoda-headshot.png';
     }
   }
 
-  /* font-mono, not font-display: same fix as every other page's real-text
-     titles - Home's headline is 100% IBM Plex Mono. Weight bumped to 600 for
-     the same presence the pixel font carried at this size. */
-  .about-page .pull-quote {
-    position: relative;
-    margin: 0;
-    padding-left: var(--space-6);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
-    line-height: 1.5;
-  }
-
-  .about-page .pull-quote::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--accent-primary);
-    transform: scaleY(0);
-    transform-origin: top;
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: 0.2s;
-  }
-
-  .story[data-reveal].is-visible .pull-quote::before {
-    transform: scaleY(1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .about-page .pull-quote::before {
-      transform: scaleY(1);
-      transition: none;
-    }
-  }
 
   @media (max-width: 34rem) {
     .intro-row {

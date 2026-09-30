@@ -6,9 +6,9 @@
 //
 // Rebuilt from a flat pixel-tag list into a real "stack manifest" (Apple HIG design-
 // improvement pass — the user directly called out that incremental CSS nudges here
-// weren't a real transformation): each tool is its own numbered row, mono-spaced
-// like a terminal `ls` listing, tying into the same numbering motif as /approach's
-// section numerals instead of just being five identical pills. Deliberately no
+// weren't a real transformation): each tool is its own row, mono-spaced
+// like a terminal `ls` listing. Plain pixel-block markers, not numbers - a 01-05
+// index read as a ranking. Deliberately no
 // SectionLoader/typed reveal — a flat list of short labels doesn't carry enough
 // meaning per item to justify a "boot check," unlike Capabilities/PillarBlock's named
 // modules; the whole manifest still fades in as a group on scroll (.section-content).
@@ -34,16 +34,16 @@ const tools = [
     <h2 class="eyebrow">// tools</h2>
   </div>
   <p class="frame-label">stack manifest</p>
-  <ol class="manifest section-content">
+  <ul class="manifest section-content">
     {
-      tools.map((tool, i) => (
+      tools.map((tool) => (
         <li class="manifest-row">
-          <span class="row-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="row-marker" aria-hidden="true"></span>
           <span class="row-name">{tool}</span>
         </li>
       ))
     }
-  </ol>
+  </ul>
 </section>
 
 <style>
@@ -102,15 +102,15 @@ const tools = [
     gap: var(--space-6);
   }
 
-  /* --accent-primary-text, not --accent-primary: this is real visible text (18px,
-     regular weight - under WCAG's large-text threshold) even though aria-hidden.
-     Full audit finding, same as the eyebrow labels above. */
-  .row-index {
+  /* Neutral pixel-block bullet, not a 01-05 index - numbering read as a ranking
+     (direct feedback: "Microsoft is number 1, Claude is number 5"). Decorative, so
+     plain --accent-primary is fine here (no text-contrast requirement). */
+  .row-marker {
     flex-shrink: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.125rem;
-    color: var(--accent-primary-text);
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--accent-primary);
+    transform: translateY(-0.15em);
   }
 
   .row-name {

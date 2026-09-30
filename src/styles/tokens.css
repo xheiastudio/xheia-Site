@@ -34,7 +34,7 @@
      --accent-primary-text: Aperture blue lightened ~15% toward Paper - 5.27:1 against
        Ink (was 4.22:1, failing the 4.5:1 minimum). Use for accent-primary-as-TEXT on
        the page background: eyebrow labels, nav hover/current-page state, CTAButton's
-       hover-state text, Footer nav hover, Tools' row-index numerals.
+       hover-state text, Footer nav hover, Tools' manifest.
      --accent-primary-fill: Aperture blue darkened ~15% toward Ink -> #375dce, which is
        exactly light mode's own --accent-primary value below (5.09:1 with Paper text
        on it, was 4.04:1). Use for accent-primary as a SOLID FILL with --on-accent-
