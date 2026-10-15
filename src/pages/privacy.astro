@@ -11,8 +11,9 @@
 //
 // Processors named here are the ones actually wired into the site: Netlify (hosting
 // + Forms), Google Workspace (contact@xheia.co, and Google Calendar appointment
-// scheduling behind contact.astro's BOOKING_URL). HubSpot and Apollo are for
-// prospecting outreach. Update LAST_UPDATED whenever the content changes.
+// scheduling behind contact.astro's BOOKING_URL). Add any new processor (e.g. a
+// CRM) to section 04 before it's used. Update LAST_UPDATED whenever the content
+// changes.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
@@ -103,8 +104,6 @@ const LAST_UPDATED = '15 October 2026';
         <ul>
           <li><strong>Netlify</strong> - hosts this site and receives contact form submissions.</li>
           <li><strong>Google Workspace</strong> - email, and Google Calendar for booked calls.</li>
-          <li><strong>HubSpot</strong> - keeps track of enquiries, prospects and conversations.</li>
-          <li><strong>Apollo</strong> - finds business contact details for prospecting.</li>
         </ul>
         <p>Nobody else gets your data unless the law requires it.</p>
       </section>
@@ -112,8 +111,7 @@ const LAST_UPDATED = '15 October 2026';
       <section aria-labelledby="where">
         <h2 id="where"><span class="num" aria-hidden="true">05</span> Where it goes</h2>
         <p>
-          I work remotely, currently from Thailand, and some of the services above store
-          data in the US. That means your data may be accessed or stored outside the UK.
+          I work remotely, and some of the services above store data in the US. That means your data may be accessed or stored outside the UK.
           Where it is, I rely on the safeguards those providers put in place for
           international transfers, such as the UK's approved data transfer agreements
           and addendums.
