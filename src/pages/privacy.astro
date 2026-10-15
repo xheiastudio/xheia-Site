@@ -1,0 +1,285 @@
+---
+// Plain-English privacy notice (UK GDPR transparency requirements: who, what, why,
+// lawful basis, recipients, international transfers, retention, rights + ICO).
+// Linked from the Footer and from under ContactForm.
+//
+// Deliberately NOT click-to-expand, despite CLAUDE.md's progressive-disclosure rule
+// for multi-item sections: a privacy notice has to be readable and searchable in
+// full (Cmd+F for "delete", "ICO", etc.), so every section stays open. Sections are
+// separated by margin + a mono eyebrow, no borders/tinted boxes, per the sitewide
+// "no section containers" rule.
+//
+// Processors named here are the ones actually wired into the site: Netlify (hosting
+// + Forms), Google Workspace (contact@xheia.co, and Google Calendar appointment
+// scheduling behind contact.astro's BOOKING_URL). HubSpot and Apollo are for
+// prospecting outreach. Update LAST_UPDATED whenever the content changes.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import PageIntroAtmosphere from '../components/PageIntroAtmosphere.astro';
+import Footer from '../components/Footer.astro';
+
+const LAST_UPDATED = '15 October 2026';
+---
+
+<BaseLayout
+  title="Privacy"
+  description="How Xheia collects, uses and protects personal data - in plain English."
+>
+  <Header />
+  <main id="main-content">
+    <PageIntroAtmosphere>
+      <h1 class="intro">Privacy</h1>
+    </PageIntroAtmosphere>
+
+    <article class="privacy" data-reveal>
+      <p class="meta">$ last-updated: {LAST_UPDATED}</p>
+
+      <p class="lead">
+        This is how I handle personal data, written to be read rather than skimmed past.
+        If anything here is unclear, ask me.
+      </p>
+
+      <section aria-labelledby="who">
+        <h2 id="who"><span class="num" aria-hidden="true">01</span> Who I am</h2>
+        <p>
+          Xheia is a data consultancy run by Hoda. I'm responsible for any personal data
+          collected through this site or in the course of my work (the "controller," in
+          data protection terms).
+        </p>
+        <p>
+          Contact for anything privacy-related:{' '}
+          <a href="mailto:contact@xheia.co">contact@xheia.co</a>
+        </p>
+      </section>
+
+      <section aria-labelledby="what">
+        <h2 id="what"><span class="num" aria-hidden="true">02</span> What I collect</h2>
+        <ul>
+          <li>
+            <strong>Enquiries:</strong> your name, email, company (if you give it) and
+            message when you use the contact form or email me.
+          </li>
+          <li>
+            <strong>Bookings:</strong> your name, email and anything you add to the booking
+            when you schedule a call.
+          </li>
+          <li>
+            <strong>Prospects:</strong> business contact details (name, job title, work
+            email, company) of people at organisations that might need my services,
+            gathered from public sources such as company websites and LinkedIn.
+          </li>
+        </ul>
+        <p>
+          This site has no analytics or tracking cookies. It stores one thing in your
+          browser - your light/dark theme choice - and that never leaves your device.
+        </p>
+      </section>
+
+      <section aria-labelledby="why">
+        <h2 id="why"><span class="num" aria-hidden="true">03</span> Why I use it</h2>
+        <ul>
+          <li>
+            To reply to your enquiry, hold the call you booked, and prepare a proposal if
+            you ask for one.
+          </li>
+          <li>
+            To contact businesses that may need my services, with a relevant, individual
+            message - not bulk mailing lists.
+          </li>
+        </ul>
+        <p>
+          The legal basis for both is legitimate interests: running and growing my
+          business, in ways you'd reasonably expect. If we go on to work together, the
+          basis for data needed to deliver that work becomes our contract. I don't sell
+          personal data, and I don't use it for automated decision-making.
+        </p>
+      </section>
+
+      <section aria-labelledby="who-else">
+        <h2 id="who-else">
+          <span class="num" aria-hidden="true">04</span> Who else handles it
+        </h2>
+        <p>I use a small number of services that process data on my behalf:</p>
+        <ul>
+          <li><strong>Netlify</strong> - hosts this site and receives contact form submissions.</li>
+          <li><strong>Google Workspace</strong> - email, and Google Calendar for booked calls.</li>
+          <li><strong>HubSpot</strong> - keeps track of enquiries, prospects and conversations.</li>
+          <li><strong>Apollo</strong> - finds business contact details for prospecting.</li>
+        </ul>
+        <p>Nobody else gets your data unless the law requires it.</p>
+      </section>
+
+      <section aria-labelledby="where">
+        <h2 id="where"><span class="num" aria-hidden="true">05</span> Where it goes</h2>
+        <p>
+          I work remotely, currently from Thailand, and some of the services above store
+          data in the US. That means your data may be accessed or stored outside the UK.
+          Where it is, I rely on the safeguards those providers put in place for
+          international transfers, such as the UK's approved data transfer agreements
+          and addendums.
+        </p>
+      </section>
+
+      <section aria-labelledby="how-long">
+        <h2 id="how-long"><span class="num" aria-hidden="true">06</span> How long I keep it</h2>
+        <ul>
+          <li>
+            <strong>Enquiries and bookings:</strong> two years from our last contact, then
+            deleted.
+          </li>
+          <li>
+            <strong>Prospects:</strong> deleted when the conversation closes or as soon as
+            you opt out. After an opt-out I keep only your email address on a suppression
+            list, so I never contact you again by mistake.
+          </li>
+          <li>
+            <strong>Clients:</strong> as long as the law requires for business and tax
+            records.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="rights">
+        <h2 id="rights"><span class="num" aria-hidden="true">07</span> Your rights</h2>
+        <p>You can ask me, at any time and free of charge, to:</p>
+        <ul>
+          <li>give you a copy of the data I hold about you</li>
+          <li>correct anything that's wrong</li>
+          <li>delete it</li>
+          <li>stop using it, or object to how I'm using it</li>
+          <li>stop contacting you - one reply saying so is enough</li>
+        </ul>
+        <p>
+          Email <a href="mailto:contact@xheia.co">contact@xheia.co</a> and I'll respond within
+          one month.
+        </p>
+        <p>
+          If you're unhappy with how I've handled your data, you can complain to the
+          Information Commissioner's Office:{' '}
+          <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener noreferrer"
+            >ico.org.uk/make-a-complaint<span class="sr-only"> (opens in a new tab)</span></a
+          >. I'd appreciate the chance to fix it first.
+        </p>
+      </section>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Exact match to every other page's intro heading (Hero .headline recipe). */
+  .intro {
+    max-width: 46rem;
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 3.4vw + 1.1rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Reading-width single column - same idea as /contact's focused column, a bit
+     wider since this is long-form prose. */
+  .privacy {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-16);
+    font-family: var(--font-body);
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  .meta {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+  }
+
+  section {
+    margin-top: var(--space-12);
+  }
+
+  h2 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  /* Display font sanctioned for numerals (BRANDFINAL §4 Type System). */
+  .num {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: var(--accent-primary-text);
+  }
+
+  p,
+  ul {
+    margin: 0 0 var(--space-4);
+  }
+
+  ul {
+    padding-left: var(--space-6);
+  }
+
+  li + li {
+    margin-top: var(--space-2);
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  a {
+    color: var(--accent-primary-text);
+    text-underline-offset: 0.2em;
+    border-radius: var(--radius);
+    transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  a:hover {
+    color: var(--text);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Smooth reveal - this is a plain reading page, not a data grid (CLAUDE.md's
+     two-tier motion rule), so it overrides the sitewide steps() reveal. */
+  .privacy[data-reveal] {
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .privacy[data-reveal],
+    a {
+      transition: none;
+    }
+  }
+</style>
